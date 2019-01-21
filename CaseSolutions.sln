@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway.API", "Gateway.API\Gateway.API.csproj", "{EB8FE2F7-A709-4C27-87DC-1D957D9DCA55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gateway.API", "Gateway.API\Gateway.API.csproj", "{EB8FE2F7-A709-4C27-87DC-1D957D9DCA55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth.API", "Auth.API\Auth.API.csproj", "{83E39C8E-020F-4AE5-A180-2744F7C83538}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.API", "Auth.API\Auth.API.csproj", "{83E39C8E-020F-4AE5-A180-2744F7C83538}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "React.App", "React.App\React.App.csproj", "{DB6582C4-F4BA-4332-8C9E-5BF6BD7DC28E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{83E39C8E-020F-4AE5-A180-2744F7C83538}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83E39C8E-020F-4AE5-A180-2744F7C83538}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83E39C8E-020F-4AE5-A180-2744F7C83538}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB6582C4-F4BA-4332-8C9E-5BF6BD7DC28E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB6582C4-F4BA-4332-8C9E-5BF6BD7DC28E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB6582C4-F4BA-4332-8C9E-5BF6BD7DC28E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB6582C4-F4BA-4332-8C9E-5BF6BD7DC28E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
