@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Auth.Database.API.Controllers
+namespace Gateway.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
