@@ -10,4 +10,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DataAccess\AerendeRepository\" />
+    <Folder Include="DataAccess\FakturaRepository\" />
+    <Folder Include="DataAccess\UserRepository\" />
+    <Folder Include="Data\AerendeData\AerendeEntities\AerendeContext\" />
+    <Folder Include="Data\AerendeData\" />
+    <Folder Include="Data\FakturaData\FakturaEntities\FakturaContext\" />
+  </ItemGroup>
+
 </Project>

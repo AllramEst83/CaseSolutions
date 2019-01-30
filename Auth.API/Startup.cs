@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Auth.API.Models;
+using Database.Service.API.Data.UserData.UserEntities.UserContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -26,6 +29,19 @@ namespace Auth.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            //Bind AppSettingsJson to C# class
+            IConfigurationSection appSettingsSection = Configuration.GetSection("ConnectionStrings");
+            services.Configure<AppSettnigs>(appSettingsSection);
+            var appSettings = appSettingsSection.Get<AppSettnigs>();
+            //Bind AppSettingsJson to C# class
+
+            services.AddDbContext<UserContext>(options =>
+                 options.UseSqlServer(appSettings.UserConnection,
+                    migrationOptions => migrationOptions.MigrationsAssembly("Auth.API")));
+
+            //https://fullstackmark.com/post/13/jwt-authentication-with-aspnet-core-2-web-api-angular-5-net-core-identity-and-facebook-login
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
