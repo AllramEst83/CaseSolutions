@@ -53,6 +53,8 @@ namespace Auth.API.Controllers
             return new OkObjectResult(new { statusCode = 200, message = "Account created" });
         }
 
+        //https://aryalnishan.com.np/asp-net-mvc/delete-user-related-data-in-asp-net-mvc-identity/
+
         //public async Task<IActionResult> Delete([FromBody] DeleteUserViewModel model)
         //{
 
@@ -64,7 +66,7 @@ namespace Auth.API.Controllers
         //    var user = await _userManager.FindByIdAsync(model.Id);
 
         //    var rolesForUser = await _userManager.GetRolesAsync(user);
-            
+
         //    var removeLoginsResult = await _userManager.RemoveLoginAsync(user, );
         //    if(!removeLoginsResult.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(removeLoginsResult, ModelState));
 
