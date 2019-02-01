@@ -41,7 +41,7 @@ namespace Auth.API
         {
 
             //Bind AppSettingsJson to C# class
-            IConfigurationSection appSettingsSection = Configuration.GetSection("ConnectionStrings");
+            IConfigurationSection appSettingsSection = Configuration.GetSection(Constants.Strings.AppSettingStrings.AppSettings);
             services.Configure<AppSettnigs>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettnigs>();
             //Bind AppSettingsJson to C# class          
@@ -100,7 +100,8 @@ namespace Auth.API
             // api user claim policy
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Auth.API.User", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
+                //Add more roles here to handel diffrent type of users: admin, user, editUser
+                options.AddPolicy("Auth.API.Admin", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
             });
 
             //AddIdentityModel

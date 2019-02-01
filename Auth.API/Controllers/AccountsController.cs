@@ -31,7 +31,7 @@ namespace Auth.API.Controllers
         [HttpGet]
         public ActionResult<object> Ping()
         {
-            return new { message = "Accounts controller Pinged" };
+            return new { message = "ZING!, Accounts is online" };
         }
 
         // POST api/accounts/signup
@@ -53,31 +53,31 @@ namespace Auth.API.Controllers
             return new OkObjectResult(new { statusCode = 200, message = "Account created" });
         }
 
-        public async Task<IActionResult> Delete([FromBody] DeleteUserViewModel model)
-        {
+        //public async Task<IActionResult> Delete([FromBody] DeleteUserViewModel model)
+        //{
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var user = await _userManager.FindByIdAsync(model.Id);
+        //    var user = await _userManager.FindByIdAsync(model.Id);
 
-            var rolesForUser = await _userManager.GetRolesAsync(user);
+        //    var rolesForUser = await _userManager.GetRolesAsync(user);
             
-            var removeLoginsResult = await _userManager.RemoveLoginAsync(user, );
-            if(!removeLoginsResult.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(removeLoginsResult, ModelState));
+        //    var removeLoginsResult = await _userManager.RemoveLoginAsync(user, );
+        //    if(!removeLoginsResult.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(removeLoginsResult, ModelState));
 
-            var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, rolesForUser);
-            if (!removeLoginsResult.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(removeRolesResult, ModelState));
+        //    var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, rolesForUser);
+        //    if (!removeLoginsResult.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(removeRolesResult, ModelState));
 
-            var removeUserResult = await _userManager.DeleteAsync(user);
-            if (!removeLoginsResult.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(removeUserResult, ModelState));
+        //    var removeUserResult = await _userManager.DeleteAsync(user);
+        //    if (!removeLoginsResult.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(removeUserResult, ModelState));
 
-            await _context.SaveChangesAsync();
+        //    await _context.SaveChangesAsync();
 
-            return new OkObjectResult(new { });
-        }
+        //    return new OkObjectResult(new { });
+        //}
 
     }
 }

@@ -9,6 +9,5 @@ namespace Auth.API.Models
     {
         public string UserConnection { get; set; }
         public string Secret { get; set; }
-        public string Host { get; set; }
     }
 }

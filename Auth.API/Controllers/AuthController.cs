@@ -3,6 +3,7 @@ using Auth.API.Helpers;
 using Auth.API.Models;
 using Auth.API.ViewModels;
 using Database.Service.API.Data.UserData.UserEntities.UserModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -29,12 +30,27 @@ namespace Auth.API.Controllers
             _jwtFactory = jwtFactory;
             _jwtOptions = jwtOptions.Value;
         }
-        
+
         // GET api/auth/get
         [HttpGet]
         public ActionResult<object> Ping()
         {
-            return new { message = "Auth controller Pinged" };
+            return new { message = "ZING!, Auth is online" };
+        }
+
+
+        [Authorize(Policy = "Auth.API.Admin")]
+        [HttpGet]
+        public IActionResult GetListOfUsers()
+        {
+            var users = _userManager.Users.Select(x => new UsersViewModel
+            {
+                UserName = x.UserName,
+
+            })
+            .ToList();
+
+            return new OkObjectResult(new { Users = users });
         }
 
         // POST api/auth/login

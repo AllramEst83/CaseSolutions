@@ -13,6 +13,7 @@ namespace Auth.API.Helpers
     {
         public static async Task<string> GenerateJwt(ClaimsIdentity identity, IJwtFactory jwtFactory, string userName, JwtIssuerOptions jwtOptions, JsonSerializerSettings serializerSettings)
         {
+            //Add lines here to the token
             var response = new
             {
                 id = identity.Claims.Single(c => c.Type == "id").Value,
