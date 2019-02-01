@@ -19,6 +19,9 @@ using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Auth.API.Helpers;
+using Auth.API.AuthFactory;
 
 namespace Auth.API
 {
@@ -33,12 +36,9 @@ namespace Auth.API
 
 
         //https://fullstackmark.com/post/13/jwt-authentication-with-aspnet-core-2-web-api-angular-5-net-core-identity-and-facebook-login
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper();
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             //Bind AppSettingsJson to C# class
             IConfigurationSection appSettingsSection = Configuration.GetSection("ConnectionStrings");
@@ -46,36 +46,92 @@ namespace Auth.API
             var appSettings = appSettingsSection.Get<AppSettnigs>();
             //Bind AppSettingsJson to C# class          
 
+            //Add Database
             services.AddDbContext<UserContext>(options =>
                  options.UseSqlServer(appSettings.UserConnection,
                     migrationOptions => migrationOptions.MigrationsAssembly("Auth.API")));
 
-            services.AddIdentity<User, IdentityRole>(options =>
-            {
-                options.User.RequireUniqueEmail = false;
-            })
-             .AddEntityFrameworkStores<UserContext>()
-             .AddDefaultTokenProviders();
+            //Add JWTFactory
+            services.AddSingleton<IJwtFactory, JwtFactory>();
 
             //Get Symetrickey (!Should be Readonly Private!)
             SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings.Secret));
 
             // Get options from app settings
-            var jwtAppSettnings = Configuration.GetSection(nameof(JwtIssuerOptions));
+            var jwtAppSettningsOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
 
             // Configure JwtIssuerOptions
             services.Configure<JwtIssuerOptions>(options =>
             {
-                options.Issuer = jwtAppSettnings[nameof(JwtIssuerOptions.Issuer)];
-                options.Audience = jwtAppSettnings[nameof(JwtIssuerOptions.Audience)];
+                options.Issuer = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)];
+                options.Audience = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Audience)];
                 options.SigningCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
             });
 
+            //AddTokenValidator
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)],
 
+                ValidateAudience = true,
+                ValidAudience = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Audience)],
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = _signingKey,
+
+                RequireExpirationTime = false,
+                ValidateLifetime = false,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(configureOptions =>
+            {
+                configureOptions.ClaimsIssuer = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)];
+                configureOptions.TokenValidationParameters = tokenValidationParameters;
+                configureOptions.SaveToken = true;
+            });
+
+            // api user claim policy
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Auth.API.User", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
+            });
+
+            //AddIdentityModel
+            var builder = services.AddIdentityCore<User>(o =>
+            {
+                // configure identity options
+                o.Password.RequireDigit = false;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 6;
+            });
+            builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
+            builder.AddEntityFrameworkStores<UserContext>().AddDefaultTokenProviders();
+
+            #region
+            //services.AddIdentity<User, IdentityRole>(options =>
+            //{
+            //    options.User.RequireUniqueEmail = false;
+            //})
+            // .AddEntityFrameworkStores<UserContext>()
+            // .AddDefaultTokenProviders();
+            #endregion
+
+            services.AddAutoMapper();
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -89,6 +145,7 @@ namespace Auth.API
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

@@ -29,12 +29,12 @@ namespace Auth.API.Controllers
 
         // GET api/accounts/get
         [HttpGet]
-        public ActionResult<object> Get()
+        public ActionResult<object> Ping()
         {
-            return new { message = "Ping" };
+            return new { message = "Accounts controller Pinged" };
         }
 
-        // POST api/accounts
+        // POST api/accounts/signup
         public async Task<IActionResult> Signup([FromBody]RegistrationViewModel model)
         {
             if (!ModelState.IsValid)
@@ -48,16 +48,36 @@ namespace Auth.API.Controllers
 
             if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
 
-            //await _context.Users.AddAsync(new User
-            //{
-            //    Id = userIdentity.Id
-                
-            //});
             await _context.SaveChangesAsync();
 
-            return new OkObjectResult("Account created");
+            return new OkObjectResult(new { statusCode = 200, message = "Account created" });
         }
 
+        public async Task<IActionResult> Delete([FromBody] DeleteUserViewModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _userManager.FindByIdAsync(model.Id);
+
+            var rolesForUser = await _userManager.GetRolesAsync(user);
+            
+            var removeLoginsResult = await _userManager.RemoveLoginAsync(user, );
+            if(!removeLoginsResult.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(removeLoginsResult, ModelState));
+
+            var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, rolesForUser);
+            if (!removeLoginsResult.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(removeRolesResult, ModelState));
+
+            var removeUserResult = await _userManager.DeleteAsync(user);
+            if (!removeLoginsResult.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(removeUserResult, ModelState));
+
+            await _context.SaveChangesAsync();
+
+            return new OkObjectResult(new { });
+        }
 
     }
 }
