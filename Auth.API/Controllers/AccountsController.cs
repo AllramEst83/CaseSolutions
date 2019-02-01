@@ -27,8 +27,14 @@ namespace Auth.API.Controllers
             _context = appDbContext;
         }
 
+        // GET api/accounts/get
+        [HttpGet]
+        public ActionResult<object> Get()
+        {
+            return new { message = "Ping" };
+        }
+
         // POST api/accounts
-        [HttpPost(Name = "signup")]
         public async Task<IActionResult> Signup([FromBody]RegistrationViewModel model)
         {
             if (!ModelState.IsValid)
@@ -42,7 +48,11 @@ namespace Auth.API.Controllers
 
             if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
 
-            await _context.Users.AddAsync(new User { Id = userIdentity.Id });
+            //await _context.Users.AddAsync(new User
+            //{
+            //    Id = userIdentity.Id
+                
+            //});
             await _context.SaveChangesAsync();
 
             return new OkObjectResult("Account created");
