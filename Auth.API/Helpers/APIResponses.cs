@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Auth.API.Helpers
 {
-    public static class APIMessages
+    public static class APIResponses
     {
         public static APIMessageViewModel WrapAPIMessage(int statusCode, string message)
         {

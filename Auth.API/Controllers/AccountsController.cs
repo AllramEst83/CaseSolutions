@@ -32,7 +32,7 @@ namespace Auth.API.Controllers
         [HttpGet]
         public ActionResult<object> Ping()
         {
-            return new OkObjectResult(APIMessages.WrapAPIMessage(200, Constants.Strings.APIMessages.Ping));
+            return new OkObjectResult(APIResponses.WrapAPIMessage(200, Constants.Strings.APIMessages.Ping));
         }
 
         // POST api/accounts/signup
@@ -51,7 +51,7 @@ namespace Auth.API.Controllers
 
             await _context.SaveChangesAsync();
 
-            return new OkObjectResult(APIMessages.WrapAPIMessage(200, Constants.Strings.APIMessages.SuccessMessage));
+            return new OkObjectResult(APIResponses.WrapAPIMessage(200, Constants.Strings.APIMessages.SuccessMessage));
         }
 
         //https://aryalnishan.com.np/asp-net-mvc/delete-user-related-data-in-asp-net-mvc-identity/
@@ -70,7 +70,7 @@ namespace Auth.API.Controllers
 
             if (user == null)
             {
-                return NotFound(APIMessages
+                return NotFound(APIResponses
                     .WrapAPIMessage(404, String
                     .Format(Constants.Strings.APIMessages.NotFoundMessage, model.Id)));
             }

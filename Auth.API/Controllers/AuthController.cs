@@ -35,7 +35,7 @@ namespace Auth.API.Controllers
         [HttpGet]
         public ActionResult<object> Ping()
         {
-            return new OkObjectResult(APIMessages.WrapAPIMessage(200, Constants.Strings.APIMessages.Ping));
+            return new OkObjectResult(APIResponses.WrapAPIMessage(200, Constants.Strings.APIMessages.Ping));
         }
 
 
@@ -50,7 +50,7 @@ namespace Auth.API.Controllers
             })
             .ToList();
 
-            return new OkObjectResult(APIMessages.WrapAPIList(200, Constants.Strings.APIMessages.ListOfUsers, users));
+            return new OkObjectResult(APIResponses.WrapAPIList(200, Constants.Strings.APIMessages.ListOfUsers, users));
         }
 
         // POST api/auth/login
