@@ -32,7 +32,7 @@ namespace Auth.API.Controllers
         [HttpGet]
         public ActionResult<object> Ping()
         {
-            return new { message = "ZING!, Accounts is online" };
+            return new OkObjectResult(APIMessages.WrapAPIMessage(200, Constants.Strings.APIMessages.Ping));
         }
 
         // POST api/accounts/signup
@@ -51,7 +51,7 @@ namespace Auth.API.Controllers
 
             await _context.SaveChangesAsync();
 
-            return new OkObjectResult(new { statusCode = 200, message = "Account created" });
+            return new OkObjectResult(APIMessages.WrapAPIMessage(200, Constants.Strings.APIMessages.SuccessMessage));
         }
 
         //https://aryalnishan.com.np/asp-net-mvc/delete-user-related-data-in-asp-net-mvc-identity/
@@ -70,8 +70,11 @@ namespace Auth.API.Controllers
 
             if (user == null)
             {
-                return NotFound(new { status = 404, message = $"User with Id: {model.Id} does not exists." });
+                return NotFound(APIMessages
+                    .WrapAPIMessage(404, String
+                    .Format(Constants.Strings.APIMessages.NotFoundMessage, model.Id)));
             }
+
             //var rolesForUser = await _userManager.GetRolesAsync(user);
 
             //var removeLoginsResult = await _userManager.RemoveLoginAsync(user, );

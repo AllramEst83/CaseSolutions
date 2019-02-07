@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Auth.API.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace Auth.API.Helpers
         {
             modelState.TryAddModelError(code, description);
             return modelState;
-        }
+        }   
+
     }
 }

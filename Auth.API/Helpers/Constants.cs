@@ -9,6 +9,15 @@ namespace Auth.API.Helpers
     {
         public static class Strings
         {
+
+            public static class APIMessages
+            {
+                public const string Ping = "ZING!, Accounts is online";
+                public const string SuccessMessage = "Account created";
+                public const string NotFoundMessage = "user with id: {0} does not exists.";
+                public const string ListOfUsers = "This list contains only usernames";
+            }
+
             //Add type of claim here: 'role'
             public static class JwtClaimIdentifiers
             {
