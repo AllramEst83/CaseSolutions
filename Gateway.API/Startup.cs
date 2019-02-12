@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Gateway.API.GatewayService;
+using Gateway.API.HttpRepository;
+using Gateway.API.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,6 +29,11 @@ namespace Gateway.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            //Services
+            services.AddScoped<IHttpRepo, HttpRepo>();
+            services.AddScoped<IGWService, GWService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

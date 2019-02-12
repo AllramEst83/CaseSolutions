@@ -10,4 +10,14 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="gRPCRepository\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="HttpClientService">
+      <HintPath>..\..\HttpClientService\HttpClientService\bin\Debug\netcoreapp2.2\HttpClientService.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

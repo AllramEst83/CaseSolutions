@@ -72,7 +72,8 @@ namespace Auth.API.Controllers
             {
                 return NotFound(APIResponses
                     .WrapAPIMessage(404, String
-                    .Format(Constants.Strings.APIMessages.NotFoundMessage, model.Id)));
+                    .Format(Constants.Strings
+                    .APIMessages.NotFoundMessage, model.Id)));
             }
 
             //var rolesForUser = await _userManager.GetRolesAsync(user);
