@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using Gateway.API.GatewayService;
+using Gateway.API.Helpers;
 using Gateway.API.HttpRepository;
 using Gateway.API.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -14,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Gateway.API
 {
@@ -31,6 +35,45 @@ namespace Gateway.API
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                        .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+
+            //Get Symetrickey (!Should be Readonly Private!)
+            SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(ConfigHelper.AppSetting("AppSettings", "Secret")));
+
+            //AddTokenValidator
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = ConfigHelper.AppSetting("JwtIssuerOptions", "Issuer"),
+
+                ValidateAudience = true,
+                ValidAudience = ConfigHelper.AppSetting("JwtIssuerOptions", "Audience"),
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = _signingKey,
+
+                RequireExpirationTime = false,
+                ValidateLifetime = false,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(configureOptions =>
+            {
+                configureOptions.ClaimsIssuer = ConfigHelper.AppSetting("JwtIssuerOptions", "Issuer");
+                configureOptions.TokenValidationParameters = tokenValidationParameters;
+                configureOptions.SaveToken = true;
+            });
+
+            // api user claim policy
+            services.AddAuthorization(options =>
+            {
+                //Add more roles here to handel diffrent type of users: admin, user, editUser
+                options.AddPolicy("Gateway.API.Admin", policy => policy.RequireClaim("rol", "api_access"));
+            });
 
             //Services
             services.AddScoped<IHttpRepo, HttpRepo>();
@@ -54,6 +97,7 @@ namespace Gateway.API
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

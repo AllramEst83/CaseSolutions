@@ -7,6 +7,8 @@ namespace Gateway.API.ViewModels
 {
     public class JwtResponse
     {
-        public string jwt { get; set; }
+        public string Id { get; set; }
+        public string Auth_Token { get; set; }
+        public string Expires_In { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Gateway.API.Helpers;
 using Gateway.API.Interfaces;
 using Gateway.API.ViewModels;
 using HttpClientService.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,20 @@ namespace Gateway.API.Controllers
         {
             _gWService = gWService;
         }
+
+      
+        [HttpGet]
+        public IActionResult Ping()
+        {
+            return new OkObjectResult(new { message = "ZING!!!, Gateway open!" });
+        }
+        [Authorize(Policy = "Gateway.API.Admin")]
+        [HttpGet]
+        public IActionResult AuthTest()
+        {
+            return new OkObjectResult(new { message = "Auth on the Gateway server is workning." });
+        }
+
         // GET api/gateway
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
@@ -55,7 +70,7 @@ namespace Gateway.API.Controllers
                     CancellationToken = CancellationToken.None
                 };
 
-            var result = await _gWService.Authenticate<object>(httpParameters);
+            var result = await _gWService.Authenticate<JwtResponse>(httpParameters);
 
             return new OkObjectResult(result);
         }
