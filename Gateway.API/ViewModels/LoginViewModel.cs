@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace Gateway.API.ViewModels
 {
-    public class UserCredentialsModel
+    public class LogInViewModel
     {
         public string UserName { get; set; }
         public string Password { get; set; }
-        public bool IsAuthenticated { get; set; } = false;
     }
 }

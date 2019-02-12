@@ -1,26 +1,20 @@
-﻿using System;
+﻿using HttpClientService;
+using HttpClientService.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HttpClientService;
-using HttpClientService.Helpers;
 
 namespace Gateway.API.HttpRepository
 {
     public class HttpRepo : IHttpRepo
     {
-        public HttpService _httpService { get; }
-
-        public HttpRepo(HttpService httpService)
-        {
-            _httpService = httpService;
-        }
 
         public async Task<T> PostRequestWithContent<T>(HttpParameters httpParameters)
         {
             try
             {
-                T result = await _httpService.PostStreamAsyncContent<T>(httpParameters);
+                T result = await HttpService.PostStreamAsyncContent<T>(httpParameters);
                 return result;
             }
             catch (CustomApiException ex)
@@ -34,7 +28,7 @@ namespace Gateway.API.HttpRepository
         {
             try
             {
-                var result = await _httpService.GenericHttpGet<T>(httpParameters);
+                var result = await HttpService.GenericHttpGet<T>(httpParameters);
                 return result;
             }
             catch (CustomApiException ex)
@@ -48,7 +42,7 @@ namespace Gateway.API.HttpRepository
         {
             try
             {
-                T result = await _httpService.PostStreamAsyncQueryString<T>(httpParameters);
+                T result = await HttpService.PostStreamAsyncQueryString<T>(httpParameters);
                 return result;
             }
             catch (CustomApiException ex)

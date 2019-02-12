@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation.AspNetCore;
 using Gateway.API.GatewayService;
 using Gateway.API.HttpRepository;
 using Gateway.API.Interfaces;
@@ -28,11 +29,14 @@ namespace Gateway.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                       .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             //Services
             services.AddScoped<IHttpRepo, HttpRepo>();
             services.AddScoped<IGWService, GWService>();
+
+            
 
         }
 

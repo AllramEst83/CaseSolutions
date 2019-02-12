@@ -9,6 +9,6 @@ namespace Gateway.API.Interfaces
     public interface IGWService
     {
         Task<T> Get<T>(HttpParameters httpParameters);
-        Task<T> Post<T>(HttpParameters httpParameters);
+        Task<T> Authenticate<T>(HttpParameters httpParameters);
     }
 }

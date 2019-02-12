@@ -11,9 +11,9 @@ namespace Gateway.API.GatewayService
 
     public class GWService: IGWService
     {
-        public HttpRepo _httpRepo { get; }
+        public IHttpRepo _httpRepo { get; }
 
-        public GWService(HttpRepo httpRepo)
+        public GWService(IHttpRepo httpRepo)
         {
             _httpRepo = httpRepo;
         }
@@ -25,7 +25,7 @@ namespace Gateway.API.GatewayService
             return result;
         }
 
-        public async Task<T> Post<T>(HttpParameters httpParameters)
+        public async Task<T> Authenticate<T>(HttpParameters httpParameters)
         {
             T result = await _httpRepo.PostRequestWithContent<T>(httpParameters);
 

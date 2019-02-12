@@ -1,19 +1,25 @@
 ﻿using Gateway.API.GatewayService;
+using Gateway.API.Helpers;
+using Gateway.API.Interfaces;
+using Gateway.API.ViewModels;
+using HttpClientService.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Gateway.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class GatewayController : ControllerBase
     {
-        public GWService _gWService { get; }
+        public IGWService _gWService { get; }
 
-        public GatewayController(GWService gWService)
+        public GatewayController(IGWService gWService)
         {
             _gWService = gWService;
         }
@@ -31,11 +37,27 @@ namespace Gateway.API.Controllers
             return "value";
         }
 
-        // POST api/gateway
+        // POST api/gateway/login
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> LogIn([FromBody] LogInViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            HttpParameters httpParameters =
+                new HttpParameters
+                {
+                    Content = model,
+                    HttpVerb = HttpMethod.Post,
+                    RequestUrl = ConfigHelper.AppSetting(Constants.ServerUrls, Constants.Auth),
+                    Id = Guid.Empty,
+                    CancellationToken = CancellationToken.None
+                };
 
+            var result = await _gWService.Authenticate<object>(httpParameters);
+
+            return new OkObjectResult(result);
         }
 
         // PUT api/gateway/5
