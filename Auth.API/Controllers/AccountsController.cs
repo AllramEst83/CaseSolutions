@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using APIErrorHandling;
 using Auth.API.Helpers;
 using Auth.API.ViewModels;
 using AutoMapper;

@@ -1,4 +1,5 @@
-﻿using Gateway.API.GatewayService;
+﻿using APIErrorHandling;
+using Gateway.API.GatewayService;
 using Gateway.API.Helpers;
 using Gateway.API.Interfaces;
 using Gateway.API.ViewModels;
@@ -25,7 +26,7 @@ namespace Gateway.API.Controllers
             _gWService = gWService;
         }
 
-      
+
         [HttpGet]
         public IActionResult Ping()
         {
@@ -60,19 +61,20 @@ namespace Gateway.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            HttpParameters httpParameters =
-                new HttpParameters
-                {
-                    Content = model,
-                    HttpVerb = HttpMethod.Post,
-                    RequestUrl = ConfigHelper.AppSetting(Constants.ServerUrls, Constants.Auth),
-                    Id = Guid.Empty,
-                    CancellationToken = CancellationToken.None
-                };
 
-            var result = await _gWService.Authenticate<JwtResponse>(httpParameters);
+            //Prepare httpParameters for request
+            HttpParameters httpParameters = _gWService.GetHttpParameters(model);
 
-            return new OkObjectResult(result);
+            //httpclient request from class library
+            var authResult = await _gWService.Authenticate<JwtGatewayResponse>(httpParameters);
+            if (authResult.StatusCode == 400)
+            {
+                //return user friendly error message
+                return BadRequest(Errors.AddErrorToModelState(authResult.Code, authResult.Description, ModelState));
+            }
+
+            //return jwt token
+            return new OkObjectResult(authResult);
         }
 
         // PUT api/gateway/5

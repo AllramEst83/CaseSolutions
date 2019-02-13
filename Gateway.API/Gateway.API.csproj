@@ -17,6 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="APIErrorHandling">
+      <HintPath>..\..\APIErrorHandling\APIErrorHandling\bin\Debug\netcoreapp2.2\APIErrorHandling.dll</HintPath>
+    </Reference>
     <Reference Include="HttpClientService">
       <HintPath>..\..\HttpClientService\HttpClientService\bin\Debug\netcoreapp2.2\HttpClientService.dll</HintPath>
     </Reference>

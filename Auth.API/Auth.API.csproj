@@ -14,4 +14,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="APIErrorHandling">
+      <HintPath>..\..\APIErrorHandling\APIErrorHandling\bin\Debug\netcoreapp2.2\APIErrorHandling.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

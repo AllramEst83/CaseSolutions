@@ -1,4 +1,5 @@
-﻿using Auth.API.AuthFactory;
+﻿using APIErrorHandling;
+using Auth.API.AuthFactory;
 using Auth.API.Helpers;
 using Auth.API.Models;
 using Auth.API.ViewModels;
@@ -65,11 +66,12 @@ namespace Auth.API.Controllers
             var identity = await GetClaimsIdentity(credentials.UserName, credentials.Password);
             if (identity == null)
             {
-                return BadRequest(Errors.AddErrorToModelState("login_failure", "Invalid username or password.", ModelState));
+                return new JsonResult(Errors.JwtLogInErrorResponse());
             }
 
-            var jwt = await Tokens.GenerateJwt(identity, _jwtFactory, credentials.UserName, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
-            return new OkObjectResult(jwt);
+            var jwtResponse = await Tokens.GenerateJwt(identity, _jwtFactory, credentials.UserName, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
+
+            return new OkObjectResult(jwtResponse);
         }
 
 

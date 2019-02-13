@@ -1,4 +1,5 @@
-﻿using HttpClientService.Helpers;
+﻿using Gateway.API.ViewModels;
+using HttpClientService.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Gateway.API.Interfaces
     {
         Task<T> Get<T>(HttpParameters httpParameters);
         Task<T> Authenticate<T>(HttpParameters httpParameters);
+        HttpParameters GetHttpParameters(LogInViewModel model);
     }
 }

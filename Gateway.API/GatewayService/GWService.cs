@@ -1,9 +1,10 @@
-﻿using Gateway.API.HttpRepository;
+﻿using Gateway.API.Helpers;
 using Gateway.API.Interfaces;
+using Gateway.API.ViewModels;
 using HttpClientService.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Gateway.API.GatewayService
@@ -30,6 +31,21 @@ namespace Gateway.API.GatewayService
             T result = await _httpRepo.PostRequestWithContent<T>(httpParameters);
 
             return result;
+        }
+
+        public HttpParameters GetHttpParameters(LogInViewModel model)
+        {
+            HttpParameters httpParameters =
+              new HttpParameters
+              {
+                  Content = model,
+                  HttpVerb = HttpMethod.Post,
+                  RequestUrl = ConfigHelper.AppSetting(Constants.ServerUrls, Constants.Auth),
+                  Id = Guid.Empty,
+                  CancellationToken = CancellationToken.None
+              };
+
+            return httpParameters;
         }
 
     }
