@@ -9,5 +9,10 @@ namespace Gateway.API.Helpers
     {
         public const string ServerUrls = "ServerUrls";
         public const string Auth = "Auth";
+        public const string ZING = "ZING!!!, Gateway open!";
+        public const string AuthTestSuccess = "Auth on the Gateway server is workning.";
+
+        //Policies
+        public const string GatewayAPIAdmin = "Gateway.API.Admin";
     }
 }

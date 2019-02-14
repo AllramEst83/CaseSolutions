@@ -51,8 +51,8 @@ namespace Gateway.API
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = _signingKey,
 
-                RequireExpirationTime = false,
-                ValidateLifetime = false,
+                RequireExpirationTime = true,
+                ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
 
@@ -72,7 +72,7 @@ namespace Gateway.API
             services.AddAuthorization(options =>
             {
                 //Add more roles here to handel diffrent type of users: admin, user, editUser
-                options.AddPolicy("Gateway.API.Admin", policy => policy.RequireClaim("rol", "api_access"));
+                options.AddPolicy(Constants.GatewayAPIAdmin, policy => policy.RequireClaim("rol", "api_access"));
             });
 
             //Services

@@ -1,4 +1,5 @@
 ﻿using APIErrorHandling;
+using APIResponseMessageWrapper;
 using Gateway.API.GatewayService;
 using Gateway.API.Helpers;
 using Gateway.API.Interfaces;
@@ -30,13 +31,14 @@ namespace Gateway.API.Controllers
         [HttpGet]
         public IActionResult Ping()
         {
-            return new OkObjectResult(new { message = "ZING!!!, Gateway open!" });
+            return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.ZING));
         }
-        [Authorize(Policy = "Gateway.API.Admin")]
+
+        [Authorize(Policy = Constants.GatewayAPIAdmin)]
         [HttpGet]
         public IActionResult AuthTest()
         {
-            return new OkObjectResult(new { message = "Auth on the Gateway server is workning." });
+            return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.AuthTestSuccess));
         }
 
         // GET api/gateway
