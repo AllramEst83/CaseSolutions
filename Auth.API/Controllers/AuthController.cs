@@ -1,4 +1,5 @@
 ﻿using APIErrorHandling;
+using APIErrorHandling.Models;
 using Auth.API.AuthFactory;
 using Auth.API.Helpers;
 using Auth.API.Models;
@@ -60,13 +61,32 @@ namespace Auth.API.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return new JsonResult(Errors
+                    .ErrorResponse(new JwtErrorHandlingModel()
+                    {
+                        Auth_Token = "",
+                        Code = "modelState_invalid",
+                        Id = "",
+                        Description = "ModelState is not valid",
+                        Expires_In = 0,
+                        StatusCode = 400
+                    }));
             }
 
             var identity = await GetClaimsIdentity(credentials.UserName, credentials.Password);
             if (identity == null)
             {
-                return new JsonResult(Errors.JwtLogInErrorResponse());
+                return new JsonResult(Errors
+                    .ErrorResponse(new JwtErrorHandlingModel()
+                    {
+                        Auth_Token = "",
+                        Code = "login_failure",
+                        Id = "",
+                        Description = "Invalid username or password.",
+                        Expires_In = 0,
+                        StatusCode = 400
+                    }));
+                
             }
 
             var jwtResponse = await Tokens.GenerateJwt(identity, _jwtFactory, credentials.UserName, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
