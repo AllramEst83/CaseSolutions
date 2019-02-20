@@ -33,6 +33,12 @@ namespace Auth.API.Helpers
             public static class AppSettingStrings
             {
                 public const string AppSettings = "AppSettings";
+                public const string AuthAPI = "Auth.API";
+            }
+
+            public static class Policies
+            {
+                public const string AuthAPIAdmin = "Auth.API.Admin";
             }
         }
     }

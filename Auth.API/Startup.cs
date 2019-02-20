@@ -16,6 +16,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Auth.API.Helpers;
 using Auth.API.AuthFactory;
+using CaseSolutionsTokenValidationParameters;
 
 namespace Auth.API
 {
@@ -43,7 +44,7 @@ namespace Auth.API
             //Add Database
             services.AddDbContext<UserContext>(options =>
                  options.UseSqlServer(appSettings.UserConnection,
-                    migrationOptions => migrationOptions.MigrationsAssembly("Auth.API")));
+                    migrationOptions => migrationOptions.MigrationsAssembly(Constants.Strings.AppSettingStrings.AuthAPI)));
 
             //Add JWTFactory
             services.AddSingleton<IJwtFactory, JwtFactory>();
@@ -63,7 +64,7 @@ namespace Auth.API
             });
 
             //AddTokenValidator
-            var tokenValidationParameters = new TokenValidationParameters
+            TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
                 ValidIssuer = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)],
@@ -87,7 +88,7 @@ namespace Auth.API
             .AddJwtBearer(configureOptions =>
             {
                 configureOptions.ClaimsIssuer = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)];
-                configureOptions.TokenValidationParameters = tokenValidationParameters;
+                configureOptions.TokenValidationParameters = CaseSolutionsValidationParameters.GetCaseSolutionsValidationParameters(jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)], jwtAppSettningsOptions[nameof(JwtIssuerOptions.Audience)], _signingKey);
                 configureOptions.SaveToken = true;
             });
 
@@ -95,7 +96,7 @@ namespace Auth.API
             services.AddAuthorization(options =>
             {
                 //Add more roles here to handel diffrent type of users: admin, user, editUser
-                options.AddPolicy("Auth.API.Admin", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
+                options.AddPolicy(Constants.Strings.Policies.AuthAPIAdmin, policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
             });
 
             //AddIdentityModel
