@@ -1,17 +1,12 @@
 ﻿using APIErrorHandling;
 using APIResponseMessageWrapper;
-using Gateway.API.GatewayService;
 using Gateway.API.Helpers;
 using Gateway.API.Interfaces;
 using Gateway.API.ViewModels;
 using HttpClientService.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Gateway.API.Controllers
