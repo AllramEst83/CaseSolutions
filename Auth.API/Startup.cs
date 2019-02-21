@@ -33,18 +33,24 @@ namespace Auth.API
         //https://fullstackmark.com/post/13/jwt-authentication-with-aspnet-core-2-web-api-angular-5-net-core-identity-and-facebook-login
 
         public void ConfigureServices(IServiceCollection services)
-        {
+        {          
 
             //Bind AppSettingsJson to C# class
-            IConfigurationSection appSettingsSection = Configuration.GetSection(Constants.Strings.AppSettingStrings.AppSettings);
+            IConfigurationSection appSettingsSection = Configuration.GetSection(Constants.AppSettingStrings.AppSettings);
             services.Configure<AppSettnigs>(appSettingsSection);
-            var appSettings = appSettingsSection.Get<AppSettnigs>();
-            //Bind AppSettingsJson to C# class          
+            AppSettnigs appSettings = appSettingsSection.Get<AppSettnigs>();
+            //Bind AppSettingsJson to C# class
+
+            //Bind JwtIssuerOptions to C# class
+            IConfigurationSection JwtIssuerOptionsSection = Configuration.GetSection(Constants.JwtIssuer.JwtIssuerOptions);
+            services.Configure<JwtIssuerOptions>(JwtIssuerOptionsSection);
+            JwtIssuerOptions JwtIssuerOptionsSectionSettings = JwtIssuerOptionsSection.Get<JwtIssuerOptions>();
+            //Bind JwtIssuerOptions to C# class     
 
             //Add Database
             services.AddDbContext<UserContext>(options =>
                  options.UseSqlServer(appSettings.UserConnection,
-                    migrationOptions => migrationOptions.MigrationsAssembly(Constants.Strings.AppSettingStrings.AuthAPI)));
+                    migrationOptions => migrationOptions.MigrationsAssembly(Constants.AppSettingStrings.AuthAPI)));
 
             //Add JWTFactory
             services.AddSingleton<IJwtFactory, JwtFactory>();
@@ -53,51 +59,57 @@ namespace Auth.API
             SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings.Secret));
 
             // Get options from app settings
-            var jwtAppSettningsOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
+            //var jwtAppSettningsOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
+
+            //string issuer = JwtIssuerOptionsSectionSettings.Issuer;
+            //string audience = JwtIssuerOptionsSectionSettings.Audience;
+            var signingCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
 
             // Configure JwtIssuerOptions
             services.Configure<JwtIssuerOptions>(options =>
             {
-                options.Issuer = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)];
-                options.Audience = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Audience)];
-                options.SigningCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
+                options.Issuer = JwtIssuerOptionsSectionSettings.Issuer;
+                options.Audience = JwtIssuerOptionsSectionSettings.Audience;
+                options.SigningCredentials = signingCredentials;
             });
 
-            //AddTokenValidator
-            TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidIssuer = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)],
+            services.AddValidationParameters(JwtIssuerOptionsSectionSettings.Issuer, JwtIssuerOptionsSectionSettings.Audience, _signingKey);
 
-                ValidateAudience = true,
-                ValidAudience = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Audience)],
+            ////AddTokenValidator
+            //TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
+            //{
+            //    ValidateIssuer = true,
+            //    ValidIssuer = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)],
 
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = _signingKey,
+            //    ValidateAudience = true,
+            //    ValidAudience = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Audience)],
 
-                RequireExpirationTime = false,
-                ValidateLifetime = false,
-                ClockSkew = TimeSpan.Zero
-            };
+            //    ValidateIssuerSigningKey = true,
+            //    IssuerSigningKey = _signingKey,
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(configureOptions =>
-            {
-                configureOptions.ClaimsIssuer = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)];
-                configureOptions.TokenValidationParameters = CaseSolutionsValidationParameters.GetCaseSolutionsValidationParameters(jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)], jwtAppSettningsOptions[nameof(JwtIssuerOptions.Audience)], _signingKey);
-                configureOptions.SaveToken = true;
-            });
+            //    RequireExpirationTime = false,
+            //    ValidateLifetime = false,
+            //    ClockSkew = TimeSpan.Zero
+            //};
 
-            // api user claim policy
-            services.AddAuthorization(options =>
-            {
-                //Add more roles here to handel diffrent type of users: admin, user, editUser
-                options.AddPolicy(Constants.Strings.Policies.AuthAPIAdmin, policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
-            });
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //})
+            //.AddJwtBearer(configureOptions =>
+            //{
+            //    configureOptions.ClaimsIssuer = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)];
+            //    configureOptions.TokenValidationParameters = tokenValidationParameters;
+            //    configureOptions.SaveToken = true;
+            //});
+
+            //// api user claim policy
+            //services.AddAuthorization(options =>
+            //{
+            //    //Add more roles here to handel diffrent type of users: admin, user, editUser
+            //    options.AddPolicy(Constants.Policies.AuthAPIAdmin, policy => policy.RequireClaim(Constants.JwtClaimIdentifiers.Rol, Constants.JwtClaims.ApiAccess));
+            //});
 
             //AddIdentityModel
             var builder = services.AddIdentityCore<User>(o =>

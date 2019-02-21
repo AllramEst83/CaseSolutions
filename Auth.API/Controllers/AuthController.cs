@@ -1,5 +1,7 @@
 ﻿using APIErrorHandling;
 using APIErrorHandling.Models;
+using APIResponseMessageWrapper;
+using APIResponseMessageWrapper.Model;
 using Auth.API.AuthFactory;
 using Auth.API.Helpers;
 using Auth.API.Models;
@@ -37,7 +39,7 @@ namespace Auth.API.Controllers
         [HttpGet]
         public ActionResult<object> Ping()
         {
-            return new OkObjectResult(APIResponses.WrapAPIMessage(200, Constants.Strings.APIMessages.Ping));
+            return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.APIMessages.Ping));
         }
 
 
@@ -52,7 +54,7 @@ namespace Auth.API.Controllers
             })
             .ToList();
 
-            return new OkObjectResult(APIResponses.WrapAPIList(200, Constants.Strings.APIMessages.ListOfUsers, users));
+            return new OkObjectResult(Wrappyfier.WrapAPIList(200, Constants.APIMessages.ListOfUsers, users));
         }
 
         // POST api/auth/login

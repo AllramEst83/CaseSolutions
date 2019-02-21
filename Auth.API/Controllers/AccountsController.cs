@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APIErrorHandling;
+using APIResponseMessageWrapper;
 using Auth.API.Helpers;
 using Auth.API.ViewModels;
 using AutoMapper;
@@ -33,7 +34,7 @@ namespace Auth.API.Controllers
         [HttpGet]
         public ActionResult<object> Ping()
         {
-            return new OkObjectResult(APIResponses.WrapAPIMessage(200, Constants.Strings.APIMessages.Ping));
+            return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.APIMessages.Ping));
         }
 
         // POST api/accounts/signup
@@ -52,7 +53,7 @@ namespace Auth.API.Controllers
 
             await _context.SaveChangesAsync();
 
-            return new OkObjectResult(APIResponses.WrapAPIMessage(200, Constants.Strings.APIMessages.SuccessMessage));
+            return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.APIMessages.SuccessMessage));
         }
 
         //https://aryalnishan.com.np/asp-net-mvc/delete-user-related-data-in-asp-net-mvc-identity/
@@ -71,10 +72,10 @@ namespace Auth.API.Controllers
 
             if (user == null)
             {
-                return NotFound(APIResponses
-                    .WrapAPIMessage(404, String
-                    .Format(Constants.Strings
-                    .APIMessages.NotFoundMessage, model.Id)));
+                return NotFound(Wrappyfier
+                    .WrapResponse(404, String
+                    .Format(Constants.APIMessages.
+                    NotFoundMessage, model.Id)));
             }
 
             //var rolesForUser = await _userManager.GetRolesAsync(user);

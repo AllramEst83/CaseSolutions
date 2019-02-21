@@ -1,4 +1,5 @@
-﻿using Database.Service.API.Data.UserData.UserEntities.UserModel;
+﻿using APIResponseMessageWrapper.Model;
+using Database.Service.API.Data.UserData.UserEntities.UserModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
