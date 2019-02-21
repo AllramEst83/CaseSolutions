@@ -25,7 +25,7 @@ namespace Auth.API.AuthFactory
         public async Task<string> GenerateEncodedToken(string userName, ClaimsIdentity identity)
         {
             var claims = new[]
-         {
+            {
                  new Claim(JwtRegisteredClaimNames.Sub, userName),
                  new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                  new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
@@ -49,7 +49,11 @@ namespace Auth.API.AuthFactory
 
         public ClaimsIdentity GenerateClaimsIdentity(string userName, string id, string role)
         {
-            var accesLevel = role.Trim().ToLower() == TokenValidationConstants.Roles.AdminAccess ? TokenValidationConstants.Roles.AdminAccess : TokenValidationConstants.Roles.CommonUserAccess;
+            //When more roles are added this has to be changed
+            var accesLevel = role.Trim().ToLower() == 
+                TokenValidationConstants.Roles.AdminAccess ? 
+                TokenValidationConstants.Roles.AdminAccess : 
+                TokenValidationConstants.Roles.CommonUserAccess;
 
             return new ClaimsIdentity(new GenericIdentity(userName, "Token"), new[]
             {

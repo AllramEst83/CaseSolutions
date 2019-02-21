@@ -74,6 +74,7 @@ namespace Auth.API
                 options.SigningCredentials = signingCredentials;
             });
 
+            //Moved JWT validation to a ClassLibrary. So it can be reused.
             services.AddValidationParameters(
                 JwtIssuerOptionsSectionSettings.Issuer,
                 JwtIssuerOptionsSectionSettings.Audience,
@@ -130,7 +131,7 @@ namespace Auth.API
                 o.Password.RequiredLength = 6;
             });
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
-            builder.AddEntityFrameworkStores<UserContext>().AddDefaultTokenProviders();
+            builder.AddEntityFrameworkStores<UserContext>().AddDefaultTokenProviders().AddRoles<IdentityRole>();
 
             #region
             //services.AddIdentity<User, IdentityRole>(options =>

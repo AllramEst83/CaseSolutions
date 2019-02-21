@@ -13,14 +13,11 @@ namespace Gateway.API.Helpers
         public const string CommonAuthTestSuccess = "Auth for CommonUser on the Gateway server is workning.";
         public const string AdminAuthTestSuccess = "Auth for Admin on the Gateway server is workning.";
 
-
-        public static class Policies
+        public static class AppSettingStrings
         {
-            //Policies
-            //public const string GatewayAPIAdmin = "Auth.API.Admin";
-            //public const string GatewayAPICommonUser = "Auth.API.CommonUser";
+            public const string AppSettings = "AppSettings";
+            public const string Secret = "Secret";
         }
-
 
         public static class JwtIssuer
         {
