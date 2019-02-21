@@ -10,7 +10,8 @@ namespace Gateway.API.Helpers
         public const string ServerUrls = "ServerUrls";
         public const string Auth = "Auth";
         public const string ZING = "ZING!!!, Gateway open!";
-        public const string AuthTestSuccess = "Auth on the Gateway server is workning.";
+        public const string CommonAuthTestSuccess = "Auth for CommonUser on the Gateway server is workning.";
+        public const string AdminAuthTestSuccess = "Auth for Admin on the Gateway server is workning.";
 
 
         public static class Policies

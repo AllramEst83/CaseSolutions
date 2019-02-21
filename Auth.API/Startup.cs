@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Auth.API.Helpers;
 using Auth.API.AuthFactory;
 using CaseSolutionsTokenValidationParameters;
+using CaseSolutionsTokenValidationParameters.Models;
 
 namespace Auth.API
 {
@@ -33,7 +34,7 @@ namespace Auth.API
         //https://fullstackmark.com/post/13/jwt-authentication-with-aspnet-core-2-web-api-angular-5-net-core-identity-and-facebook-login
 
         public void ConfigureServices(IServiceCollection services)
-        {          
+        {
 
             //Bind AppSettingsJson to C# class
             IConfigurationSection appSettingsSection = Configuration.GetSection(Constants.AppSettingStrings.AppSettings);
@@ -79,10 +80,10 @@ namespace Auth.API
             //TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
             //{
             //    ValidateIssuer = true,
-            //    ValidIssuer = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)],
+            //    ValidIssuer = JwtIssuerOptionsSectionSettings.Issuer,
 
             //    ValidateAudience = true,
-            //    ValidAudience = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Audience)],
+            //    ValidAudience = JwtIssuerOptionsSectionSettings.Audience,
 
             //    ValidateIssuerSigningKey = true,
             //    IssuerSigningKey = _signingKey,
@@ -99,7 +100,7 @@ namespace Auth.API
             //})
             //.AddJwtBearer(configureOptions =>
             //{
-            //    configureOptions.ClaimsIssuer = jwtAppSettningsOptions[nameof(JwtIssuerOptions.Issuer)];
+            //    configureOptions.ClaimsIssuer = JwtIssuerOptionsSectionSettings.Issuer;
             //    configureOptions.TokenValidationParameters = tokenValidationParameters;
             //    configureOptions.SaveToken = true;
             //});
@@ -108,7 +109,8 @@ namespace Auth.API
             //services.AddAuthorization(options =>
             //{
             //    //Add more roles here to handel diffrent type of users: admin, user, editUser
-            //    options.AddPolicy(Constants.Policies.AuthAPIAdmin, policy => policy.RequireClaim(Constants.JwtClaimIdentifiers.Rol, Constants.JwtClaims.ApiAccess));
+            //    options.AddPolicy(TokenValidationConstants.Policies.AuthAPIAdmin, policy => policy.RequireClaim(TokenValidationConstants.Roles.Role, TokenValidationConstants.Roles.AdminAccess));
+            //    options.AddPolicy(TokenValidationConstants.Policies.AuthAPICommonUser, policy => policy.RequireClaim(TokenValidationConstants.Roles.Role, TokenValidationConstants.Roles.CommonUserAccess));
             //});
 
             //AddIdentityModel
@@ -137,10 +139,10 @@ namespace Auth.API
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
-            
+
 
         }
-        
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())

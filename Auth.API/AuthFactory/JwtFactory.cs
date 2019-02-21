@@ -29,8 +29,8 @@ namespace Auth.API.AuthFactory
                  new Claim(JwtRegisteredClaimNames.Sub, userName),
                  new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                  new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
-                 identity.FindFirst(Constants.JwtClaimIdentifiers.Role),
-                 identity.FindFirst(Constants.JwtClaimIdentifiers.Id)
+                 identity.FindFirst(TokenValidationConstants.Roles.Role),
+                 identity.FindFirst(TokenValidationConstants.Roles.Id)
              };
 
             // Create the JWT security token and encode it.
@@ -53,8 +53,8 @@ namespace Auth.API.AuthFactory
 
             return new ClaimsIdentity(new GenericIdentity(userName, "Token"), new[]
             {
-                new Claim(Constants.JwtClaimIdentifiers.Id, id),
-                new Claim(Constants.JwtClaimIdentifiers.Role, accesLevel)
+                new Claim(TokenValidationConstants.Roles.Id, id),
+                new Claim(TokenValidationConstants.Roles.Role, accesLevel)
             });
         }
 

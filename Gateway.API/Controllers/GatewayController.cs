@@ -23,19 +23,30 @@ namespace Gateway.API.Controllers
             _gWService = gWService;
         }
 
-
+        //GET api/gateway/ping
         [HttpGet]
         public IActionResult Ping()
         {
             return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.ZING));
         }
 
+        //TEST
+        //GET api/gateway/AdminAuthTest
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
         [HttpGet]
-        public IActionResult AuthTest()
+        public IActionResult AdminAuthTest()
         {
-            return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.AuthTestSuccess));
+            return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.CommonAuthTestSuccess));
         }
+
+        //GET api/gateway/CommonAuthTest
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPICommonUser)]
+        [HttpGet]
+        public IActionResult CommonAuthTest()
+        {
+            return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.CommonAuthTestSuccess));
+        }
+        //TEST
 
         // GET api/gateway
         [HttpGet]
