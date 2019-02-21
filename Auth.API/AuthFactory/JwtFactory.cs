@@ -49,7 +49,7 @@ namespace Auth.API.AuthFactory
 
         public ClaimsIdentity GenerateClaimsIdentity(string userName, string id, string role)
         {
-            var accesLevel = role == TokenValidationConstants.Roles.AdminAccess ? TokenValidationConstants.Roles.AdminAccess : TokenValidationConstants.Roles.CommonUserAccess;
+            var accesLevel = role.Trim().ToLower() == TokenValidationConstants.Roles.AdminAccess ? TokenValidationConstants.Roles.AdminAccess : TokenValidationConstants.Roles.CommonUserAccess;
 
             return new ClaimsIdentity(new GenericIdentity(userName, "Token"), new[]
             {

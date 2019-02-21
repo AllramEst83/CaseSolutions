@@ -80,6 +80,7 @@ namespace Auth.API
                 _signingKey
                 );
 
+            #region
             ////AddTokenValidator
             //TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
             //{
@@ -116,6 +117,7 @@ namespace Auth.API
             //    options.AddPolicy(TokenValidationConstants.Policies.AuthAPIAdmin, policy => policy.RequireClaim(TokenValidationConstants.Roles.Role, TokenValidationConstants.Roles.AdminAccess));
             //    options.AddPolicy(TokenValidationConstants.Policies.AuthAPICommonUser, policy => policy.RequireClaim(TokenValidationConstants.Roles.Role, TokenValidationConstants.Roles.CommonUserAccess));
             //});
+            #endregion
 
             //AddIdentityModel
             var builder = services.AddIdentityCore<User>(o =>

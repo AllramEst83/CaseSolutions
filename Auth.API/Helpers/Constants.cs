@@ -19,7 +19,7 @@ namespace Auth.API.Helpers
         //Add type of claim here: 'role'
         public static class JwtClaimIdentifiers
         {
-            public const string Role = "role", Id = "id";
+            public const string Role = "rol", Id = "id";
         }
 
         //Add claim here: 'admin', 'user'

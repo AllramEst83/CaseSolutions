@@ -34,7 +34,6 @@ namespace Gateway.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             //Bind JwtIssuerOptions to C# class
             IConfigurationSection JwtIssuerOptionsSection = Configuration.GetSection(Constants.JwtIssuer.JwtIssuerOptions);
             services.Configure<JwtIssuerOptions>(JwtIssuerOptionsSection);
@@ -46,10 +45,14 @@ namespace Gateway.API
 
             //Get Symetrickey (!Should be Readonly Private!)
             SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(ConfigHelper.AppSetting("AppSettings", "Secret")));
+            
+            services.AddValidationParameters(
+                JwtIssuerOptionsSectionSettings.Issuer,
+                JwtIssuerOptionsSectionSettings.Audience,
+                _signingKey
+                );
 
-
-            services.AddValidationParameters(JwtIssuerOptionsSectionSettings.Issuer, JwtIssuerOptionsSectionSettings.Audience, _signingKey);
-
+            #region
             //AddTokenValidator
             //var tokenValidationParameters = new TokenValidationParameters
             //{
@@ -86,13 +89,11 @@ namespace Gateway.API
             //    options.AddPolicy(Constants.GatewayAPIAdmin, policy => policy.RequireClaim("role", "adminAccess"));
             //    options.AddPolicy(Constants.GatewayAPICommonUser, policy => policy.RequireClaim("role", "commonUserAccess"));
             //});
+            #endregion
 
             //Services
             services.AddScoped<IHttpRepo, HttpRepo>();
             services.AddScoped<IGWService, GWService>();
-
-            
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
