@@ -12,7 +12,18 @@ namespace Gateway.API.Helpers
         public const string ZING = "ZING!!!, Gateway open!";
         public const string AuthTestSuccess = "Auth on the Gateway server is workning.";
 
-        //Policies
-        public const string GatewayAPIAdmin = "Gateway.API.Admin";
+
+        public static class Policies
+        {
+            //Policies
+            //public const string GatewayAPIAdmin = "Auth.API.Admin";
+            //public const string GatewayAPICommonUser = "Auth.API.CommonUser";
+        }
+
+
+        public static class JwtIssuer
+        {
+            public const string JwtIssuerOptions = "JwtIssuerOptions";
+        }
     }
 }

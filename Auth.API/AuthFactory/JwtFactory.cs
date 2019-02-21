@@ -1,5 +1,6 @@
 ﻿using Auth.API.Helpers;
 using Auth.API.Models;
+using CaseSolutionsTokenValidationParameters.Models;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace Auth.API.AuthFactory
                  new Claim(JwtRegisteredClaimNames.Sub, userName),
                  new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                  new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
-                 identity.FindFirst(Constants.JwtClaimIdentifiers.Rol),
+                 identity.FindFirst(Constants.JwtClaimIdentifiers.Role),
                  identity.FindFirst(Constants.JwtClaimIdentifiers.Id)
              };
 
@@ -46,13 +47,14 @@ namespace Auth.API.AuthFactory
             return encodedJwt;
         }
 
-        public ClaimsIdentity GenerateClaimsIdentity(string userName, string id)
+        public ClaimsIdentity GenerateClaimsIdentity(string userName, string id, string role)
         {
-            
+            var accesLevel = role == TokenValidationConstants.Roles.AdminAccess ? TokenValidationConstants.Roles.AdminAccess : TokenValidationConstants.Roles.CommonUserAccess;
+
             return new ClaimsIdentity(new GenericIdentity(userName, "Token"), new[]
             {
                 new Claim(Constants.JwtClaimIdentifiers.Id, id),
-                new Claim(Constants.JwtClaimIdentifiers.Role, Constants.JwtClaims.ApiAccess)
+                new Claim(Constants.JwtClaimIdentifiers.Role, accesLevel)
             });
         }
 

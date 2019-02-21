@@ -1,5 +1,6 @@
 ﻿using APIErrorHandling;
 using APIResponseMessageWrapper;
+using CaseSolutionsTokenValidationParameters.Models;
 using Gateway.API.Helpers;
 using Gateway.API.Interfaces;
 using Gateway.API.ViewModels;
@@ -29,7 +30,7 @@ namespace Gateway.API.Controllers
             return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.ZING));
         }
 
-        [Authorize(Policy = Constants.GatewayAPIAdmin)]
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
         [HttpGet]
         public IActionResult AuthTest()
         {

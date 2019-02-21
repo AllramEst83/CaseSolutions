@@ -6,6 +6,7 @@ using Auth.API.AuthFactory;
 using Auth.API.Helpers;
 using Auth.API.Models;
 using Auth.API.ViewModels;
+using CaseSolutionsTokenValidationParameters.Models;
 using Database.Service.API.Data.UserData.UserEntities.UserModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -43,7 +44,7 @@ namespace Auth.API.Controllers
         }
 
 
-        [Authorize(Policy = "Auth.API.Admin")]
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
         [HttpGet]
         public IActionResult GetListOfUsers()
         {
@@ -75,7 +76,7 @@ namespace Auth.API.Controllers
                     }));
             }
 
-            var identity = await GetClaimsIdentity(credentials.UserName, credentials.Password);
+            var identity = await GetClaimsIdentity(credentials.UserName, credentials.Password, credentials.Role);
             if (identity == null)
             {
                 return new JsonResult(Errors
@@ -97,7 +98,7 @@ namespace Auth.API.Controllers
         }
 
 
-        private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
+        private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password, string role)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
                 return await Task.FromResult<ClaimsIdentity>(null);
@@ -110,7 +111,7 @@ namespace Auth.API.Controllers
             // check the credentials
             if (await _userManager.CheckPasswordAsync(userToVerify, password))
             {
-                return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id));
+                return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id, role));
             }
 
             // Credentials are invalid, or account doesn't exist
