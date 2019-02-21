@@ -74,7 +74,11 @@ namespace Auth.API
                 options.SigningCredentials = signingCredentials;
             });
 
-            services.AddValidationParameters(JwtIssuerOptionsSectionSettings.Issuer, JwtIssuerOptionsSectionSettings.Audience, _signingKey);
+            services.AddValidationParameters(
+                JwtIssuerOptionsSectionSettings.Issuer,
+                JwtIssuerOptionsSectionSettings.Audience,
+                _signingKey
+                );
 
             ////AddTokenValidator
             //TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
