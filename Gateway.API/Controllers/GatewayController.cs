@@ -63,6 +63,7 @@ namespace Gateway.API.Controllers
         }
 
         // POST api/gateway/login
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> LogIn([FromBody] LogInViewModel model)
         {
@@ -75,15 +76,123 @@ namespace Gateway.API.Controllers
             HttpParameters httpParameters = _gWService.GetHttpParameters(model);
 
             //httpclient request from class library
-            var authResult = await _gWService.Authenticate<JwtGatewayResponse>(httpParameters);
+            JwtGatewayResponse authResult = await _gWService.PostTo<JwtGatewayResponse>(httpParameters);
             if (authResult.StatusCode == 400)
             {
                 //return user friendly error message
-                return BadRequest(Errors.AddErrorToModelState(authResult.Code, authResult.Description, ModelState));
+                return BadRequest(
+                    Errors
+                    .AddErrorToModelState(
+                        authResult.Code,
+                        authResult.Description,
+                        ModelState
+                        ));
             }
 
             //return jwt token
             return new OkObjectResult(authResult);
+        }
+
+
+        // POST api/gateway/signup
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> SignUp([FromBody] RegistrationViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                BadRequest(ModelState);
+            }
+
+            //Prepare httpParameters for request
+            HttpParameters httParameters = _gWService.GetHttpParameters(model);
+
+            SigupGatewayResponse sigUpResult = await _gWService.PostTo<SigupGatewayResponse>(httParameters);
+            if (sigUpResult.StatusCode == 400)
+            {
+                return BadRequest(
+                    Errors.
+                    AddErrorToModelState(
+                        sigUpResult.Code,
+                        sigUpResult.Description,
+                        ModelState
+                        ));
+            }
+
+            return new OkObjectResult(sigUpResult);
+        }
+
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
+        [HttpPost]
+        public async Task<IActionResult> AddUserToRole(AddUserToRoleViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            HttpParameters httParameters = _gWService.GetHttpParameters(model);
+
+            AddUserToRoleGatewayResponse addUserToRoleResult = await _gWService.PostTo<AddUserToRoleGatewayResponse>(httParameters);
+            if (addUserToRoleResult.StatusCode == 400)
+            {
+                return BadRequest(
+                     Errors.
+                     AddErrorToModelState(
+                         addUserToRoleResult.Code,
+                         addUserToRoleResult.Description,
+                         ModelState
+                         ));
+            }
+
+            return new OkObjectResult(addUserToRoleResult);
+        }
+
+
+        // POST api/gateway/addrole
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
+        [HttpPost]
+        public async Task<IActionResult> AddRole(RoleToAddViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            HttpParameters httpParameters = _gWService.GetHttpParameters(model);
+
+            GatewayAddRoleResponse addRoleResult = await _gWService.PostTo<GatewayAddRoleResponse>(httpParameters);
+            if (addRoleResult.StatusCode == 400)
+            {
+                return BadRequest(
+                   Errors.
+                   AddErrorToModelState(
+                       addRoleResult.Code,
+                       addRoleResult.Description,
+                       ModelState
+                       ));
+            }
+            //424 - Faild Dependency
+            else if (addRoleResult.StatusCode == 424)
+            {
+                return new ConflictObjectResult(Errors.
+                   AddErrorToModelState(
+                       addRoleResult.Code,
+                       addRoleResult.Description,
+                       ModelState
+                       ));
+            }
+            else if (addRoleResult.StatusCode == 422 /*Unprocessable Entity*/)
+            {
+                new UnprocessableEntityObjectResult(Errors.
+                   AddErrorToModelState(
+                       addRoleResult.Code,
+                       addRoleResult.Description,
+                       ModelState
+                       ));
+            }
+
+            return new OkObjectResult(addRoleResult);
         }
 
         // PUT api/gateway/5

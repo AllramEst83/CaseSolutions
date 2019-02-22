@@ -85,11 +85,11 @@ namespace Auth.API.Controllers
                         Auth_Token = "",
                         Code = "login_failure",
                         Id = "",
-                        Description = "Invalid username or password.",
+                        Description = "Invalid username, password or role.",
                         Expires_In = 0,
                         StatusCode = 400
                     }));
-                
+
             }
 
             var jwtResponse = await Tokens.GenerateJwt(identity, _jwtFactory, credentials.UserName, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
@@ -107,6 +107,10 @@ namespace Auth.API.Controllers
             var userToVerify = await _userManager.FindByNameAsync(userName);
 
             if (userToVerify == null) return await Task.FromResult<ClaimsIdentity>(null);
+
+            var userIsInRole = await _userManager.IsInRoleAsync(userToVerify, role);
+
+            if (!userIsInRole) return await Task.FromResult<ClaimsIdentity>(null);
 
             // check the credentials
             if (await _userManager.CheckPasswordAsync(userToVerify, password))

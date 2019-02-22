@@ -62,7 +62,10 @@ namespace Auth.API.Controllers
                     {
                         Error = "User exists",
                         StatusCode = 400,
-                        Description = "Please enter a new user email. This user does already exists."
+                        Description = "Please enter a new user email. This user does already exists.",
+                        Email = userEmail,
+                        Id = "",
+                        Code = "user_exists"
                     }));
             }
 
@@ -72,9 +75,13 @@ namespace Auth.API.Controllers
                 return new JsonResult(Errors.SigInErrorResponse(
                     new SigUnAndRoleErrorHandlingResponse()
                     {
+
                         Error = "Role exists",
                         StatusCode = 400,
-                        Description = "Please try to add a new role. This role does already exists."
+                        Description = "Please try to add a new role. This role does already exists.",
+                        Email = userEmail,
+                        Id = "",
+                        Code = "role_exists"
                     }));
             }
 
@@ -94,7 +101,7 @@ namespace Auth.API.Controllers
 
             await _context.SaveChangesAsync();
 
-            return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.APIMessages.AccountCreatedSuccessMessage));
+            return new OkObjectResult(Wrappyfier.WrapSigupResponse(userIdentity.Id, userIdentity.Email, 200));
         }
 
         // POST api/accounts/addrole
@@ -110,29 +117,126 @@ namespace Auth.API.Controllers
             var role = model.RoleToAdd.Trim();
             if (await RoleExists(role))
             {
-                return new JsonResult(Errors.SigInErrorResponse(
-                    new SigUnAndRoleErrorHandlingResponse()
+                return new JsonResult(Errors.AddRoleErrorResponse(
+                    new GatewayAddRoleResponse()
                     {
-                        Error = "Role exists",
-                        StatusCode = 400,
-                        Description = "Please try to add a new role. This role does already exists."
+                        Role = role,
+                        Code = "role_exits",
+                        Description = "Role already exists. Please try to add another role.",
+                        Error = "Role exists.",
+                        StatusCode = 400
                     }));
             }
-              
-            IdentityRole newRole = new IdentityRole
-            {
-                Name = role
-            };
-            var roleResult = await _roleManager.CreateAsync(newRole);
+
+            var roleResult = await _roleManager
+                .CreateAsync(
+                     new IdentityRole
+                     {
+                         Name = role
+                     });
 
             if (!roleResult.Succeeded)
             {
-                return new BadRequestObjectResult(Errors.AddErrorsToModelState(roleResult, ModelState));
+                return new JsonResult(Errors.AddRoleErrorResponse(
+                    new GatewayAddRoleResponse()
+                    {
+                        Role = role,
+                        Code = "faild_to_add_role",
+                        Description = "Faild to add role to database.",
+                        Error = "Faild to add role.",
+                        StatusCode = 424
+                    }));
             }
 
             await _context.SaveChangesAsync();
 
-            return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.APIMessages.RoleAdded));
+
+            return new OkObjectResult(Wrappyfier.WrapAddRoleResponse(role));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddUserToRole([FromBody] AddUserToRoleViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                BadRequest(ModelState);
+            }
+
+            string id = model.Id.Trim();
+            string role = model.Role;
+            if (String.IsNullOrEmpty(id) || String.IsNullOrEmpty(role))
+            {
+                return new JsonResult(
+                    new AddUserToRoleResponseMessage()
+                    {
+                        Role = role,
+                        Email = "no_email",
+                        Code = "useremail_or_ role_is_empty",
+                        Description = "",
+                        Error = "User email or role can not be empty",
+                        StatusCode = 400
+                    });
+            }
+
+            if (!await RoleExists(role) || !await UserExists(id))
+            {
+                return new JsonResult(
+                      new AddUserToRoleResponseMessage()
+                      {
+                          Role = role,
+                          Email = "no_email",
+                          Code = "user_or_role__is_not_found",
+                          Description = "The user id or the role name does not match a user or a role.",
+                          Error = "User or role is not found",
+                          StatusCode = 404
+                      });
+            }
+
+            var userIdentity = await _userManager.FindByIdAsync(id);
+            var userRole = await _roleManager.FindByNameAsync(role);
+
+
+            if (!await UserHasRole(userIdentity, userRole.Name))
+            {
+                var addRoleResult = await _userManager.AddToRoleAsync(userIdentity, userRole.Name);
+
+                if (!addRoleResult.Succeeded)
+                {
+                    return new JsonResult(Errors.AddRoleErrorResponse(
+                        new GatewayAddRoleResponse()
+                        {
+                            Role = role,
+                            Code = "faild_to_add_role_to_user",
+                            Description = "Faild to add role to user.",
+                            Error = "Faild to add role to user.",
+                            StatusCode = 424
+                        }));
+                }
+            }
+            else
+            {
+                return new JsonResult(Errors.AddRoleErrorResponse(
+                        new GatewayAddRoleResponse()
+                        {
+                            Role = role,
+                            Code = "faild_to_add_role_to_user",
+                            Description = "Faild to add role to user.",
+                            Error = "Faild to add role to user.",
+                            StatusCode = 422 // Unprocessable Entity
+                        }));
+            }
+
+            await _context.SaveChangesAsync();
+
+            return new OkObjectResult(Wrappyfier.WrapAddRoleToUserResponse(userIdentity.Email, userRole.Name));
+        }
+
+        public async Task<bool> UserHasRole(User user, string role)
+        {
+            IList<string> userRoles = await _userManager.GetRolesAsync(user);
+            bool userHasRole = userRoles.Any(x => x.Equals(role));
+
+            return userHasRole;
         }
 
         //Helper methods
@@ -143,9 +247,19 @@ namespace Auth.API.Controllers
             return roleExist;
         }
 
-        public async Task<bool> UserExists(string userEmail)
+        public async Task<bool> UserExists(string userEmailOrId)
         {
-            User userExist = await _userManager.FindByEmailAsync(userEmail);
+            Guid guidId = Guid.Empty;
+            User userExist;
+            if (Guid.TryParse(userEmailOrId, out guidId))
+            {
+                userExist = await _userManager.FindByIdAsync(userEmailOrId);
+            }
+            else
+            {
+                userExist = await _userManager.FindByEmailAsync(userEmailOrId);
+
+            }
 
             return userExist == null ? false : true;
         }

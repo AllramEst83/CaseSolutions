@@ -19,6 +19,7 @@ namespace Gateway.API.GatewayService
             _httpRepo = httpRepo;
         }
 
+        //Get
         public async Task<T> Get<T>(HttpParameters httpParameters)
         {
             T result = await _httpRepo.GetRequest<T>(httpParameters);
@@ -26,6 +27,7 @@ namespace Gateway.API.GatewayService
             return result;
         }
 
+        //Authenticate
         public async Task<T> Authenticate<T>(HttpParameters httpParameters)
         {
             T result = await _httpRepo.PostRequestWithContent<T>(httpParameters);
@@ -33,6 +35,32 @@ namespace Gateway.API.GatewayService
             return result;
         }
 
+        //SignUp
+        public async Task<T> SignUp<T>(HttpParameters httpParameters)
+        {
+            T result = await _httpRepo.PostRequestWithContent<T>(httpParameters);
+
+            return result;
+        }
+
+        //AddRole
+        public async Task<T> AddRole<T>(HttpParameters httpParameters)
+        {
+            T result = await _httpRepo.PostRequestWithContent<T>(httpParameters);
+
+            return result;
+        }
+
+        //PostTo
+        public async Task<T> PostTo<T>(HttpParameters httpParameters)
+        {
+            T result = await _httpRepo.PostRequestWithContent<T>(httpParameters);
+
+            return result;
+        }
+
+
+        //GetHttpParameters/LogInViewModel
         public HttpParameters GetHttpParameters(LogInViewModel model)
         {
             HttpParameters httpParameters =
@@ -47,6 +75,55 @@ namespace Gateway.API.GatewayService
 
             return httpParameters;
         }
+
+        //GetHttpParameters/RegistrationViewModel
+        public HttpParameters GetHttpParameters(RegistrationViewModel model)
+        {
+            HttpParameters httpParameters =
+              new HttpParameters
+              {
+                  Content = model,
+                  HttpVerb = HttpMethod.Post,
+                  RequestUrl = ConfigHelper.AppSetting(Constants.ServerUrls, Constants.SignUp),
+                  Id = Guid.Empty,
+                  CancellationToken = CancellationToken.None
+              };
+
+            return httpParameters;
+        }
+
+        //GetHttpParameters/AddRoleViewModel
+        public HttpParameters GetHttpParameters(RoleToAddViewModel model)
+        {
+            HttpParameters httpParameters =
+              new HttpParameters
+              {
+                  Content = model,
+                  HttpVerb = HttpMethod.Post,
+                  RequestUrl = ConfigHelper.AppSetting(Constants.ServerUrls, Constants.AddRole),
+                  Id = Guid.Empty,
+                  CancellationToken = CancellationToken.None
+              };
+
+            return httpParameters;
+        }
+
+        //GetHttpParameters/AddUserToRoleViewModel
+        public HttpParameters GetHttpParameters(AddUserToRoleViewModel model)
+        {
+            HttpParameters httpParameters =
+              new HttpParameters
+              {
+                  Content = model,
+                  HttpVerb = HttpMethod.Post,
+                  RequestUrl = ConfigHelper.AppSetting(Constants.ServerUrls, Constants.AddUserToRole),
+                  Id = Guid.Empty,
+                  CancellationToken = CancellationToken.None
+              };
+
+            return httpParameters;
+        }
+
 
     }
 }
