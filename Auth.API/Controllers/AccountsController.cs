@@ -178,7 +178,10 @@ namespace Auth.API.Controllers
                     });
             }
 
-            if (!await RoleExists(role) || !await UserExists(id))
+            bool roleExists = await RoleExists(role);
+            bool userExists = await UserExists(id);
+
+            if (!roleExists && !userExists)
             {
                 return new JsonResult(
                       new AddUserToRoleResponseMessage()
@@ -219,10 +222,10 @@ namespace Auth.API.Controllers
                         new GatewayAddRoleResponse()
                         {
                             Role = role,
-                            Code = "faild_to_add_role_to_user",
-                            Description = "Faild to add role to user.",
-                            Error = "Faild to add role to user.",
-                            StatusCode = 422 // Unprocessable Entity
+                            Code = "user_has_already_role_assigned",
+                            Description = "User already has the role assigned",
+                            Error = "User has already role assigned.",
+                            StatusCode = 400
                         }));
             }
 

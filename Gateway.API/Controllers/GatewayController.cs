@@ -36,7 +36,7 @@ namespace Gateway.API.Controllers
         [HttpGet]
         public IActionResult AdminAuthTest()
         {
-            return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.CommonAuthTestSuccess));
+            return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.AdminAuthTestSuccess));
         }
 
         //GET api/gateway/CommonAuthTest

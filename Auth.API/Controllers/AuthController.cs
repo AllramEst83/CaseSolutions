@@ -76,7 +76,7 @@ namespace Auth.API.Controllers
                     }));
             }
 
-            var identity = await GetClaimsIdentity(credentials.UserName, credentials.Password, credentials.Role);
+            var identity = await GetClaimsIdentity(credentials.UserName, credentials.Password);
             if (identity == null)
             {
                 return new JsonResult(Errors
@@ -98,7 +98,7 @@ namespace Auth.API.Controllers
         }
 
 
-        private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password, string role)
+        private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
                 return await Task.FromResult<ClaimsIdentity>(null);
@@ -108,14 +108,14 @@ namespace Auth.API.Controllers
 
             if (userToVerify == null) return await Task.FromResult<ClaimsIdentity>(null);
 
-            var userIsInRole = await _userManager.IsInRoleAsync(userToVerify, role);
+            IList<string> userRoles = await _userManager.GetRolesAsync(userToVerify);
 
-            if (!userIsInRole) return await Task.FromResult<ClaimsIdentity>(null);
+            if (!userRoles.Any()) return await Task.FromResult<ClaimsIdentity>(null);
 
             // check the credentials
             if (await _userManager.CheckPasswordAsync(userToVerify, password))
             {
-                return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id, role));
+                return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id, userRoles.ToList()));
             }
 
             // Credentials are invalid, or account doesn't exist

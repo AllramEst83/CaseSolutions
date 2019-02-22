@@ -9,6 +9,6 @@ namespace Auth.API.AuthFactory
     public interface IJwtFactory
     {
         Task<string> GenerateEncodedToken(string userName, ClaimsIdentity identity);
-        ClaimsIdentity GenerateClaimsIdentity(string userName, string id, string role);
+        ClaimsIdentity GenerateClaimsIdentity(string userName, string id, List<string> roles);
     }
 }

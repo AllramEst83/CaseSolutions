@@ -24,14 +24,16 @@ namespace Auth.API.AuthFactory
 
         public async Task<string> GenerateEncodedToken(string userName, ClaimsIdentity identity)
         {
-            var claims = new[]
+            var claims = new List<Claim>
             {
                  new Claim(JwtRegisteredClaimNames.Sub, userName),
                  new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                  new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
-                 identity.FindFirst(TokenValidationConstants.Roles.Role),
                  identity.FindFirst(TokenValidationConstants.Roles.Id)
              };
+
+            //Adding all claims from AuthDatabase
+            claims.AddRange(identity.FindAll(TokenValidationConstants.Roles.Role));
 
             // Create the JWT security token and encode it.
             var jwt = new JwtSecurityToken(
@@ -47,19 +49,21 @@ namespace Auth.API.AuthFactory
             return encodedJwt;
         }
 
-        public ClaimsIdentity GenerateClaimsIdentity(string userName, string id, string role)
+        public ClaimsIdentity GenerateClaimsIdentity(string userName, string id, List<string> roles)
         {
-            //When more roles are added this has to be changed
-            var accesLevel = role.Trim().ToLower() == 
-                TokenValidationConstants.Roles.AdminAccess ? 
-                TokenValidationConstants.Roles.AdminAccess : 
-                TokenValidationConstants.Roles.CommonUserAccess;
-
-            return new ClaimsIdentity(new GenericIdentity(userName, "Token"), new[]
+           
+            List<Claim> listOfClaims = new List<Claim>()
             {
-                new Claim(TokenValidationConstants.Roles.Id, id),
-                new Claim(TokenValidationConstants.Roles.Role, accesLevel)
-            });
+                new Claim(TokenValidationConstants.Roles.Id, id)
+            };
+
+            //Add all roles linked to the current user as claims
+            foreach (var roleItem in roles)
+            {
+                listOfClaims.Add(new Claim(TokenValidationConstants.Roles.Role, roleItem));
+            }
+
+            return new ClaimsIdentity(new GenericIdentity(userName, "Token"), listOfClaims);
         }
 
         /// <returns>Date converted to seconds since Unix epoch (Jan 1, 1970, midnight UTC).</returns>
