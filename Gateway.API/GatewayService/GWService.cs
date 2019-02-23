@@ -59,64 +59,15 @@ namespace Gateway.API.GatewayService
             return result;
         }
 
-
-        //GetHttpParameters/LogInViewModel
-        public HttpParameters GetHttpParameters(LogInViewModel model)
+        //GetHttpParameters
+        public HttpParameters GetHttpParameters(object model, string requestUrl)
         {
             HttpParameters httpParameters =
               new HttpParameters
               {
                   Content = model,
                   HttpVerb = HttpMethod.Post,
-                  RequestUrl = ConfigHelper.AppSetting(Constants.ServerUrls, Constants.Auth),
-                  Id = Guid.Empty,
-                  CancellationToken = CancellationToken.None
-              };
-
-            return httpParameters;
-        }
-
-        //GetHttpParameters/RegistrationViewModel
-        public HttpParameters GetHttpParameters(RegistrationViewModel model)
-        {
-            HttpParameters httpParameters =
-              new HttpParameters
-              {
-                  Content = model,
-                  HttpVerb = HttpMethod.Post,
-                  RequestUrl = ConfigHelper.AppSetting(Constants.ServerUrls, Constants.SignUp),
-                  Id = Guid.Empty,
-                  CancellationToken = CancellationToken.None
-              };
-
-            return httpParameters;
-        }
-
-        //GetHttpParameters/AddRoleViewModel
-        public HttpParameters GetHttpParameters(RoleToAddViewModel model)
-        {
-            HttpParameters httpParameters =
-              new HttpParameters
-              {
-                  Content = model,
-                  HttpVerb = HttpMethod.Post,
-                  RequestUrl = ConfigHelper.AppSetting(Constants.ServerUrls, Constants.AddRole),
-                  Id = Guid.Empty,
-                  CancellationToken = CancellationToken.None
-              };
-
-            return httpParameters;
-        }
-
-        //GetHttpParameters/AddUserToRoleViewModel
-        public HttpParameters GetHttpParameters(AddUserToRoleViewModel model)
-        {
-            HttpParameters httpParameters =
-              new HttpParameters
-              {
-                  Content = model,
-                  HttpVerb = HttpMethod.Post,
-                  RequestUrl = ConfigHelper.AppSetting(Constants.ServerUrls, Constants.AddUserToRole),
+                  RequestUrl = requestUrl,
                   Id = Guid.Empty,
                   CancellationToken = CancellationToken.None
               };

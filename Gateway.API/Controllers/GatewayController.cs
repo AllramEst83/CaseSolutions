@@ -73,7 +73,7 @@ namespace Gateway.API.Controllers
             }
 
             //Prepare httpParameters for request
-            HttpParameters httpParameters = _gWService.GetHttpParameters(model);
+            HttpParameters httpParameters = _gWService.GetHttpParameters(model, ConfigHelper.AppSetting(Constants.ServerUrls, Constants.Auth));
 
             //httpclient request from class library
             JwtGatewayResponse authResult = await _gWService.PostTo<JwtGatewayResponse>(httpParameters);
@@ -105,7 +105,7 @@ namespace Gateway.API.Controllers
             }
 
             //Prepare httpParameters for request
-            HttpParameters httParameters = _gWService.GetHttpParameters(model);
+            HttpParameters httParameters = _gWService.GetHttpParameters(model, ConfigHelper.AppSetting(Constants.ServerUrls, Constants.SignUp));
 
             SigupGatewayResponse sigUpResult = await _gWService.PostTo<SigupGatewayResponse>(httParameters);
             if (sigUpResult.StatusCode == 400)
@@ -131,7 +131,7 @@ namespace Gateway.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            HttpParameters httParameters = _gWService.GetHttpParameters(model);
+            HttpParameters httParameters = _gWService.GetHttpParameters(model, ConfigHelper.AppSetting(Constants.ServerUrls, Constants.AddUserToRole));
 
             AddUserToRoleGatewayResponse addUserToRoleResult = await _gWService.PostTo<AddUserToRoleGatewayResponse>(httParameters);
             if (addUserToRoleResult.StatusCode == 400)
@@ -159,7 +159,7 @@ namespace Gateway.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            HttpParameters httpParameters = _gWService.GetHttpParameters(model);
+            HttpParameters httpParameters = _gWService.GetHttpParameters(model, ConfigHelper.AppSetting(Constants.ServerUrls, Constants.AddRole));
 
             GatewayAddRoleResponse addRoleResult = await _gWService.PostTo<GatewayAddRoleResponse>(httpParameters);
             if (addRoleResult.StatusCode == 400)

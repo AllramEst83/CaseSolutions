@@ -51,6 +51,7 @@ namespace Auth.API.Controllers
             var users = _userManager.Users.Select(x => new UsersViewModel
             {
                 UserName = x.UserName,
+                Id = x.Id
 
             })
             .ToList();
