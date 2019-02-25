@@ -60,13 +60,13 @@ namespace Gateway.API.GatewayService
         }
 
         //GetHttpParameters
-        public HttpParameters GetHttpParameters(object model, string requestUrl)
+        public HttpParameters GetHttpParameters(object model, string requestUrl, HttpMethod httpVerb)
         {
             HttpParameters httpParameters =
               new HttpParameters
               {
                   Content = model,
-                  HttpVerb = HttpMethod.Post,
+                  HttpVerb = httpVerb,
                   RequestUrl = requestUrl,
                   Id = Guid.Empty,
                   CancellationToken = CancellationToken.None

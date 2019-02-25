@@ -8,6 +8,7 @@ using HttpClientService.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Gateway.API.Controllers
@@ -73,7 +74,7 @@ namespace Gateway.API.Controllers
             }
 
             //Prepare httpParameters for request
-            HttpParameters httpParameters = _gWService.GetHttpParameters(model, ConfigHelper.AppSetting(Constants.ServerUrls, Constants.Auth));
+            HttpParameters httpParameters = _gWService.GetHttpParameters(model, ConfigHelper.AppSetting(Constants.ServerUrls, Constants.Auth), HttpMethod.Post);
 
             //httpclient request from class library
             JwtGatewayResponse authResult = await _gWService.PostTo<JwtGatewayResponse>(httpParameters);
@@ -105,7 +106,7 @@ namespace Gateway.API.Controllers
             }
 
             //Prepare httpParameters for request
-            HttpParameters httParameters = _gWService.GetHttpParameters(model, ConfigHelper.AppSetting(Constants.ServerUrls, Constants.SignUp));
+            HttpParameters httParameters = _gWService.GetHttpParameters(model, ConfigHelper.AppSetting(Constants.ServerUrls, Constants.SignUp), HttpMethod.Post);
 
             SigupGatewayResponse sigUpResult = await _gWService.PostTo<SigupGatewayResponse>(httParameters);
             if (sigUpResult.StatusCode == 400)
@@ -131,7 +132,7 @@ namespace Gateway.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            HttpParameters httParameters = _gWService.GetHttpParameters(model, ConfigHelper.AppSetting(Constants.ServerUrls, Constants.AddUserToRole));
+            HttpParameters httParameters = _gWService.GetHttpParameters(model, ConfigHelper.AppSetting(Constants.ServerUrls, Constants.AddUserToRole), HttpMethod.Post);
 
             AddUserToRoleGatewayResponse addUserToRoleResult = await _gWService.PostTo<AddUserToRoleGatewayResponse>(httParameters);
             if (addUserToRoleResult.StatusCode == 400)
@@ -159,7 +160,7 @@ namespace Gateway.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            HttpParameters httpParameters = _gWService.GetHttpParameters(model, ConfigHelper.AppSetting(Constants.ServerUrls, Constants.AddRole));
+            HttpParameters httpParameters = _gWService.GetHttpParameters(model, ConfigHelper.AppSetting(Constants.ServerUrls, Constants.AddRole), HttpMethod.Post);
 
             GatewayAddRoleResponse addRoleResult = await _gWService.PostTo<GatewayAddRoleResponse>(httpParameters);
             if (addRoleResult.StatusCode == 400)
@@ -193,6 +194,59 @@ namespace Gateway.API.Controllers
             }
 
             return new OkObjectResult(addRoleResult);
+        }
+
+        // PUT api/gateway/removeuserfromrole
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
+        [HttpPut]
+        public async Task<IActionResult> RemoveUserFromRole(RemoveUserfromRoleViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            HttpParameters httpParameters = _gWService
+                .GetHttpParameters(
+                model,
+                ConfigHelper.AppSetting(Constants.ServerUrls, Constants.RemoveUserFromRole),
+                HttpMethod.Put
+                );
+
+            RemoveUserfromRoleResponseMessage removeUserFromRoleResult =
+                await _gWService.PostTo<RemoveUserfromRoleResponseMessage>(httpParameters);
+
+            if (removeUserFromRoleResult.StatusCode == 400)
+            {
+                return BadRequest(
+                   Errors.
+                   AddErrorToModelState(
+                       removeUserFromRoleResult.Code,
+                       removeUserFromRoleResult.Description,
+                       ModelState
+                       ));
+            }
+            else if (removeUserFromRoleResult.StatusCode == 404)
+            {
+                return NotFound(
+                Errors.
+                AddErrorToModelState(
+                    removeUserFromRoleResult.Code,
+                    removeUserFromRoleResult.Description,
+                    ModelState
+                    ));
+            }
+            else if (removeUserFromRoleResult.StatusCode == 422 /*Unprocessable Entity*/)
+            {
+               return new UnprocessableEntityObjectResult(Errors.
+                   AddErrorToModelState(
+                       removeUserFromRoleResult.Code,
+                       removeUserFromRoleResult.Description,
+                       ModelState
+                       ));
+            }
+
+            return new OkObjectResult(removeUserFromRoleResult);
         }
 
         // PUT api/gateway/5

@@ -124,7 +124,7 @@ namespace Auth.API.Controllers
                         Code = "role_exits",
                         Description = "Role already exists. Please try to add another role.",
                         Error = "Role exists.",
-                        StatusCode = 400
+                        StatusCode = 424
                     }));
             }
 
@@ -154,6 +154,7 @@ namespace Auth.API.Controllers
             return new OkObjectResult(Wrappyfier.WrapAddRoleResponse(role));
         }
 
+        // POST api/accounts/addusertorole
         [HttpPost]
         public async Task<IActionResult> AddUserToRole([FromBody] AddUserToRoleViewModel model)
         {
@@ -171,7 +172,7 @@ namespace Auth.API.Controllers
                     {
                         Role = role,
                         Email = "no_email",
-                        Code = "useremail_or_ role_is_empty",
+                        Code = "useremail_or_role_is_empty",
                         Description = "",
                         Error = "User email or role can not be empty",
                         StatusCode = 400
@@ -205,8 +206,8 @@ namespace Auth.API.Controllers
 
                 if (!addRoleResult.Succeeded)
                 {
-                    return new JsonResult(Errors.AddRoleErrorResponse(
-                        new GatewayAddRoleResponse()
+                    return new JsonResult(Errors.AddUserToRoleErrorResponse(
+                        new AddUserToRoleErrorResponse()
                         {
                             Role = role,
                             Code = "faild_to_add_role_to_user",
@@ -218,8 +219,8 @@ namespace Auth.API.Controllers
             }
             else
             {
-                return new JsonResult(Errors.AddRoleErrorResponse(
-                        new GatewayAddRoleResponse()
+                return new JsonResult(Errors.AddUserToRoleErrorResponse(
+                        new AddUserToRoleErrorResponse()
                         {
                             Role = role,
                             Code = "user_has_already_role_assigned",
@@ -234,39 +235,107 @@ namespace Auth.API.Controllers
             return new OkObjectResult(Wrappyfier.WrapAddRoleToUserResponse(userIdentity.Email, userRole.Name));
         }
 
-        public async Task<bool> UserHasRole(User user, string role)
+        // PUT api/accounts/removeuserfromrole
+        [HttpPut]
+        public async Task<IActionResult> RemoveUserFromRole([FromBody] RemoveUserfromRoleViewModel model)
         {
-            IList<string> userRoles = await _userManager.GetRolesAsync(user);
-            bool userHasRole = userRoles.Any(x => x.Equals(role));
 
-            return userHasRole;
-        }
-
-        //Helper methods
-        public async Task<bool> RoleExists(string role)
-        {
-            bool roleExist = await _roleManager.RoleExistsAsync(role);
-
-            return roleExist;
-        }
-
-        public async Task<bool> UserExists(string userEmailOrId)
-        {
-            Guid guidId = Guid.Empty;
-            User userExist;
-            if (Guid.TryParse(userEmailOrId, out guidId))
+            if (!ModelState.IsValid)
             {
-                userExist = await _userManager.FindByIdAsync(userEmailOrId);
+                return BadRequest(ModelState);
+            }
+
+            var userId = model.UserId.Trim();
+            var role = model.Role.Trim();
+
+            if (String.IsNullOrEmpty(userId) || String.IsNullOrEmpty(role))
+            {
+                return new JsonResult(
+                    Errors
+                    .RemoveRoleFromUserErrorResponse(
+                        new RemoveUserfromRoleErrorHAndelingResponse()
+                        {
+                            Role = role,
+                            Email = "no_email",
+                            UserId = userId,
+                            Code = "user_id_or_ role_is_empty",
+                            Description = "User id or role is empty.",
+                            Error = "User id  or role can not be empty",
+                            StatusCode = 400
+                        }));
+            }
+
+            var userExists = await UserExists(userId);
+            var roleExists = await RoleExists(role);
+
+            if (!userExists || !roleExists)
+            {
+                return new JsonResult(
+                    Errors
+                    .RemoveRoleFromUserErrorResponse(
+                        new RemoveUserfromRoleErrorHAndelingResponse()
+                        {
+                            Role = role,
+                            Email = "no_email",
+                            UserId = userId,
+                            Code = "user_or_role__is_not_found",
+                            Description = "The user id or the role name does not match a user or a role.",
+                            Error = "User or role is not found",
+                            StatusCode = 404
+                        }));
+            }
+
+            var userIdentity = await _userManager.FindByIdAsync(userId);
+            var userRole = await _roleManager.FindByNameAsync(role);
+
+            if (await UserHasRole(userIdentity, userRole.Name))
+            {
+                var removeRoleResult = await _userManager.RemoveFromRoleAsync(userIdentity, userRole.Name);
+
+                if (!removeRoleResult.Succeeded)
+                {
+                    return new JsonResult(
+                        Errors
+                        .RemoveRoleFromUserErrorResponse(
+                            new RemoveUserfromRoleErrorHAndelingResponse()
+                            {
+                                Role = role,
+                                Email = userIdentity.Email,
+                                UserId = userId,
+                                Code = "faild_to_remove_role_to_user",
+                                Description = "Faild to add role to user.",
+                                Error = "Faild to add role to user.",
+                                StatusCode = 400
+                            }));
+                }
             }
             else
             {
-                userExist = await _userManager.FindByEmailAsync(userEmailOrId);
-
+                return new JsonResult(
+                    Errors
+                    .RemoveRoleFromUserErrorResponse(
+                        new RemoveUserfromRoleErrorHAndelingResponse()
+                        {
+                            Role = role,
+                            Email = userIdentity.Email,
+                            UserId = userId,
+                            Code = "user_does_not_have_role_assigned",
+                            Description = "User does not have role assigned.",
+                            Error = "User does not have role assigned",
+                            StatusCode = 400
+                        }));
             }
 
-            return userExist == null ? false : true;
+            await _context.SaveChangesAsync();
+
+            return new JsonResult(
+                Wrappyfier
+                .WrapRemoveUserFromRole(
+                    userIdentity.Id,
+                    userIdentity.Email,
+                    role,
+                    200));
         }
-        //Helper methods
 
         //https://aryalnishan.com.np/asp-net-mvc/delete-user-related-data-in-asp-net-mvc-identity/
         //[Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
@@ -306,5 +375,40 @@ namespace Auth.API.Controllers
             return new OkObjectResult(new { });
         }
 
+        //Helper methods
+
+        public async Task<bool> UserHasRole(User user, string role)
+        {
+            IList<string> userRoles = await _userManager.GetRolesAsync(user);
+            bool userHasRole = userRoles.Any(x => x.Equals(role));
+
+            return userHasRole;
+        }
+
+
+        public async Task<bool> RoleExists(string role)
+        {
+            bool roleExist = await _roleManager.RoleExistsAsync(role);
+
+            return roleExist;
+        }
+
+        public async Task<bool> UserExists(string userEmailOrId)
+        {
+            Guid guidId = Guid.Empty;
+            User userExist;
+            if (Guid.TryParse(userEmailOrId, out guidId))
+            {
+                userExist = await _userManager.FindByIdAsync(userEmailOrId);
+            }
+            else
+            {
+                userExist = await _userManager.FindByEmailAsync(userEmailOrId);
+
+            }
+
+            return userExist == null ? false : true;
+        }
+        //Helper methods
     }
 }

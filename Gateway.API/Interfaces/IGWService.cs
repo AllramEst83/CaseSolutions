@@ -3,6 +3,7 @@ using HttpClientService.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Gateway.API.Interfaces
@@ -14,6 +15,6 @@ namespace Gateway.API.Interfaces
         Task<T> SignUp<T>(HttpParameters httpParameters);
         Task<T> AddRole<T>(HttpParameters httpParameters);
         Task<T> PostTo<T>(HttpParameters httpParameters);
-        HttpParameters GetHttpParameters(object model, string serverUrl);
+        HttpParameters GetHttpParameters(object model, string requestUrl, HttpMethod httpVerb);
     }
 }

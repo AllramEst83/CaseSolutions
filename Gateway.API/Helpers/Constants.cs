@@ -15,6 +15,7 @@ namespace Gateway.API.Helpers
         public const string ZING = "ZING!!!, Gateway open!";
         public const string CommonAuthTestSuccess = "Auth for CommonUser on the Gateway server is workning.";
         public const string AdminAuthTestSuccess = "Auth for Admin on the Gateway server is workning.";
+        public const string RemoveUserFromRole = "RemoveUserFromRole";
 
         public static class AppSettingStrings
         {
