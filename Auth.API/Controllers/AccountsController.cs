@@ -8,13 +8,10 @@ using APIResponseMessageWrapper;
 using Auth.API.Helpers;
 using Auth.API.ViewModels;
 using AutoMapper;
-using CaseSolutionsTokenValidationParameters.Models;
 using Database.Service.API.Data.UserData.UserEntities.UserContext;
 using Database.Service.API.Data.UserData.UserEntities.UserModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Auth.API.Controllers
 {
@@ -334,6 +331,34 @@ namespace Auth.API.Controllers
                     userIdentity.Id,
                     userIdentity.Email,
                     role,
+                    200));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserRoles([FromQuery] string userId)
+        {
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                return BadRequest("Id can not be empty.");
+            }
+
+            User user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                //TODO-Bygg error message som de andra
+                //TODO-Bygg anrop till denna kontroller från gateway
+                return new JsonResult(new { });
+            }
+
+            IList<string> userRoles = await _userManager.GetRolesAsync(user);
+
+            return new JsonResult(
+                Wrappyfier
+                .WrapGetUserRoles(
+                    user.Id,
+                    user.Email,
+                    userRoles.ToList(),
                     200));
         }
 
