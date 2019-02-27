@@ -179,7 +179,7 @@ namespace Auth.API.Controllers
             bool roleExists = await RoleExists(role);
             bool userExists = await UserExists(id);
 
-            if (!roleExists && !userExists)
+            if (!roleExists || !userExists)
             {
                 return new JsonResult(
                       new AddUserToRoleResponseMessage()
@@ -340,15 +340,38 @@ namespace Auth.API.Controllers
 
             if (String.IsNullOrEmpty(userId))
             {
-                return BadRequest("Id can not be empty.");
+                return new JsonResult(
+                    Errors
+                    .GetUserRolesErrorResponse(
+                        new GetUserRolesErrorResponse()
+                        {
+                            Roles = new List<string>(),
+                            Code = "userId_can_not_be_empty",
+                            Description = "UserId cannot be empty.",
+                            Error = "UserId can not be empty",
+                            StatusCode = 400,
+                            UserId = userId
+
+                        }));
             }
 
             User user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                //TODO-Bygg error message som de andra
-                //TODO-Bygg anrop till denna kontroller från gateway
-                return new JsonResult(new { });
+                new JsonResult(
+                    Errors
+                    .GetUserRolesErrorResponse(
+                        new GetUserRolesErrorResponse()
+                        {
+                            Roles = new List<string>(),
+                            Code = "user_is_not_found",
+                            Description = "User can not be found.",
+                            Error = "User is not found",
+                            StatusCode = 404,
+                            UserId = userId,
+                            Email = "no_email"
+
+                        }));
             }
 
             IList<string> userRoles = await _userManager.GetRolesAsync(user);

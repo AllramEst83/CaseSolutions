@@ -15,6 +15,6 @@ namespace Gateway.API.Interfaces
         Task<T> SignUp<T>(HttpParameters httpParameters);
         Task<T> AddRole<T>(HttpParameters httpParameters);
         Task<T> PostTo<T>(HttpParameters httpParameters);
-        HttpParameters GetHttpParameters(object model, string requestUrl, HttpMethod httpVerb);
+        HttpParameters GetHttpParameters(object model, string requestUrl, HttpMethod httpVerb, string id);
     }
 }
