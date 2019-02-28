@@ -385,6 +385,112 @@ namespace Auth.API.Controllers
                     200));
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> DeleteRole([FromBody] DeleteRoleViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            string roleId = model.RoleId.Trim();
+            string roleName = model.RoleName.Trim();
+
+            if (String.IsNullOrEmpty(roleId) && String.IsNullOrEmpty(roleName))
+            {
+                return new JsonResult(
+                    Errors
+                    .DeleteRoleErrorResponse(
+                        new DeleteRoleErrorResponse()
+                        {
+                            RoleName = roleName,
+                            RoleId = model.RoleId,
+                            Code = "role_id_or_ role_name_is_empty",
+                            Description = "Role id or role name is empty",
+                            Error = "Role id or role name is empty.",
+                            StatusCode = 400
+                        }));
+            }
+
+            if (!await RoleExists(roleName))
+            {
+                return new JsonResult(
+                  Errors
+                  .DeleteRoleErrorResponse(
+                      new DeleteRoleErrorResponse()
+                      {
+                          RoleName = roleName,
+                          RoleId = model.RoleId,
+                          Code = "role_id_or_role_name_does_not_match_a_role",
+                          Description = "Role id or role name does not match a current role",
+                          Error = "Role id or role name does not match a role.",
+                          StatusCode = 404
+                      }));
+            }
+
+            IdentityRole roleToDelete = await _roleManager.FindByIdAsync(roleId);
+            IList<User> listOfUsersWithCurrentRole = await _userManager.GetUsersInRoleAsync(roleName);
+
+            if (listOfUsersWithCurrentRole.Any())
+            {
+                return new JsonResult(
+                  Errors
+                  .DeleteRoleErrorResponse(
+                      new DeleteRoleErrorResponse()
+                      {
+                          RoleName = roleName,
+                          RoleId = model.RoleId,
+                          Code = "Conflict, role_is_being_used_by_users",
+                          Description = "Current role is being used by a user. Please remove dependencies before deleting this role.",
+                          Error = "Role is beinging used by users",
+                          StatusCode = 409
+                      }));
+            }
+
+            IdentityResult deleteRoleResult = await _roleManager.DeleteAsync(roleToDelete);
+
+            if (!deleteRoleResult.Succeeded)
+            {
+                return new JsonResult(
+               Errors
+               .DeleteRoleErrorResponse(
+                   new DeleteRoleErrorResponse()
+                   {
+                       RoleName = roleName,
+                       RoleId = roleId,
+                       Code = "unable_to_complete_delete_operation",
+                       Description = "Server was unable to delete the role.",
+                       Error = "Unable to complete delete operation",
+                       StatusCode = 422
+                   }));
+            }
+
+            await _context.SaveChangesAsync();
+
+            return new JsonResult(
+                Wrappyfier
+                .WrapDeleteRole(
+                    roleToDelete.Id,
+                    roleToDelete.Name,
+                    200
+                    ));
+        }
+
+        [HttpGet]
+        public IActionResult GetAllRoles()
+        {
+            var roles = _roleManager
+                .Roles.Select(
+                x => new
+                {
+                    x.Id,
+                    x.Name
+                })
+                .ToList();
+
+            return new JsonResult(new { allRoles = roles });
+        }
+
         //https://aryalnishan.com.np/asp-net-mvc/delete-user-related-data-in-asp-net-mvc-identity/
         //[Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
         [HttpDelete]
@@ -423,8 +529,9 @@ namespace Auth.API.Controllers
             return new OkObjectResult(new { });
         }
 
-        //Helper methods
 
+
+        //Helper methods
         public async Task<bool> UserHasRole(User user, string role)
         {
             IList<string> userRoles = await _userManager.GetRolesAsync(user);
@@ -432,7 +539,6 @@ namespace Auth.API.Controllers
 
             return userHasRole;
         }
-
 
         public async Task<bool> RoleExists(string role)
         {

@@ -131,7 +131,10 @@ namespace Auth.API
                 o.Password.RequiredLength = 6;
             });
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
-            builder.AddEntityFrameworkStores<UserContext>().AddDefaultTokenProviders().AddRoles<IdentityRole>();
+            builder
+                .AddEntityFrameworkStores<UserContext>()
+                .AddDefaultTokenProviders()
+                .AddRoles<IdentityRole>();
 
             #region
             //services.AddIdentity<User, IdentityRole>(options =>
@@ -159,7 +162,7 @@ namespace Auth.API
             else
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-       
+
                 app.UseExceptionHandler("/error");
                 app.UseHsts();
             }

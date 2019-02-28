@@ -17,6 +17,7 @@ namespace Gateway.API.Helpers
         public const string AdminAuthTestSuccess = "Auth for Admin on the Gateway server is workning.";
         public const string RemoveUserFromRole = "RemoveUserFromRole";
         public const string GetUserRoles = "GetUserRoles";
+        public const string DeleteRole = "DeleteRole";
 
         public static class AppSettingStrings
         {

@@ -42,6 +42,7 @@ namespace Gateway.API.Controllers
 
         //GET api/gateway/CommonAuthTest
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPICommonUser)]
+
         [HttpGet]
         public IActionResult CommonAuthTest()
         {
@@ -50,6 +51,7 @@ namespace Gateway.API.Controllers
         //TEST
 
         // GET api/gateway
+
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
@@ -74,10 +76,10 @@ namespace Gateway.API.Controllers
             }
 
             //Prepare httpParameters for request
-            HttpParameters httpParameters = 
+            HttpParameters httpParameters =
                 _gWService.GetHttpParameters(
-                    model, 
-                    ConfigHelper.AppSetting(Constants.ServerUrls, Constants.Auth), 
+                    model,
+                    ConfigHelper.AppSetting(Constants.ServerUrls, Constants.Auth),
                     HttpMethod.Post,
                     string.Empty);
 
@@ -99,7 +101,6 @@ namespace Gateway.API.Controllers
             return new OkObjectResult(authResult);
         }
 
-
         // POST api/gateway/signup
         [AllowAnonymous]
         [HttpPost]
@@ -111,10 +112,10 @@ namespace Gateway.API.Controllers
             }
 
             //Prepare httpParameters for request
-            HttpParameters httParameters = 
+            HttpParameters httParameters =
                 _gWService.GetHttpParameters(
-                    model, 
-                    ConfigHelper.AppSetting(Constants.ServerUrls, Constants.SignUp), 
+                    model,
+                    ConfigHelper.AppSetting(Constants.ServerUrls, Constants.SignUp),
                     HttpMethod.Post,
                     string.Empty);
 
@@ -142,11 +143,11 @@ namespace Gateway.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            HttpParameters httParameters = 
+            HttpParameters httParameters =
                 _gWService
                 .GetHttpParameters(
-                    model, 
-                    ConfigHelper.AppSetting(Constants.ServerUrls, Constants.AddUserToRole), 
+                    model,
+                    ConfigHelper.AppSetting(Constants.ServerUrls, Constants.AddUserToRole),
                     HttpMethod.Post,
                     string.Empty);
 
@@ -209,12 +210,12 @@ namespace Gateway.API.Controllers
             }
             else if (addRoleResult.StatusCode == 422 /*Unprocessable Entity*/)
             {
-                new UnprocessableEntityObjectResult(Errors.
-                   AddErrorToModelState(
-                       addRoleResult.Code,
-                       addRoleResult.Description,
-                       ModelState
-                       ));
+                return new UnprocessableEntityObjectResult(Errors.
+                     AddErrorToModelState(
+                         addRoleResult.Code,
+                         addRoleResult.Description,
+                         ModelState
+                         ));
             }
 
             return new OkObjectResult(addRoleResult);
@@ -274,6 +275,7 @@ namespace Gateway.API.Controllers
             return new OkObjectResult(removeUserFromRoleResult);
         }
 
+        // GET api/gateway/getuserroles
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPICommonUser)]
         [HttpGet]
         public async Task<IActionResult> GetUserRoles(string userId)
@@ -315,6 +317,78 @@ namespace Gateway.API.Controllers
             return new OkObjectResult(getUserRolesResult);
 
         }
+
+        // DELETE api/gateway/deleterole
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteRole(DeleteRoleViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(model);
+            }
+
+            HttpParameters httpParameters = _gWService
+           .GetHttpParameters(
+           model,
+           ConfigHelper.AppSetting(Constants.ServerUrls, Constants.DeleteRole),
+           HttpMethod.Delete,
+           string.Empty
+           );
+
+            DeleteRoleResponseMessage deleteRoleResult = await _gWService.PostTo<DeleteRoleResponseMessage>(httpParameters);
+
+            if (deleteRoleResult.StatusCode == 400)
+            {
+                return BadRequest(
+                    Errors
+                    .AddErrorToModelState(
+                        deleteRoleResult.Code,
+                        deleteRoleResult.Description,
+                        ModelState));
+            }
+
+            if (deleteRoleResult.StatusCode == 404)
+            {
+                return NotFound(
+                    Errors
+                    .AddErrorToModelState(
+                        deleteRoleResult.Code,
+                        deleteRoleResult.Description,
+                        ModelState));
+            }
+
+            if (deleteRoleResult.StatusCode == 409)
+            {
+                return new ConflictObjectResult(
+                    Errors
+                    .AddErrorToModelState(
+                        deleteRoleResult.Code,
+                        deleteRoleResult.Description,
+                        ModelState));
+            }
+
+            return new OkObjectResult(deleteRoleResult);
+        }
+
+
+        //[Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
+        //[HttpDelete]
+        //public async Task<IActionResult> DeleteUser(DeleteUserViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(model);
+        //    }
+        //}
+
+
+        //[Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
+        //[HttpGet]
+        //public async Task<IActionResult> GetAllUsers()
+        //{
+        //    return new OkObjectResult(new { });
+        //}
 
         // PUT api/gateway/5
         [HttpPut("{id}")]
