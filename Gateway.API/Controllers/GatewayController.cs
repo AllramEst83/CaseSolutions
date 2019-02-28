@@ -130,6 +130,16 @@ namespace Gateway.API.Controllers
                         ModelState
                         ));
             }
+            else if (sigUpResult.StatusCode == 422)
+            {
+                return new UnprocessableEntityObjectResult(
+                   Errors.
+                   AddErrorToModelState(
+                       sigUpResult.Code,
+                       sigUpResult.Description,
+                       ModelState
+                       ));
+            }
 
             return new OkObjectResult(sigUpResult);
         }
@@ -372,15 +382,47 @@ namespace Gateway.API.Controllers
         }
 
 
-        //[Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
-        //[HttpDelete]
-        //public async Task<IActionResult> DeleteUser(DeleteUserViewModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(model);
-        //    }
-        //}
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser(DeleteUserViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(model);
+            }
+
+            HttpParameters httpParameters = _gWService
+             .GetHttpParameters(
+                 model,
+                 ConfigHelper.AppSetting(Constants.ServerUrls, Constants.DeleteUser),
+                 HttpMethod.Delete,
+                 string.Empty
+                 );
+
+            var deleteUserResult = await _gWService.PostTo<DeleteUserResponseMessage>(httpParameters);
+            if (deleteUserResult.StatusCode == 404)
+            {
+                return NotFound(
+                    Errors
+                    .AddErrorToModelState(
+                        deleteUserResult.Code,
+                        deleteUserResult.Description,
+                        ModelState
+                        ));
+            }
+            else if (deleteUserResult.StatusCode == 422)
+            {
+                return new UnprocessableEntityObjectResult(
+                   Errors
+                   .AddErrorToModelState(
+                       deleteUserResult.Code,
+                       deleteUserResult.Description,
+                       ModelState
+                       ));
+            }
+
+            return new OkObjectResult(deleteUserResult);
+        }
 
 
         //[Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]

@@ -55,7 +55,7 @@ namespace Auth.API.Controllers
             if (await UserExists(userEmail))
             {
                 return new JsonResult(Errors.SigInErrorResponse(
-                    new SigUnAndRoleErrorHandlingResponse()
+                    new SignUpAndRoleErrorHandlingResponse()
                     {
                         Error = "User exists",
                         StatusCode = 400,
@@ -70,7 +70,7 @@ namespace Auth.API.Controllers
             if (!await RoleExists(userRole))
             {
                 return new JsonResult(Errors.SigInErrorResponse(
-                    new SigUnAndRoleErrorHandlingResponse()
+                    new SignUpAndRoleErrorHandlingResponse()
                     {
 
                         Error = "Role exists",
@@ -87,13 +87,31 @@ namespace Auth.API.Controllers
             var result = await _userManager.CreateAsync(userIdentity, model.Password);
             if (!result.Succeeded)
             {
-                return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
+                return new JsonResult(
+                    new SignUpAndRoleErrorHandlingResponse()
+                    {
+                        Error = "Unable to create user",
+                        StatusCode = 422,
+                        Description = "User could not be created at this time",
+                        Email = userEmail,
+                        Id = userIdentity.Id,
+                        Code = "unable_to_create_user"
+                    });
             }
 
             var addRoleResult = await _userManager.AddToRoleAsync(userIdentity, userRole);
             if (!addRoleResult.Succeeded)
             {
-                return new BadRequestObjectResult(Errors.AddErrorsToModelState(addRoleResult, ModelState));
+                return new JsonResult(
+                    new SignUpAndRoleErrorHandlingResponse()
+                    {
+                        Error = "Unable to link role to user",
+                        StatusCode = 422,
+                        Description = "Role could not be linked to the user.",
+                        Email = userEmail,
+                        Id = userIdentity.Id,
+                        Code = "unable_to_link_role_to_user"
+                    });
             }
 
             await _context.SaveChangesAsync();
@@ -491,7 +509,6 @@ namespace Auth.API.Controllers
             return new JsonResult(new { allRoles = roles });
         }
 
-        //https://aryalnishan.com.np/asp-net-mvc/delete-user-related-data-in-asp-net-mvc-identity/
         //[Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
         [HttpDelete]
         //Delete  /api/auth/deleteuser
@@ -509,24 +526,54 @@ namespace Auth.API.Controllers
             {
                 return NotFound(Wrappyfier
                     .WrapResponse(404, String
-                    .Format(Constants.APIMessages.
-                    NotFoundMessage, model.Id)));
+                    .Format(Constants
+                            .APIMessages.NotFoundMessage,
+                             model.Id
+                             )));
             }
 
-            //var rolesForUser = await _userManager.GetRolesAsync(user);
+            var rolesForUser = await _userManager.GetRolesAsync(user);
 
-            //var removeLoginsResult = await _userManager.RemoveLoginAsync(user, );
-            //if (!removeLoginsResult.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(removeLoginsResult, ModelState));
+            if (rolesForUser.Any())
+            {
+                IdentityResult removeLoginsResult = await _userManager.RemoveFromRolesAsync(user, rolesForUser);
 
-            //var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, rolesForUser);
-            //if (!removeLoginsResult.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(removeRolesResult, ModelState));
+                if (!removeLoginsResult.Succeeded)
+                {
+                    return new JsonResult(
+                        Errors
+                        .DeleteUserErrorResponse(
+                            new DeleteUserErrorMessage()
+                            {
+                                Email = user.Email,
+                                Id = user.Id,
+                                Code = "unable_to_complete_delete_operation_of_user_related_roles",
+                                StatusCode = 422,
+                                Description = "Roles realted to the current user could not be removed at this time.",
+                                Error = "Unable to complete delete opretaion of user related roles."
+                            }));
+                }
+            }
 
-            //var removeUserResult = await _userManager.DeleteAsync(user);
-            //if (!removeLoginsResult.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(removeUserResult, ModelState));
+            IdentityResult removeUserResult = await _userManager.DeleteAsync(user);
+            if (!removeUserResult.Succeeded)
+            {
+                return new JsonResult(
+                    Errors.DeleteUserErrorResponse(
+                        new DeleteUserErrorMessage()
+                        {
+                            Id = user.Id,
+                            Email = user.Email,
+                            Code = "unable_to_complete_delete_operation",
+                            StatusCode = 422,
+                            Description = "User was not deleted. The delete task could not be completed at this time.",
+                            Error = "Unable to complete delete opretaion."
+                        }));
+            }
 
-            //await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
-            return new OkObjectResult(new { });
+            return new OkObjectResult(Wrappyfier.WrapDeleteUserResponse(user.Id, user.Email));
         }
 
 
