@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using APIErrorHandling;
 using APIErrorHandling.Models;
 using APIResponseMessageWrapper;
+using APIResponseMessageWrapper.Model;
 using Auth.API.Helpers;
 using Auth.API.ViewModels;
 using AutoMapper;
@@ -133,7 +134,7 @@ namespace Auth.API.Controllers
             if (await RoleExists(role))
             {
                 return new JsonResult(Errors.AddRoleErrorResponse(
-                    new GatewayAddRoleResponse()
+                    new AddRoleErrorResponse()
                     {
                         Role = role,
                         Code = "role_exits",
@@ -153,7 +154,7 @@ namespace Auth.API.Controllers
             if (!roleResult.Succeeded)
             {
                 return new JsonResult(Errors.AddRoleErrorResponse(
-                    new GatewayAddRoleResponse()
+                    new AddRoleErrorResponse()
                     {
                         Role = role,
                         Code = "faild_to_add_role",
@@ -497,16 +498,35 @@ namespace Auth.API.Controllers
         [HttpGet]
         public IActionResult GetAllRoles()
         {
-            var roles = _roleManager
-                .Roles.Select(
-                x => new
-                {
-                    x.Id,
-                    x.Name
-                })
-                .ToList();
+            List<GetAllRoles> roles = new List<GetAllRoles>();
+            try
+            {
+                roles = _roleManager
+                  .Roles.Select(
+                  x => new GetAllRoles()
+                  {
+                      Id = x.Id,
+                      RoleName = x.Name
 
-            return new JsonResult(new { allRoles = roles });
+                  }).ToList();
+            }
+            catch (NotSupportedException ex)
+            {
+
+                return new JsonResult(
+                    Errors
+                    .GetAllRolesErrorResponse(
+                        new GetAllRolesErrorResponse()
+                        {
+                            ListOfAllRoles = null,
+                            StatusCode = 400,
+                            Code = ex.Source,
+                            Description = ex.Message.ToString(),
+                            Error =  ex.StackTrace.ToString()
+                        }));
+            }
+
+            return new JsonResult(Wrappyfier.WrapGetAllRolesResponse(roles));
         }
 
         //[Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]

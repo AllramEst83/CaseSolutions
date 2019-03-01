@@ -176,7 +176,6 @@ namespace Gateway.API.Controllers
             return new OkObjectResult(addUserToRoleResult);
         }
 
-
         // POST api/gateway/addrole
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpPost]
@@ -425,12 +424,34 @@ namespace Gateway.API.Controllers
         }
 
 
-        //[Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
-        //[HttpGet]
-        //public async Task<IActionResult> GetAllUsers()
-        //{
-        //    return new OkObjectResult(new { });
-        //}
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
+        [HttpGet]
+        public async Task<IActionResult> GetAllRoles()
+        {
+
+            HttpParameters httpParameters = _gWService
+               .GetHttpParameters(
+                   null,
+                   ConfigHelper.AppSetting(Constants.ServerUrls, Constants.GetAllRoles),
+                   HttpMethod.Get,
+                   string.Empty
+                   );
+
+            var getAllRolesResult = await _gWService.Get<GetAllRolesResponseMessage>(httpParameters);
+
+            if (getAllRolesResult.StatusCode == 400)
+            {
+                return BadRequest(
+                    Errors
+                    .AddErrorToModelState(
+                        getAllRolesResult.Code,
+                        getAllRolesResult.Description,
+                        ModelState
+                        ));
+            }
+
+            return new OkObjectResult(getAllRolesResult);
+        }
 
         // PUT api/gateway/5
         [HttpPut("{id}")]
