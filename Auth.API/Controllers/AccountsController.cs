@@ -9,8 +9,10 @@ using APIResponseMessageWrapper.Model;
 using Auth.API.Helpers;
 using Auth.API.ViewModels;
 using AutoMapper;
+using CaseSolutionsTokenValidationParameters.Models;
 using Database.Service.API.Data.UserData.UserEntities.UserContext;
 using Database.Service.API.Data.UserData.UserEntities.UserModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -495,6 +497,7 @@ namespace Auth.API.Controllers
                     ));
         }
 
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpGet]
         public IActionResult GetAllRoles()
         {
@@ -528,8 +531,7 @@ namespace Auth.API.Controllers
 
             return new JsonResult(Wrappyfier.WrapGetAllRolesResponse(roles));
         }
-
-        //[Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
+               
         [HttpDelete]
         //Delete  /api/auth/deleteuser
         public async Task<IActionResult> DeleteUser([FromBody] DeleteUserViewModel model)

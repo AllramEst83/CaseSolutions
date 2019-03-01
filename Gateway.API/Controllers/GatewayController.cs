@@ -7,6 +7,7 @@ using Gateway.API.ViewModels;
 using HttpClientService.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -424,9 +425,9 @@ namespace Gateway.API.Controllers
         }
 
 
-        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
         [HttpGet]
-        public async Task<IActionResult> GetAllRoles()
+        public async Task<IActionResult> GetAllRoles([FromHeader] string authorization)
         {
 
             HttpParameters httpParameters = _gWService
@@ -434,7 +435,8 @@ namespace Gateway.API.Controllers
                    null,
                    ConfigHelper.AppSetting(Constants.ServerUrls, Constants.GetAllRoles),
                    HttpMethod.Get,
-                   string.Empty
+                   string.Empty,
+                   authorization
                    );
 
             var getAllRolesResult = await _gWService.Get<GetAllRolesResponseMessage>(httpParameters);
