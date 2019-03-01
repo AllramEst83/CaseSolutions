@@ -441,7 +441,17 @@ namespace Gateway.API.Controllers
 
             var getAllRolesResult = await _gWService.Get<GetAllRolesResponseMessage>(httpParameters);
 
-            if (getAllRolesResult.StatusCode == 400)
+            if (getAllRolesResult.StatusCode == 403)
+            {
+                return BadRequest(
+                   Errors
+                   .AddErrorToModelState(
+                       "forbidden_access",
+                       "Validation error. Token is not valid",
+                       ModelState
+                       ));
+            }
+           else if (getAllRolesResult.StatusCode == 400)
             {
                 return BadRequest(
                     Errors

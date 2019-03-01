@@ -497,6 +497,8 @@ namespace Auth.API.Controllers
                     ));
         }
 
+
+        // Token is sent from gateway server. From "GetAllRoles" method. When Token is not correctly validated the server returns 
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpGet]
         public IActionResult GetAllRoles()
