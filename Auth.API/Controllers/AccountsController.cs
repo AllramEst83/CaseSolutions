@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using APIErrorHandling;
 using APIErrorHandling.Models;
 using APIResponseMessageWrapper;
-using APIResponseMessageWrapper.Model;
 using Auth.API.Helpers;
 using Auth.API.ViewModels;
 using AutoMapper;
@@ -15,6 +14,8 @@ using Database.Service.API.Data.UserData.UserEntities.UserModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ResponseModels.Models;
+using ResponseModels.ViewModels;
 
 namespace Auth.API.Controllers
 {
@@ -521,11 +522,11 @@ namespace Auth.API.Controllers
                 return new JsonResult(
                     Errors
                     .GetAllRolesErrorResponse(
-                        new GetAllRolesErrorResponse()
+                        new GetAllRolesResponse()
                         {
                             ListOfAllRoles = null,
                             StatusCode = 400,
-                            Code = ex.Source,
+                            Code = "not_supported_exception",
                             Description = ex.Message.ToString(),
                             Error =  ex.StackTrace.ToString()
                         }));

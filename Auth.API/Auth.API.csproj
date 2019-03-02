@@ -28,6 +28,9 @@
     <Reference Include="HttpClientService">
       <HintPath>..\..\HttpClientService\HttpClientService\bin\Debug\netcoreapp2.2\HttpClientService.dll</HintPath>
     </Reference>
+    <Reference Include="ResponseModels">
+      <HintPath>..\..\ResponseModels\ResponseModels\bin\Debug\netcoreapp2.2\ResponseModels.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

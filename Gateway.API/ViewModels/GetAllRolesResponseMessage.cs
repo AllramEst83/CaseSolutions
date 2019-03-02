@@ -1,4 +1,5 @@
 ﻿using APIResponseMessageWrapper.Model;
+using ResponseModels.Models;
 using System.Collections.Generic;
 
 namespace Gateway.API.ViewModels

@@ -447,8 +447,8 @@ namespace Gateway.API.Controllers
                 return BadRequest(
                    Errors
                    .AddErrorToModelState(
-                       "unauthorized_access",
-                       "User is not authorized to access this resource",
+                       getAllRolesResult.Code,
+                       getAllRolesResult.Description,
                        ModelState
                        ));
             }
@@ -467,8 +467,8 @@ namespace Gateway.API.Controllers
                 return BadRequest(
                     Errors
                     .AddErrorToModelState(
-                       "forbidden_access",
-                       "Validation error. Token is not valid",
+                       getAllRolesResult.Code,
+                       getAllRolesResult.Description,
                         ModelState
                         ));
             }
