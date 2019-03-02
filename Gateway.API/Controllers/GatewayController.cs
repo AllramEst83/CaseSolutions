@@ -7,6 +7,7 @@ using Gateway.API.ViewModels;
 using HttpClientService.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ResponseModels.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -439,25 +440,35 @@ namespace Gateway.API.Controllers
                    authorization
                    );
 
-            var getAllRolesResult = await _gWService.Get<GetAllRolesResponseMessage>(httpParameters);
+            var getAllRolesResult = await _gWService.Get<GetAllRolesResponse>(httpParameters);
 
-            if (getAllRolesResult.StatusCode == 403)
+            if (getAllRolesResult.StatusCode == 400)
             {
                 return BadRequest(
                    Errors
                    .AddErrorToModelState(
-                       "forbidden_access",
-                       "Validation error. Token is not valid",
+                       "unauthorized_access",
+                       "User is not authorized to access this resource",
                        ModelState
                        ));
             }
-           else if (getAllRolesResult.StatusCode == 400)
+            else if (getAllRolesResult.StatusCode == 401)
             {
                 return BadRequest(
                     Errors
                     .AddErrorToModelState(
                         getAllRolesResult.Code,
                         getAllRolesResult.Description,
+                        ModelState
+                        ));
+            }
+            else if (getAllRolesResult.StatusCode == 403)
+            {
+                return BadRequest(
+                    Errors
+                    .AddErrorToModelState(
+                       "forbidden_access",
+                       "Validation error. Token is not valid",
                         ModelState
                         ));
             }
