@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APIErrorHandling;
-using APIErrorHandling.Models;
 using APIResponseMessageWrapper;
 using Auth.API.Helpers;
 using Auth.API.ViewModels;
@@ -47,6 +46,8 @@ namespace Auth.API.Controllers
             return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.APIMessages.Ping));
         }
 
+        //DONE
+        [HttpPost]
         // POST api/accounts/signup
         public async Task<IActionResult> Signup([FromBody]RegistrationViewModel model)
         {
@@ -59,7 +60,7 @@ namespace Auth.API.Controllers
             if (await UserExists(userEmail))
             {
                 return new JsonResult(Errors.SigInErrorResponse(
-                    new SignUpAndRoleErrorHandlingResponse()
+                    new SignUpResponse()
                     {
                         Error = "User exists",
                         StatusCode = 400,
@@ -74,7 +75,7 @@ namespace Auth.API.Controllers
             if (!await RoleExists(userRole))
             {
                 return new JsonResult(Errors.SigInErrorResponse(
-                    new SignUpAndRoleErrorHandlingResponse()
+                    new SignUpResponse()
                     {
 
                         Error = "Role exists",
@@ -92,7 +93,7 @@ namespace Auth.API.Controllers
             if (!result.Succeeded)
             {
                 return new JsonResult(
-                    new SignUpAndRoleErrorHandlingResponse()
+                    new SignUpResponse()
                     {
                         Error = "Unable to create user",
                         StatusCode = 422,
@@ -107,7 +108,7 @@ namespace Auth.API.Controllers
             if (!addRoleResult.Succeeded)
             {
                 return new JsonResult(
-                    new SignUpAndRoleErrorHandlingResponse()
+                    new SignUpResponse()
                     {
                         Error = "Unable to link role to user",
                         StatusCode = 422,
@@ -123,8 +124,10 @@ namespace Auth.API.Controllers
             return new OkObjectResult(Wrappyfier.WrapSigupResponse(userIdentity.Id, userIdentity.Email, 200));
         }
 
-        // POST api/accounts/addrole
+        //DONE
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpPost]
+        // POST api/accounts/addrole
         public async Task<IActionResult> AddRole([FromBody] RoleToAddViewModel model)
         {
 
@@ -137,7 +140,7 @@ namespace Auth.API.Controllers
             if (await RoleExists(role))
             {
                 return new JsonResult(Errors.AddRoleErrorResponse(
-                    new AddRoleErrorResponse()
+                    new AddRoleResponse()
                     {
                         Role = role,
                         Code = "role_exits",
@@ -157,7 +160,7 @@ namespace Auth.API.Controllers
             if (!roleResult.Succeeded)
             {
                 return new JsonResult(Errors.AddRoleErrorResponse(
-                    new AddRoleErrorResponse()
+                    new AddRoleResponse()
                     {
                         Role = role,
                         Code = "faild_to_add_role",
@@ -173,8 +176,9 @@ namespace Auth.API.Controllers
             return new OkObjectResult(Wrappyfier.WrapAddRoleResponse(role));
         }
 
+        //DONE
+        [HttpPut]
         // POST api/accounts/addusertorole
-        [HttpPost]
         public async Task<IActionResult> AddUserToRole([FromBody] AddUserToRoleViewModel model)
         {
             if (!ModelState.IsValid)
@@ -186,8 +190,8 @@ namespace Auth.API.Controllers
             string role = model.Role;
             if (String.IsNullOrEmpty(id) || String.IsNullOrEmpty(role))
             {
-                return new JsonResult(
-                    new AddUserToRoleResponseMessage()
+                return new JsonResult(Errors.AddUserToRoleErrorResponse(
+                    new AddUserToRoleResponse()
                     {
                         Role = role,
                         Email = "no_email",
@@ -195,7 +199,7 @@ namespace Auth.API.Controllers
                         Description = "",
                         Error = "User email or role can not be empty",
                         StatusCode = 400
-                    });
+                    }));
             }
 
             bool roleExists = await RoleExists(role);
@@ -203,8 +207,8 @@ namespace Auth.API.Controllers
 
             if (!roleExists || !userExists)
             {
-                return new JsonResult(
-                      new AddUserToRoleResponseMessage()
+                return new JsonResult(Errors.AddUserToRoleErrorResponse(
+                      new AddUserToRoleResponse()
                       {
                           Role = role,
                           Email = "no_email",
@@ -212,7 +216,7 @@ namespace Auth.API.Controllers
                           Description = "The user id or the role name does not match a user or a role.",
                           Error = "User or role is not found",
                           StatusCode = 404
-                      });
+                      }));
             }
 
             var userIdentity = await _userManager.FindByIdAsync(id);
@@ -226,7 +230,7 @@ namespace Auth.API.Controllers
                 if (!addRoleResult.Succeeded)
                 {
                     return new JsonResult(Errors.AddUserToRoleErrorResponse(
-                        new AddUserToRoleErrorResponse()
+                        new AddUserToRoleResponse()
                         {
                             Role = role,
                             Code = "faild_to_add_role_to_user",
@@ -239,7 +243,7 @@ namespace Auth.API.Controllers
             else
             {
                 return new JsonResult(Errors.AddUserToRoleErrorResponse(
-                        new AddUserToRoleErrorResponse()
+                        new AddUserToRoleResponse()
                         {
                             Role = role,
                             Code = "user_has_already_role_assigned",
@@ -254,8 +258,10 @@ namespace Auth.API.Controllers
             return new OkObjectResult(Wrappyfier.WrapAddRoleToUserResponse(userIdentity.Email, userRole.Name));
         }
 
-        // PUT api/accounts/removeuserfromrole
+        //DONE       
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpPut]
+        //PUT api/accounts/removeuserfromrole
         public async Task<IActionResult> RemoveUserFromRole([FromBody] RemoveUserfromRoleViewModel model)
         {
 
@@ -272,7 +278,7 @@ namespace Auth.API.Controllers
                 return new JsonResult(
                     Errors
                     .RemoveRoleFromUserErrorResponse(
-                        new RemoveUserfromRoleErrorHAndelingResponse()
+                        new AddUserToRoleResponse()
                         {
                             Role = role,
                             Email = "no_email",
@@ -292,7 +298,7 @@ namespace Auth.API.Controllers
                 return new JsonResult(
                     Errors
                     .RemoveRoleFromUserErrorResponse(
-                        new RemoveUserfromRoleErrorHAndelingResponse()
+                        new AddUserToRoleResponse()
                         {
                             Role = role,
                             Email = "no_email",
@@ -316,7 +322,7 @@ namespace Auth.API.Controllers
                     return new JsonResult(
                         Errors
                         .RemoveRoleFromUserErrorResponse(
-                            new RemoveUserfromRoleErrorHAndelingResponse()
+                            new AddUserToRoleResponse()
                             {
                                 Role = role,
                                 Email = userIdentity.Email,
@@ -333,7 +339,7 @@ namespace Auth.API.Controllers
                 return new JsonResult(
                     Errors
                     .RemoveRoleFromUserErrorResponse(
-                        new RemoveUserfromRoleErrorHAndelingResponse()
+                        new AddUserToRoleResponse()
                         {
                             Role = role,
                             Email = userIdentity.Email,
@@ -356,7 +362,10 @@ namespace Auth.API.Controllers
                     200));
         }
 
+        //DONE
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpGet]
+        //GET/api/auth/getuserroles
         public async Task<IActionResult> GetUserRoles([FromQuery] string userId)
         {
 
@@ -365,7 +374,7 @@ namespace Auth.API.Controllers
                 return new JsonResult(
                     Errors
                     .GetUserRolesErrorResponse(
-                        new GetUserRolesErrorResponse()
+                        new GetUserRolesResponse()
                         {
                             Roles = new List<string>(),
                             Code = "userId_can_not_be_empty",
@@ -378,12 +387,13 @@ namespace Auth.API.Controllers
             }
 
             User user = await _userManager.FindByIdAsync(userId);
+
             if (user == null)
             {
                 new JsonResult(
                     Errors
                     .GetUserRolesErrorResponse(
-                        new GetUserRolesErrorResponse()
+                        new GetUserRolesResponse()
                         {
                             Roles = new List<string>(),
                             Code = "user_is_not_found",
@@ -407,7 +417,10 @@ namespace Auth.API.Controllers
                     200));
         }
 
+        //DONE
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpDelete]
+        //Delete  /api/auth/deleterole
         public async Task<IActionResult> DeleteRole([FromBody] DeleteRoleViewModel model)
         {
             if (!ModelState.IsValid)
@@ -423,7 +436,7 @@ namespace Auth.API.Controllers
                 return new JsonResult(
                     Errors
                     .DeleteRoleErrorResponse(
-                        new DeleteRoleErrorResponse()
+                        new DeleteRoleResponse()
                         {
                             RoleName = roleName,
                             RoleId = model.RoleId,
@@ -439,7 +452,7 @@ namespace Auth.API.Controllers
                 return new JsonResult(
                   Errors
                   .DeleteRoleErrorResponse(
-                      new DeleteRoleErrorResponse()
+                      new DeleteRoleResponse()
                       {
                           RoleName = roleName,
                           RoleId = model.RoleId,
@@ -458,7 +471,7 @@ namespace Auth.API.Controllers
                 return new JsonResult(
                   Errors
                   .DeleteRoleErrorResponse(
-                      new DeleteRoleErrorResponse()
+                      new DeleteRoleResponse()
                       {
                           RoleName = roleName,
                           RoleId = model.RoleId,
@@ -476,7 +489,7 @@ namespace Auth.API.Controllers
                 return new JsonResult(
                Errors
                .DeleteRoleErrorResponse(
-                   new DeleteRoleErrorResponse()
+                   new DeleteRoleResponse()
                    {
                        RoleName = roleName,
                        RoleId = roleId,
@@ -498,10 +511,10 @@ namespace Auth.API.Controllers
                     ));
         }
 
-
-        // Token is sent from gateway server. From "GetAllRoles" method. When Token is not correctly validated the server returns 
+        //DONE
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpGet]
+        //GET  /api/auth/getallroles
         public IActionResult GetAllRoles()
         {
             List<GetAllRoles> roles = new List<GetAllRoles>();
@@ -528,13 +541,15 @@ namespace Auth.API.Controllers
                             StatusCode = 400,
                             Code = "not_supported_exception",
                             Description = ex.Message.ToString(),
-                            Error =  ex.StackTrace.ToString()
+                            Error = ex.StackTrace.ToString()
                         }));
             }
 
             return new JsonResult(Wrappyfier.WrapGetAllRolesResponse(roles));
         }
-               
+
+        //DONE
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpDelete]
         //Delete  /api/auth/deleteuser
         public async Task<IActionResult> DeleteUser([FromBody] DeleteUserViewModel model)
@@ -549,12 +564,16 @@ namespace Auth.API.Controllers
 
             if (user == null)
             {
-                return NotFound(Wrappyfier
-                    .WrapResponse(404, String
-                    .Format(Constants
-                            .APIMessages.NotFoundMessage,
-                             model.Id
-                             )));
+                return new JsonResult(
+                    Errors.DeleteUserErrorResponse(new DeleteUserResponse()
+                    {
+                        Email = "no_email",
+                        Id = model.Id,
+                        Code = "user_not_found",
+                        StatusCode = 401,
+                        Description = String.Format(Constants.APIMessages.NotFoundMessage, model.Id),
+                        Error = "User not found"
+                    }));
             }
 
             var rolesForUser = await _userManager.GetRolesAsync(user);
@@ -568,7 +587,7 @@ namespace Auth.API.Controllers
                     return new JsonResult(
                         Errors
                         .DeleteUserErrorResponse(
-                            new DeleteUserErrorMessage()
+                            new DeleteUserResponse()
                             {
                                 Email = user.Email,
                                 Id = user.Id,
@@ -581,11 +600,12 @@ namespace Auth.API.Controllers
             }
 
             IdentityResult removeUserResult = await _userManager.DeleteAsync(user);
+
             if (!removeUserResult.Succeeded)
             {
                 return new JsonResult(
                     Errors.DeleteUserErrorResponse(
-                        new DeleteUserErrorMessage()
+                        new DeleteUserResponse()
                         {
                             Id = user.Id,
                             Email = user.Email,

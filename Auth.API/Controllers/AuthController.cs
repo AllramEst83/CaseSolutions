@@ -1,5 +1,4 @@
 ﻿using APIErrorHandling;
-using APIErrorHandling.Models;
 using APIResponseMessageWrapper;
 using APIResponseMessageWrapper.Model;
 using Auth.API.AuthFactory;
@@ -13,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using ResponseModels.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +43,7 @@ namespace Auth.API.Controllers
             return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.APIMessages.Ping));
         }
 
-
+        //DONE
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
         [HttpGet]
         public IActionResult GetListOfUsers()
@@ -66,7 +66,7 @@ namespace Auth.API.Controllers
             if (!ModelState.IsValid)
             {
                 return new JsonResult(Errors
-                    .ErrorResponse(new JwtErrorHandlingModel()
+                    .ErrorResponse(new JwtResponse()
                     {
                         Auth_Token = "",
                         Code = "modelState_invalid",
@@ -81,7 +81,7 @@ namespace Auth.API.Controllers
             if (identity == null)
             {
                 return new JsonResult(Errors
-                    .ErrorResponse(new JwtErrorHandlingModel()
+                    .ErrorResponse(new JwtResponse()
                     {
                         Auth_Token = "",
                         Code = "login_failure",
@@ -98,7 +98,7 @@ namespace Auth.API.Controllers
             return new OkObjectResult(jwtResponse);
         }
 
-
+        //Help methods
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
@@ -122,6 +122,6 @@ namespace Auth.API.Controllers
             // Credentials are invalid, or account doesn't exist
             return await Task.FromResult<ClaimsIdentity>(null);
         }
-
+        //Help methods
     }
 }

@@ -1,8 +1,5 @@
-﻿using Gateway.API.Helpers;
-using Gateway.API.Interfaces;
-using Gateway.API.ViewModels;
+﻿using Gateway.API.Interfaces;
 using HttpClientService.Helpers;
-using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;

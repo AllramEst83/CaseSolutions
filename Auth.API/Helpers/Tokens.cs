@@ -2,6 +2,7 @@
 using Auth.API.Models;
 using Auth.API.ViewModels;
 using Newtonsoft.Json;
+using ResponseModels.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,7 @@ namespace Auth.API.Helpers
     {
         public static async Task<string> GenerateJwt(ClaimsIdentity identity, IJwtFactory jwtFactory, string userName, JwtIssuerOptions jwtOptions, JsonSerializerSettings serializerSettings)
         {
-            //Add lines here to the token
-            var response = new JwtAuthResponse
+            var response = new JwtResponse
             {
                 Id = identity.Claims.Single(c => c.Type == "id").Value,
                 Auth_Token = await jwtFactory.GenerateEncodedToken(userName, identity),
@@ -23,6 +23,7 @@ namespace Auth.API.Helpers
                 Code = "login_success",
                 StatusCode = 200,
                 Description = "user was authenticated",
+                Error = "no_error"
             };
 
             return JsonConvert.SerializeObject(response, serializerSettings);
