@@ -82,7 +82,7 @@ namespace Gateway.API.Controllers
 
             if (authResult.StatusCode == 400)
             {
-                return ResponseService.GetResponse<BadRequestObjectResult, JwtResponse>(authResult, ModelState);
+                return await ResponseService.GetResponse<BadRequestObjectResult, JwtResponse>(authResult, ModelState);
             }
 
             //return jwt token
@@ -113,11 +113,11 @@ namespace Gateway.API.Controllers
 
             if (signUpResult.StatusCode == 422)
             {
-                return ResponseService.GetResponse<UnprocessableEntityObjectResult, SignUpResponse>(signUpResult, ModelState);
+                return await ResponseService.GetResponse<UnprocessableEntityObjectResult, SignUpResponse>(signUpResult, ModelState);
             }
             else if (signUpResult.StatusCode != 200)
             {
-                return ResponseService.GetResponse<BadRequestObjectResult, SignUpResponse>(signUpResult, ModelState);
+                return await ResponseService.GetResponse<BadRequestObjectResult, SignUpResponse>(signUpResult, ModelState);
             }
 
             return new OkObjectResult(signUpResult);
@@ -149,15 +149,15 @@ namespace Gateway.API.Controllers
 
             if (addRoleResult.StatusCode == 400)
             {
-                return ResponseService.GetResponse<BadRequestObjectResult, AddRoleResponse>(addRoleResult, ModelState);
+                return await ResponseService.GetResponse<BadRequestObjectResult, AddRoleResponse>(addRoleResult, ModelState);
             }
             else if (addRoleResult.StatusCode == 424)
             {
-                return ResponseService.GetResponse<ConflictObjectResult, AddRoleResponse>(addRoleResult, ModelState);
+                return await ResponseService.GetResponse<ConflictObjectResult, AddRoleResponse>(addRoleResult, ModelState);
             }
             else if (addRoleResult.StatusCode == 422)
             {
-                return ResponseService.GetResponse<UnprocessableEntityObjectResult, AddRoleResponse>(addRoleResult, ModelState);
+                return await ResponseService.GetResponse<UnprocessableEntityObjectResult, AddRoleResponse>(addRoleResult, ModelState);
             }
 
             return new OkObjectResult(addRoleResult);
@@ -188,19 +188,20 @@ namespace Gateway.API.Controllers
 
             if (removeUserFromRoleResult.StatusCode == 404)
             {
-                return ResponseService.GetResponse<NotFoundObjectResult, RemoveUserfromRoleResponse>(removeUserFromRoleResult, ModelState);
+                return await
+                    ResponseService.GetResponse<NotFoundObjectResult, RemoveUserfromRoleResponse>(removeUserFromRoleResult, ModelState);
             }
             else if (removeUserFromRoleResult.StatusCode == 422)
             {
-                return ResponseService.GetResponse<UnprocessableEntityObjectResult, RemoveUserfromRoleResponse>(removeUserFromRoleResult, ModelState);
+                return await ResponseService.GetResponse<UnprocessableEntityObjectResult, RemoveUserfromRoleResponse>(removeUserFromRoleResult, ModelState);
             }
             else if (removeUserFromRoleResult.StatusCode == 401)
             {
-                return ResponseService.GetResponse<UnauthorizedObjectResult,RemoveUserfromRoleResponse>(removeUserFromRoleResult, ModelState);
+                return await ResponseService.GetResponse<UnauthorizedObjectResult,RemoveUserfromRoleResponse>(removeUserFromRoleResult, ModelState);
             }
             else if (removeUserFromRoleResult.StatusCode != 200)
             {
-                return ResponseService.GetResponse<BadRequestObjectResult, RemoveUserfromRoleResponse>(removeUserFromRoleResult, ModelState);
+                return await ResponseService.GetResponse<BadRequestObjectResult, RemoveUserfromRoleResponse>(removeUserFromRoleResult, ModelState);
             }
 
             return new OkObjectResult(removeUserFromRoleResult);
@@ -230,11 +231,11 @@ namespace Gateway.API.Controllers
             AddUserToRoleResponse addUserToRoleResult = await _gWService.PostTo<AddUserToRoleResponse>(httParameters);
             if (addUserToRoleResult.StatusCode == 401)
             {
-                return ResponseService.GetResponse<UnauthorizedObjectResult,AddUserToRoleResponse>(addUserToRoleResult, ModelState);
+                return await ResponseService.GetResponse<UnauthorizedObjectResult,AddUserToRoleResponse>(addUserToRoleResult, ModelState);
             }
             else if (addUserToRoleResult.StatusCode != 200)
             {
-                return ResponseService.GetResponse<BadRequestObjectResult, AddUserToRoleResponse>(addUserToRoleResult, ModelState);
+                return await ResponseService.GetResponse<BadRequestObjectResult, AddUserToRoleResponse>(addUserToRoleResult, ModelState);
             }
 
             return new OkObjectResult(addUserToRoleResult);
@@ -265,15 +266,15 @@ namespace Gateway.API.Controllers
 
             if (getUserRolesResult.StatusCode == 404)
             {
-                return ResponseService.GetResponse<NotFoundObjectResult, GetUserRolesResponse>(getUserRolesResult, ModelState);
+                return await ResponseService.GetResponse<NotFoundObjectResult, GetUserRolesResponse>(getUserRolesResult, ModelState);
             }
             else if (getUserRolesResult.StatusCode == 401)
             {
-                return ResponseService.GetResponse<UnauthorizedObjectResult, GetUserRolesResponse>(getUserRolesResult, ModelState);
+                return await ResponseService.GetResponse<UnauthorizedObjectResult, GetUserRolesResponse>(getUserRolesResult, ModelState);
             }
             else if (getUserRolesResult.StatusCode != 200)
             {
-                return ResponseService.GetResponse<BadRequestObjectResult, GetUserRolesResponse>(getUserRolesResult, ModelState);
+                return await ResponseService.GetResponse<BadRequestObjectResult, GetUserRolesResponse>(getUserRolesResult, ModelState);
             }
 
 
@@ -306,19 +307,19 @@ namespace Gateway.API.Controllers
 
             if (deleteRoleResult.StatusCode == 404)
             {
-                return ResponseService.GetResponse<NotFoundObjectResult, DeleteRoleResponse>(deleteRoleResult, ModelState);
+                return await ResponseService.GetResponse<NotFoundObjectResult, DeleteRoleResponse>(deleteRoleResult, ModelState);
             }
             else if (deleteRoleResult.StatusCode == 409)
             {
-                return ResponseService.GetResponse<ConflictObjectResult, DeleteRoleResponse>(deleteRoleResult, ModelState);
+                return await ResponseService.GetResponse<ConflictObjectResult, DeleteRoleResponse>(deleteRoleResult, ModelState);
             }
             else if (deleteRoleResult.StatusCode == 401)
             {
-                return ResponseService.GetResponse<UnauthorizedObjectResult, DeleteRoleResponse>(deleteRoleResult, ModelState);
+                return await ResponseService.GetResponse<UnauthorizedObjectResult, DeleteRoleResponse>(deleteRoleResult, ModelState);
             }
             else if (deleteRoleResult.StatusCode != 200)
             {
-                return ResponseService.GetResponse<BadRequestObjectResult, DeleteRoleResponse>(deleteRoleResult, ModelState);
+                return await ResponseService.GetResponse<BadRequestObjectResult, DeleteRoleResponse>(deleteRoleResult, ModelState);
             }
 
             return new OkObjectResult(deleteRoleResult);
@@ -347,15 +348,15 @@ namespace Gateway.API.Controllers
 
             if (deleteUserResult.StatusCode == 404)
             {
-                return ResponseService.GetResponse<NotFoundObjectResult, DeleteUserResponse>(deleteUserResult, ModelState);
+                return await ResponseService.GetResponse<NotFoundObjectResult, DeleteUserResponse>(deleteUserResult, ModelState);
             }
             else if (deleteUserResult.StatusCode == 422)
             {
-                return ResponseService.GetResponse<UnprocessableEntityObjectResult, DeleteUserResponse>(deleteUserResult, ModelState);
+                return await ResponseService.GetResponse<UnprocessableEntityObjectResult, DeleteUserResponse>(deleteUserResult, ModelState);
             }
             else if (deleteUserResult.StatusCode != 200)
             {
-                return ResponseService.GetResponse<BadRequestObjectResult, DeleteUserResponse>(deleteUserResult, ModelState);
+                return await ResponseService.GetResponse<BadRequestObjectResult, DeleteUserResponse>(deleteUserResult, ModelState);
 
             }
 
@@ -381,7 +382,7 @@ namespace Gateway.API.Controllers
 
             if (getAllRolesResult.StatusCode != 200)
             {
-                return ResponseService.GetResponse<BadRequestObjectResult, GetAllRolesResponse>(getAllRolesResult, ModelState);
+                return await ResponseService.GetResponse<BadRequestObjectResult, GetAllRolesResponse>(getAllRolesResult, ModelState);
             }
 
             return new OkObjectResult(getAllRolesResult);
