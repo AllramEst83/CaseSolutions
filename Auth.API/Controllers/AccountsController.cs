@@ -501,7 +501,7 @@ namespace Auth.API.Controllers
             }
 
             await _context.SaveChangesAsync();
-
+      
             return new JsonResult(
                 Wrappyfier
                 .WrapDeleteRole(
@@ -531,7 +531,6 @@ namespace Auth.API.Controllers
             }
             catch (NotSupportedException ex)
             {
-
                 return new JsonResult(
                     Errors
                     .GetAllRolesErrorResponse(
@@ -620,7 +619,6 @@ namespace Auth.API.Controllers
 
             return new OkObjectResult(Wrappyfier.WrapDeleteUserResponse(user.Id, user.Email));
         }
-
 
 
         //Helper methods
