@@ -14,6 +14,7 @@ namespace Auth.API.Helpers
             public const string AccountCreatedSuccessMessage = "Account successfully created";
             public const string NotFoundMessage = "user with id: {0} does not exists.";
             public const string ListOfUsers = "This list contains only usernames and ids";
+            public const string ListOfUsersEmpty = "This list of users is empty";
             public const string RoleAdded = "Role successfully added";
         }
 

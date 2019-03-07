@@ -2,6 +2,7 @@
 using APIResponseMessageWrapper;
 using APIResponseMessageWrapper.Model;
 using Auth.API.AuthFactory;
+using Auth.API.ExceptionHandeling;
 using Auth.API.Helpers;
 using Auth.API.Models;
 using Auth.API.ViewModels;
@@ -42,53 +43,43 @@ namespace Auth.API.Controllers
         {
             return new OkObjectResult(Wrappyfier.WrapResponse(200, Constants.APIMessages.Ping));
         }
+               
 
         //DONE
-        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
-        [HttpGet]
-        public IActionResult GetListOfUsers()
-        {
-            var users = _userManager.Users.Select(x => new UsersViewModel
-            {
-                UserName = x.UserName,
-                Id = x.Id
-
-            })
-            .ToList();
-
-            return new OkObjectResult(Wrappyfier.WrapAPIList(200, Constants.APIMessages.ListOfUsers, users));
-        }
-
-        // POST api/auth/login
         [HttpPost]
+        // POST api/auth/login
         public async Task<IActionResult> Login([FromBody]CredentialsViewModel credentials)
         {
             if (!ModelState.IsValid)
             {
-                return new JsonResult(Errors
-                    .ErrorResponse(new JwtResponse()
+                return new JsonResult(await Errors
+                    .GetGenericErrorResponse(new JwtResponse()
                     {
-                        Auth_Token = "",
-                        Code = "modelState_invalid",
-                        Id = "",
-                        Description = "ModelState is not valid",
+                        Id = "no_id",
+                        Auth_Token = "no_token",
                         Expires_In = 0,
-                        StatusCode = 400
+                        StatusCode = 400,
+                        Error = "ModelState invalid",
+                        Description = "ModelState is not valid",
+                        Code = "modelState_invalid",
+
+
                     }));
             }
 
             var identity = await GetClaimsIdentity(credentials.UserName, credentials.Password);
             if (identity == null)
             {
-                return new JsonResult(Errors
-                    .ErrorResponse(new JwtResponse()
+                return new JsonResult(await Errors
+                    .GetGenericErrorResponse(new JwtResponse()
                     {
-                        Auth_Token = "",
-                        Code = "login_failure",
                         Id = "",
-                        Description = "Invalid username, password or role.",
+                        Auth_Token = "",
                         Expires_In = 0,
-                        StatusCode = 400
+                        StatusCode = 400,
+                        Error = "Login failure",
+                        Description = "Invalid username, password or role.",
+                        Code = "login_failure"
                     }));
 
             }

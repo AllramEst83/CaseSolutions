@@ -18,6 +18,8 @@ using Auth.API.Helpers;
 using Auth.API.AuthFactory;
 using CaseSolutionsTokenValidationParameters;
 using CaseSolutionsTokenValidationParameters.Models;
+using Auth.API.Interfaces;
+using Auth.API.Services;
 
 namespace Auth.API
 {
@@ -55,6 +57,7 @@ namespace Auth.API
 
             //Add JWTFactory
             services.AddSingleton<IJwtFactory, JwtFactory>();
+            services.AddScoped<IAccountsService, AccountsService>();
 
             //Get Symetrickey (!Should be Readonly Private!)
             SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings.Secret));
