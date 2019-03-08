@@ -6,6 +6,8 @@ using APIErrorHandling;
 using APIResponseMessageWrapper;
 using Auth.API.Helpers;
 using Auth.API.Interfaces;
+using Auth.API.Models;
+using Auth.API.Services;
 using Auth.API.ViewModels;
 using AutoMapper;
 using CaseSolutionsTokenValidationParameters.Models;
@@ -24,20 +26,16 @@ namespace Auth.API.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly UserContext _context;
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        //private readonly UserManager<User> _userManager;
+        //private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
         private readonly IAccountsService _accountsService;
 
         public AccountsController(
-            UserManager<User> userManager,
-            RoleManager<IdentityRole> roleManager,
             IAccountsService accountsService,
             IMapper mapper,
             UserContext appDbContext)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
             _mapper = mapper;
             _context = appDbContext;
             _accountsService = accountsService;
@@ -369,7 +367,7 @@ namespace Auth.API.Controllers
         //GET/api/auth/getuserroles
         public async Task<IActionResult> GetUserRoles([FromQuery] string userId)
         {
-            //HERE -> CustomException skapar inte enuser klass när user är null
+            //HERE -> CustomException skapar inte en user klass när user är null
             if (String.IsNullOrEmpty(userId))
             {
                 return new JsonResult(await Errors
@@ -404,14 +402,14 @@ namespace Auth.API.Controllers
                           }));
             }
 
-            IList<string> userRoles = await _userManager.GetRolesAsync(user);
+            RolesForUser userRoles = await _accountsService.GetUserRoles(user);
 
             return new JsonResult(
                 Wrappyfier
                 .WrapGetUserRoles(
                     user.Id,
                     user.Email,
-                    userRoles.ToList(),
+                    userRoles.Roles.ToList(),
                     200));
         }
 
@@ -429,14 +427,14 @@ namespace Auth.API.Controllers
             string roleId = model.RoleId.Trim();
             string roleName = model.RoleName.Trim();
 
-            if (String.IsNullOrEmpty(roleId) && String.IsNullOrEmpty(roleName))
+            if (String.IsNullOrEmpty(roleId) || String.IsNullOrEmpty(roleName))
             {
                 return new JsonResult(await Errors
                     .GetGenericErrorResponse(
                         new DeleteRoleResponse()
                         {
-                            RoleName = roleName,
-                            RoleId = model.RoleId,
+                            RoleName = "no_id",
+                            RoleId = "no_role_name",
                             StatusCode = 400,
                             Error = "Role id or role name is empty.",
                             Description = "Role id or role name is empty",
@@ -460,9 +458,24 @@ namespace Auth.API.Controllers
                       }));
             }
 
-            IList<User> listOfUsersWithCurrentRole = await _accountsService.GetUsersInRole(roleName);
+            UsersInRole listOfUsersWithCurrentRole = await _accountsService.GetUsersInRole(roleName);
 
-            if (listOfUsersWithCurrentRole.Any())
+            if (listOfUsersWithCurrentRole.IsNull)
+            {
+                return new JsonResult(await Errors
+                        .GetGenericErrorResponse(
+                            new DeleteUserResponse()
+                            {
+                                Id = "no_id",
+                                Email = "no_email",
+                                StatusCode = 422,
+                                Error = "Get users in role error",
+                                Description = "Unable to get users in role.",
+                                Code = "get_users_in_role_error",
+                            }));
+            }
+
+            if (listOfUsersWithCurrentRole.User.Any())
             {
                 return new JsonResult(
                  await Errors
@@ -513,36 +526,25 @@ namespace Auth.API.Controllers
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpGet]
         //GET  /api/auth/getallroles
-        public IActionResult GetAllRoles()
+        public async Task<IActionResult> GetAllRoles()
         {
-            List<GetAllRoles> roles = new List<GetAllRoles>();
-            try
-            {
-                roles = _roleManager
-                  .Roles.Select(
-                  x => new GetAllRoles()
-                  {
-                      Id = x.Id,
-                      RoleName = x.Name
+            AllRoles roles = await _accountsService.GetAllRoles();
 
-                  }).ToList();
-            }
-            catch (NotSupportedException ex)
+            if (roles.IsNull)
             {
-                return new JsonResult(
-                    Errors
-                    .GetGenericErrorResponse(
-                        new GetAllRolesResponse()
-                        {
-                            ListOfAllRoles = null,
-                            StatusCode = 400,
-                            Code = "not_supported_exception",
-                            Description = ex.Message.ToString(),
-                            Error = ex.StackTrace.ToString()
-                        }));
+                return new JsonResult(await Errors
+                  .GetGenericErrorResponse(
+                      new GetAllRolesResponse()
+                      {
+                          ListOfAllRoles = null,
+                          StatusCode = 400,
+                          Error = "Server was unable to get a list of roles",
+                          Description = "The server could not get the list of roles.",
+                          Code = "server_was_unable_to_a_get_list_of_roles"
+                      }));
             }
 
-            return new JsonResult(Wrappyfier.WrapGetAllRolesResponse(roles));
+            return new JsonResult(Wrappyfier.WrapGetAllRolesResponse(roles._AllRoles));
         }
 
         //DONE
@@ -557,51 +559,70 @@ namespace Auth.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = await _userManager.FindByIdAsync(model.Id);
+            var user = await _accountsService.GetUser(model.Id);
 
             if (user == null)
             {
-                return new JsonResult(
-                   await Errors.GetGenericErrorResponse(new DeleteUserResponse()
-                   {
-                       Email = "no_email",
-                       Id = model.Id,
-                       Code = "user_not_found",
-                       StatusCode = 401,
-                       Description = String.Format(Constants.APIMessages.NotFoundMessage, model.Id),
-                       Error = "User not found"
-                   }));
+                return new JsonResult(await Errors
+                    .GetGenericErrorResponse(
+                    new DeleteUserResponse()
+                    {
+                        Id = model.Id,
+                        Email = "no_email",
+                        StatusCode = 401,
+                        Error = "User not found",
+                        Description = String.Format(Constants.APIMessages.NotFoundMessage, model.Id),
+                        Code = "user_not_found",
+                    }));
             }
 
-            var rolesForUser = await _userManager.GetRolesAsync(user);
 
-            if (rolesForUser.Any())
+            RolesForUser rolesForUser = await _accountsService.GetUserRoles(user);
+
+            if (rolesForUser.IsNull)
             {
-                IdentityResult removeLoginsResult = await _userManager.RemoveFromRolesAsync(user, rolesForUser);
-
-                if (!removeLoginsResult.Succeeded)
-                {
-                    return new JsonResult(
-                        Errors
+                return new JsonResult(await Errors
                         .GetGenericErrorResponse(
                             new DeleteUserResponse()
                             {
-                                Email = user.Email,
-                                Id = user.Id,
-                                Code = "unable_to_complete_delete_operation_of_user_related_roles",
+                                Id = "no_id",
+                                Email = "no_email",
                                 StatusCode = 422,
+                                Error = "Get roles for user error",
+                                Description = "Unable to get roles for user.",
+                                Code = "get_roles_for_user_error",
+                            }));
+            }
+
+            if (rolesForUser.Roles.Any())
+            {
+                IdentityResult removeRolesFromUserResult = await _accountsService.RemoveRolesFromUser(user, rolesForUser.Roles);
+
+                if (!removeRolesFromUserResult.Succeeded)
+                {
+                    return new JsonResult(await Errors
+                        .GetGenericErrorResponse(
+                            new DeleteUserResponse()
+                            {
+                                Id = user.Id,
+                                Email = user.Email,
+                                StatusCode = 422,
+                                Error = "Unable to complete delete opretaion of user related roles.",
                                 Description = "Roles realted to the current user could not be removed at this time.",
-                                Error = "Unable to complete delete opretaion of user related roles."
+                                Code = "unable_to_complete_delete_operation_of_user_related_roles",
                             }));
                 }
             }
 
-            IdentityResult removeUserResult = await _userManager.DeleteAsync(user);
+            IdentityResult removeUserResult = await _accountsService.DeleteUser(user);
 
             if (!removeUserResult.Succeeded)
             {
-                return new JsonResult(
-                    Errors.GetGenericErrorResponse(
+                IdentityResult reAddRolesToUserResult = await _accountsService.AddRolesToUser(user, rolesForUser.Roles);
+
+                if (reAddRolesToUserResult.Succeeded)
+                {
+                    return new JsonResult(await Errors.GetGenericErrorResponse(
                         new DeleteUserResponse()
                         {
                             Id = user.Id,
@@ -611,6 +632,18 @@ namespace Auth.API.Controllers
                             Description = "User was not deleted. The delete task could not be completed at this time.",
                             Error = "Unable to complete delete opretaion."
                         }));
+                }
+
+                return new JsonResult(await Errors.GetGenericErrorResponse(
+                  new DeleteUserResponse()
+                  {
+                      Id = user.Id,
+                      Email = user.Email,
+                      Code = "unable_to_complete_delete_operation_USER_DOES_NOT_HAVE_ANY_ROLES",
+                      StatusCode = 422,
+                      Description = "User was not deleted. The delete task could not be completed at this time. User has no roles assign. Pleas add roles to user for access.",
+                      Error = "Unable to complete delete opretaion. User does not have any roles"
+                  }));
             }
 
             await _context.SaveChangesAsync();
@@ -621,61 +654,33 @@ namespace Auth.API.Controllers
         //DONE
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpGet]
-        public IActionResult GetListOfUsers()
+        public async Task<IActionResult> GetListOfUsers()
         {
-            List<UsersResponse> users = null;
+            AllUsers users = await _accountsService.GetListOfUsers();
 
-            users = _userManager.Users.Select(x => new UsersResponse
+            if (users.IsNull)
             {
-                UserName = x.UserName,
-                Id = x.Id
-            })
-                .ToList();
+                return new JsonResult(await Errors
+              .GetGenericErrorResponse(
+                  new GetAllUsersResponse()
+                  {
+                      ListOfAllUsers = null,
+                      StatusCode = 400,
+                      Error = "Server was unable to get a list of users",
+                      Description = "The server could not get the list of users.",
+                      Code = "server_was_unable_to_a_get_list_of_users"
+                  }));
+            }
 
-            return new OkObjectResult(
+            return new JsonResult(
                 Wrappyfier.WrapAPIList(
                     200,
-                    users.Count == 0 ?
+                    users._AllUsers.Count == 0 ?
                     Constants.APIMessages.ListOfUsersEmpty :
                     Constants.APIMessages.ListOfUsers,
-                    users
+                    users._AllUsers
 
                     ));
         }
-
-
-        //Helper methods
-        public async Task<bool> UserHasRole(User user, string role)
-        {
-            IList<string> userRoles = await _userManager.GetRolesAsync(user);
-            bool userHasRole = userRoles.Any(x => x.Equals(role));
-
-            return userHasRole;
-        }
-
-        public async Task<bool> RoleExists(string role)
-        {
-            bool roleExist = await _roleManager.RoleExistsAsync(role);
-
-            return roleExist;
-        }
-
-        public async Task<bool> UserExists(string userEmailOrId)
-        {
-            Guid guidId = Guid.Empty;
-            User userExist;
-            if (Guid.TryParse(userEmailOrId, out guidId))
-            {
-                userExist = await _userManager.FindByIdAsync(userEmailOrId);
-            }
-            else
-            {
-                userExist = await _userManager.FindByEmailAsync(userEmailOrId);
-
-            }
-
-            return userExist == null ? false : true;
-        }
-        //Helper methods
     }
 }

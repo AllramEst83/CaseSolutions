@@ -17,12 +17,20 @@ namespace Auth.API.ExceptionHandeling
                 return await function();
             }
             catch (R ex)
-            {                
+            {
+                //Skriv till logfil här
+                //https://github.com/NLog/NLog/wiki/Tutorial#best-practices-for-logging
+
+                return await Task.FromResult((T)Activator.CreateInstance(typeof(T)));
+
                 //if (ex is ArgumentNullException)
                 //{
-                return await Task.FromResult((T)Activator.CreateInstance(typeof(T)));
-                //}
 
+                //}
+            }
+            catch(MissingMethodException ex)
+            {
+                return await Task.FromResult((T)Activator.CreateInstance(typeof(T)));
             }
             //Last Exception in the order
             catch (Exception ex)

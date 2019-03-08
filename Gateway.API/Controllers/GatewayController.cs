@@ -388,5 +388,30 @@ namespace Gateway.API.Controllers
             return new OkObjectResult(getAllRolesResult);
         }
 
+        //DONE
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers([FromHeader] string authorization)
+        {
+
+            HttpParameters httpParameters = _gWService
+               .GetHttpParameters(
+                   null,
+                   ConfigHelper.AppSetting(Constants.ServerUrls, Constants.GetAllUsers),
+                   HttpMethod.Get,
+                   string.Empty,
+                   authorization
+                   );
+
+            GetAllUsersResponse getAllRolesResult = await _gWService.Get<GetAllUsersResponse>(httpParameters);
+
+            if (getAllRolesResult.StatusCode != 200)
+            {
+                return await ResponseService.GetResponse<BadRequestObjectResult, GetAllUsersResponse>(getAllRolesResult, ModelState);
+            }
+
+            return new OkObjectResult(getAllRolesResult);
+        }
+
     }
 }

@@ -73,8 +73,8 @@ namespace Auth.API.Controllers
                 return new JsonResult(await Errors
                     .GetGenericErrorResponse(new JwtResponse()
                     {
-                        Id = "",
-                        Auth_Token = "",
+                        Id = "no_token",
+                        Auth_Token = "no_token",
                         Expires_In = 0,
                         StatusCode = 400,
                         Error = "Login failure",

@@ -21,6 +21,7 @@ namespace Gateway.API.Helpers
         public const string DeleteRole = "DeleteRole";
         public const string DeleteUser = "DeleteUser";
         public const string GetAllRoles = "GetAllRoles";
+        public const string GetAllUsers = "GetAllUsers";
 
         public static class AppSettingStrings
         {

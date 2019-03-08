@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Database.Service.API.Data.UserData.UserEntities.UserModel;
 using Microsoft.AspNetCore.Identity;
 using Auth.API.ExceptionHandeling;
+using ResponseModels.Models;
+using Auth.API.Models;
+using ResponseModels.ViewModels;
 
 namespace Auth.API.Services
 {
@@ -47,6 +50,17 @@ namespace Auth.API.Services
             return identityResult;
         }
 
+        public async Task<IdentityResult> AddRolesToUser(User userIdentity, IEnumerable<string> userRoles)
+        {
+            IdentityResult identityResult = null;
+
+            identityResult = await TryCatch<ArgumentException, IdentityResult>(async () =>
+            {
+                return await _userManager.AddToRolesAsync(userIdentity, userRoles);
+            });
+
+            return identityResult;
+        }
 
         public async Task<IdentityResult> CreateRole(string role)
         {
@@ -84,7 +98,7 @@ namespace Auth.API.Services
 
             return identityRole;
         }
-        
+
         public async Task<IdentityResult> RemoveRolefromUser(User userIdentity, string userRole)
         {
             IdentityResult identityResult = null;
@@ -121,13 +135,39 @@ namespace Auth.API.Services
             return user;
         }
 
-        public async Task<IList<User>> GetUsersInRole(string roleName)
+        public async Task<AllUsers> GetListOfUsers()
         {
-            IList<User> usersInRole = null;
+            AllUsers users = null;
 
-            usersInRole = await TryCatch<ArgumentNullException, IList<User>>(async () =>
+            users = await TryCatch<ArgumentNullException, AllUsers>(async () =>
             {
-                return await _userManager.GetUsersInRoleAsync(roleName);
+                AllUsers allUsers = new AllUsers()
+                {
+                    _AllUsers = await Task.FromResult(_userManager.Users.Select(x =>
+                            new UsersResponse
+                            {
+                                UserName = x.UserName,
+                                Id = x.Id
+                            }).ToList())
+                };
+
+                return allUsers;
+            });
+
+            return users ?? new AllUsers();
+        }
+
+        public async Task<UsersInRole> GetUsersInRole(string roleName)
+        {
+            UsersInRole usersInRole = null;
+            usersInRole = await TryCatch<ArgumentNullException, UsersInRole>(async () =>
+            {
+                UsersInRole users = new UsersInRole()
+                {
+                    User = await _userManager.GetUsersInRoleAsync(roleName)
+                };
+
+                return users;
             });
 
             return usersInRole;
@@ -145,6 +185,17 @@ namespace Auth.API.Services
             return deleteRoleResult;
         }
 
+        public async Task<IdentityResult> DeleteUser(User userIdentity)
+        {
+            IdentityResult removeUserResult = null;
+
+            removeUserResult = await TryCatch<ArgumentNullException, IdentityResult>(async () =>
+            {
+                return await _userManager.DeleteAsync(userIdentity);
+            });
+
+            return removeUserResult;
+        }
 
         public async Task<bool> UserExists(string userEmailOrId)
         {
@@ -170,14 +221,66 @@ namespace Auth.API.Services
             return userExist == null ? false : true;
         }
 
+        public async Task<AllRoles> GetAllRoles()
+        {
+            AllRoles roles = null;
+
+            roles = await TryCatch<ArgumentNullException, AllRoles>(async () =>
+            {
+                AllRoles allRoles = new AllRoles()
+                {
+                    _AllRoles = await Task.FromResult(_roleManager.Roles.Select(x =>
+                                new GetAllRoles()
+                                {
+                                    Id = x.Id,
+                                    RoleName = x.Name
+
+                                }).ToList())
+                };
+
+                return allRoles;
+            });
+
+            return roles ?? new AllRoles();
+        }
+
+        public async Task<RolesForUser> GetUserRoles(User user)
+        {
+            RolesForUser userRoles = null;
+
+            userRoles = await TryCatch<ArgumentNullException, RolesForUser>(async () =>
+            {
+                RolesForUser roles = new RolesForUser()
+                {
+                    Roles = await _userManager.GetRolesAsync(user),
+
+                };
+
+                return roles;
+            });
+
+            return userRoles;
+        }
+
+        public async Task<IdentityResult> RemoveRolesFromUser(User user, IList<string> userRoles)
+        {
+            IdentityResult removeRolesFromUserResult = null;
+
+            removeRolesFromUserResult = await TryCatch<ArgumentNullException, IdentityResult>(async () =>
+            {
+                return await _userManager.RemoveFromRolesAsync(user, userRoles);
+            });
+
+            return removeRolesFromUserResult;
+        }
+
         public async Task<bool> UserHasRole(User user, string role)
         {
-            IList<string> userRoles = await TryCatch<ArgumentException, IList<string>>(async () =>
-           {
-               return await _userManager.GetRolesAsync(user);
-           });
+            RolesForUser userRoles = null;
 
-            bool userHasRole = userRoles.Any(x => x.Equals(role));
+            userRoles = await GetUserRoles(user);
+
+            bool userHasRole = userRoles.Roles.Any(x => x.Equals(role));
 
             return userHasRole;
         }
@@ -192,6 +295,6 @@ namespace Auth.API.Services
             return roleExist;
         }
 
-
     }
+
 }
