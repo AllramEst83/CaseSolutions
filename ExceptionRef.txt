@@ -1,0 +1,362 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Anotar.Serilog;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using PortalCarma.Repository;
+using PortalCarma.Repository.Abstract;
+using PortalCarma.Repository.Entities.DTO;
+
+namespace PortalCarma.Domain.Facades
+{
+    public class BaseFacade
+    {
+        public string SerializeObject(IEntityDTO dto)
+        {
+            var json = JsonConvert.SerializeObject(dto, Formatting.None,
+                    new JsonSerializerSettings
+                    {
+                        ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+            return json;
+        }
+
+        /// <summary>
+        /// Try to run the code in try/catch block and handle exceptions.
+        /// </summary>
+        /// <typeparam name="T">Type of return value</typeparam>
+        /// <param name="function">Code to execute</param>
+        /// <returns>Returns T</returns>
+        protected T TryCatch<T>(Func<T> function)
+        {
+            try
+            {
+                return function();
+            }
+            catch (RepositoryException ex)
+            {
+                LogTo.Error("Facade caught an exception {@ex}", ex);
+                throw new FacadeException(ex);
+            }
+            catch (Exception ex)
+            {
+                LogTo.Error("Facade caught an exception {@ex}", ex);
+                if (ex is FacadeException)
+                {
+                    throw;
+                }
+                throw new FacadeException(ex);
+            }
+        }
+        protected T TryCatchDefaultValue<T>(Func<T> function)
+        {
+            try
+            {
+                return function();
+            }
+            catch (RepositoryException ex)
+            {
+                LogTo.Error("BaseFacade caught an exception {@ex}", ex);
+                return default(T);
+            }
+            catch (Exception ex)
+            {
+                LogTo.Error("BaseFacade caught an exception {@ex}", ex);
+                return default(T);
+            }
+        }
+        protected T TryCatchSingle<T>(Func<T> function)
+        {
+            try
+            {
+                return function();
+            }
+            catch (RepositoryException ex)
+            {
+                LogTo.Error("BaseFacade caught an exception {@ex}", ex);
+                return default(T);
+            }
+            catch (Exception ex)
+            {
+                LogTo.Error("BaseFacade caught an exception {@ex}", ex);
+                return default(T);
+            }
+        }
+
+        protected IEnumerable<T> TryCatchEnumerable<T>(Func<IEnumerable<T>> function)
+        {
+            try
+            {
+                return function();
+            }
+            catch (RepositoryException ex)
+            {
+                LogTo.Error("BaseFacade caught an exception {@ex}", ex);
+                return Enumerable.Empty<T>();
+            }
+            catch (Exception ex)
+            {
+                LogTo.Error("BaseFacade caught an exception {@ex}", ex);
+                return Enumerable.Empty<T>();
+            }
+        }
+
+        protected async Task<IEnumerable<T>> TryCatchEnumerableAsync<T>(Func<Task<IEnumerable<T>>> function)
+        {
+            try
+            {
+                return await function();
+            }
+            catch (RepositoryException ex)
+            {
+                LogTo.Error("BaseFacade caught an exception {@ex}", ex);
+                return Enumerable.Empty<T>();
+            }
+            catch (Exception ex)
+            {
+                LogTo.Error("BaseFacade caught an exception {@ex}", ex);
+                return Enumerable.Empty<T>();
+            }
+        }
+
+        /// <summary>
+        /// Try to run the code in try/catch block and handle exceptions.
+        /// </summary>
+        /// <param name="function">Code to execute</param>
+        protected void TryCatch(Action function)
+        {
+            try
+            {
+                function();
+            }
+            catch (RepositoryException ex)
+            {
+                LogTo.Error("Facade caught an exception {@ex}", ex);
+                throw new FacadeException(ex);
+            }
+            catch (Exception ex)
+            {
+                LogTo.Error("Facade caught an exception {@ex}", ex);
+                if (ex is FacadeException)
+                {
+                    throw;
+                }
+                throw new FacadeException(ex);
+            }
+        }
+    }
+}
+//-----
+//----
+using System;
+using Anotar.Serilog;
+using PortalCarma.Common;
+using PortalCarma.Common.Entities;
+using PortalCarma.Domain.Mapping;
+using PortalCarma.Repository;
+using PortalCarma.Repository.Entities.DTO;
+using System.Collections.Generic;
+using System.Linq;
+using PortalCarma.Common.Entities.Excel;
+using PortalCarma.Common.ParametersContainers;
+using PortalCarma.Common.ParametersContainers.Interfaces;
+using PortalCarma.Domain.Facades.Interfaces;
+using PortalCarma.Repository.Interfaces;
+
+namespace PortalCarma.Domain.Facades
+{
+    public class AccountFacade : BaseFacade, IAccountFacade
+    {
+        private readonly IBaseRepository _repository;
+
+        public AccountFacade(IBaseRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public Postalcode GetPostal(string postal, string accessToken)
+        {
+            return TryCatch(() =>
+            {
+                var parameters = new GetSingleEntityParametersContainer("postalcode", postal);
+                var response = _repository.GetSingle<MMS_MUA_WEB_GetPostalCityDTO>(parameters, accessToken);
+                return EntityMapper.Map<Postalcode, MMS_MUA_WEB_GetPostalCityDTO>(response.Results.FirstOrDefault());
+            });
+        }
+
+        public SearchResult<Site> FindSites(ISearchParametersContainer parameters, string accessToken)
+        {
+            return TryCatch(() =>
+            {
+                var response = _repository.Find<VIS_Portal_Feed_Site_GetSearchResultsDTO>(parameters, accessToken);
+                var result = new SearchResult<Site>(response)
+                {
+                    Result =
+                        EntityMapper.Map<IEnumerable<Site>, IEnumerable<VIS_Portal_Feed_Site_GetSearchResultsDTO>>(
+                            response.Results)
+                };
+
+                return result;
+            });
+        }
+
+        /// <summary>
+        /// Search accounts based on the filters.
+        /// ! Pagination is not supported becausse of aggregate function within the feed !
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="accessToken"></param>
+        /// <returns></returns>
+        public SearchResult<Employer> Find(ISearchParametersContainer parameters, string accessToken)
+        {
+            return TryCatch(() =>
+            {
+                var response = _repository.Find<VIS_Portal_Feed_Account_GetSearchResultsDTO>(parameters, accessToken);
+                var result = new SearchResult<Employer>(response)
+                {
+                    Result =
+                        EntityMapper
+                            .Map<IEnumerable<Employer>, IEnumerable<VIS_Portal_Feed_Account_GetSearchResultsDTO>>(
+                                response.Results)
+                };
+
+                return result;
+            });
+        }
+
+        public IEnumerable<SitesListExcel> FindSitesExport(ISearchParametersContainer parameters, string accessToken)
+        {
+            return TryCatch(() =>
+            {
+                var all = AllRecords<VIS_Portal_Feed_Site_GetSearchResultsDTO, SitesListExcel>
+                    .GetCached(_repository,
+                        EntityMapper
+                            .Map<IEnumerable<SitesListExcel>, IEnumerable<VIS_Portal_Feed_Site_GetSearchResultsDTO>>,
+                        parameters, accessToken);
+                return all;
+            });
+        }
+
+        /// <summary>
+        /// Fetches all Accounts and child Sites according to paramters and cache it.
+        /// </summary>
+        /// <param name="parameters">Search paramters</param>
+        /// <param name="accessToken">CWP access token</param>
+        /// <returns></returns>
+        public IEnumerable<AccountsListExcel> FindAccountAndSitesExport(ISearchParametersContainer parameters,
+            string accessToken)
+        {
+            return TryCatch(() =>
+            {
+                var all = AllRecords<VIS_Portal_Feed_Site_GetSearchResultsForAccountsExportDTO, AccountsListExcel>
+                    .GetCached(_repository,
+                        EntityMapper
+                            .Map<IEnumerable<AccountsListExcel>, IEnumerable<
+                                VIS_Portal_Feed_Site_GetSearchResultsForAccountsExportDTO>>,
+                        parameters, accessToken);
+                return all;
+            });
+        }
+
+        public SearchResult<Site> GetSitesByAccountId(IGetMultipleEntitiesParametersContainer parameters, string accessToken)
+        {
+            return TryCatch(() =>
+            {
+                var response =
+                    _repository.GetMultiple<VIS_Portal_Feed_Site_GetSitesByAccountIdDTO>(parameters, accessToken);
+                var result = new SearchResult<Site>(response)
+                {
+                    Result = EntityMapper.Map<IEnumerable<Site>, IEnumerable<VIS_Portal_Feed_Site_GetSitesByAccountIdDTO>>(response.Results)
+                };
+                return result;
+            });
+        }
+
+        public IEnumerable<Site> GetAllSites(ISearchParametersContainer parameters, string accessToken)
+        {
+            return TryCatch(() =>
+            {
+                var all = AllRecords<VIS_Portal_Feed_Site_GetSearchResultsDTO, Site>
+                    .Get(_repository,
+                        EntityMapper.Map<IEnumerable<Site>, IEnumerable<VIS_Portal_Feed_Site_GetSearchResultsDTO>>,
+                        parameters, accessToken);
+                return all;
+            });
+        }
+
+        public void ResetAllSitesCache(ISearchParametersContainer parameters)
+        {
+            AllRecords<VIS_Portal_Feed_Site_GetSearchResultsDTO, Site>.InvalidateCache(parameters);
+        }
+
+        public Site GetSite(string siteId, string token)
+        {
+            return TryCatch(() =>
+            {
+                var parameters = new GetSingleEntityParametersContainer("siteid", siteId);
+                var response = _repository.GetSingle<VIS_Portal_Feed_Site_GetSiteByIdDTO>(parameters, token);
+                return EntityMapper.Map<Site, VIS_Portal_Feed_Site_GetSiteByIdDTO>(response.Results.FirstOrDefault());
+            });
+        }
+
+        private string ConstructEmploymentLocation(Site site, string accessToken)
+        {
+            if (!string.IsNullOrEmpty(site.PostalNumber))
+            {
+                var postalCode = GetPostal(site.PostalNumber, accessToken);
+                if (postalCode != null)
+                {
+                    site.PostalCityId = postalCode.Id;
+                }
+            }
+            if (!string.IsNullOrEmpty(site.VisitingPostalNumber))
+            {
+                var postalCode = GetPostal(site.VisitingPostalNumber, accessToken);
+                if (postalCode != null)
+                {
+                    site.VisitingCityId = postalCode.Id;
+                }
+            }
+
+            var dto = EntityMapper.Map<VIS_Portal_Policy_Site_CreateUpdateDTO, Site>(site);
+            LogTo.Information("VIS_Portal_Policy_Contact_CreateUpdateDTO {dto}", dto);
+            var json = SerializeObject(dto);
+            return json;
+        }
+
+        public string CreateEmploymentLocation(Site site, string accessToken)
+        {
+            return TryCatch(() =>
+            {
+                var json = ConstructEmploymentLocation(site, accessToken);
+                return _repository.Post(json, accessToken);
+            });
+        }
+
+        public string UpdateEmploymentLocation(Site site, string accessToken)
+        {
+            return TryCatch(() =>
+            {
+                site.AccountSimple = null;
+                var json = ConstructEmploymentLocation(site, accessToken);
+                return _repository.Put(json, accessToken);
+            });
+        }
+
+        public Employer GetAccountInfo(string accountId, string accessToken)
+        {
+            return TryCatch(() =>
+            {
+                var parameters = new GetMultipleEntitiesParametersContainer("accountid", accountId);
+                var response =
+                    _repository.GetSingle<VIS_Portal_Feed_Account_GetAccountByIdDTO>(parameters, accessToken);
+                return EntityMapper.Map<Employer, VIS_Portal_Feed_Account_GetAccountByIdDTO>(response.Results
+                    .FirstOrDefault());
+            });
+        }
+    }
+}

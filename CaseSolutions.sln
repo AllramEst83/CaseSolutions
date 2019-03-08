@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 	ProjectSection(SolutionItems) = preProject
 		D:\NET\_CaseSolutions_\CaseSolutions_V2.jpg = D:\NET\_CaseSolutions_\CaseSolutions_V2.jpg
 		D:\NET\_CaseSolutions_\CaseSolutions_V2.xml = D:\NET\_CaseSolutions_\CaseSolutions_V2.xml
+		ExceptionRef.txt = ExceptionRef.txt
 	EndProjectSection
 EndProject
 Global
