@@ -13,7 +13,6 @@
   <ItemGroup>
     <Folder Include="React_App_Dir\src\actions\" />
     <Folder Include="React_App_Dir\src\api\" />
-    <Folder Include="React_App_Dir\src\components\" />
     <Folder Include="React_App_Dir\src\store\" />
     <Folder Include="React_App_Dir\src\reducers\" />
   </ItemGroup>
