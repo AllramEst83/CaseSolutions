@@ -1,7 +1,10 @@
 /* Styles */
+body {
+  background-color: #E9F7EF !important;
+}
 
 #app {
-  font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font: 16px 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #4d4d4d;
   min-width: 550px;
   /* max-width: 850px; */
@@ -104,4 +107,27 @@ nav {
 
 .content-wrapper{
   margin:25px;
+}
+
+.searchButton{
+  float:left;
+}
+
+.buttonContainer {
+  text-align: center;
+}
+
+.panel-body .input-group{
+  margin-bottom:10px;
+}
+.defaultMargin{
+  margin-bottom:15px;
+}
+.journalStyle:hover {
+  background-color: #EAECEE;
+  border-radius: 8px;
+}
+.rowPadding{
+  padding-left:15px;
+  padding-right:15px;
 }

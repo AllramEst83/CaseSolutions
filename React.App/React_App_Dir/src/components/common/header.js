@@ -1,13 +1,15 @@
 import React, { PropTypes } from 'react';
 import { Link, IndexLink } from 'react-router';
 
+import UserLoginLogic from '../userLoginLogic/userLogInLogic';
+
 const Header = () => {
   return (
     <div className="topBar">
 
       <div className="headerMainText">
-        CaseSolutions - Veterinary
-            <div className="Muybridge">
+        CaseSolutions - Veterinär
+        <div className="Muybridge">
           🐎
         </div>
       </div>
@@ -15,10 +17,14 @@ const Header = () => {
       <div className="navElement">
         <nav>
 
-          <IndexLink to="/" activeClassName="active">Hem</IndexLink>
+          <IndexLink to="/" activeClassName="active">Hitta Journal</IndexLink>
           {" | "}
-          <Link to="/about" activeClassName="active">Om</Link>
-          
+          <Link to="/addNewJournalEntry" activeClassName="active">Ny Journal</Link>
+          {" | "}
+          <Link to="/about" activeClassName="active">Om CaseSolutions</Link>
+          {" | "}
+          <Link to="/userLoginLogic" activeClassName="active">Logga ut eller in </Link>
+
         </nav>
       </div>
 

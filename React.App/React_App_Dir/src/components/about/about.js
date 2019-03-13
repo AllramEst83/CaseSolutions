@@ -4,8 +4,8 @@ class AboutPage extends React.Component {
   render() {
     return (
       <div>
-        <h1>About</h1>
-        <p>This store sells a fine selection so Unicorns.</p>
+        <h1>Om CaseSolutions</h1>
+        <p>Här kommer man kunna läsa om hur jag byggt denna applikation</p>
       </div>
     );
   }
