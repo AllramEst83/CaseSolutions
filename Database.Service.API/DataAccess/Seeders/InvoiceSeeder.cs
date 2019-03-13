@@ -9,6 +9,7 @@ namespace Database.Service.API.DataAccess.Seeders
 {
     public static class InvoiceSeeder
     {
+        //Flytta allt som har med Aerende databas modellen från Arende servern till databas servern!
 
         public static void SeedInvoices(this InvoiceContext context)
         {
