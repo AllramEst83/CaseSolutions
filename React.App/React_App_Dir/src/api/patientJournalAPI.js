@@ -144,6 +144,9 @@ class PatientJournalAPI {
               "adress":
                 {
                   "id": this.Guid(),
+                  "streetAdress": "Umbravägen 55 5",
+                  "zipCode": "98752",
+                  "telephone": "07564841"
 
                 },
               "SSN": "198312120432"

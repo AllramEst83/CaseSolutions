@@ -16,7 +16,6 @@
     <Folder Include="DataAccess\UserRepository\" />
     <Folder Include="Data\AerendeData\AerendeEntities\AerendeContext\" />
     <Folder Include="Data\AerendeData\" />
-    <Folder Include="Data\FakturaData\FakturaEntities\FakturaContext\" />
   </ItemGroup>
 
 </Project>
