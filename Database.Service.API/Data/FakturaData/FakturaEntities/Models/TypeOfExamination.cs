@@ -9,7 +9,6 @@
         MagicalPropertiesExamination,
         RainbowSparkleExamination,
         HornExamination
-    }
+    } 
 
- 
 }

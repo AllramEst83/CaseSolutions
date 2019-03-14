@@ -32,7 +32,7 @@ namespace Database.Service.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<InvoiceContext>(config => {
-                config.UseSqlServer(ConfigHelper.AppSetting("Connectionstrings", "InvoiceConnectionString"));
+                config.UseSqlServer(ConfigHelper.AppSetting(DatabaseConstants.Connectionstrings, DatabaseConstants.InvoiceConnectionString));
             });
         }
 
