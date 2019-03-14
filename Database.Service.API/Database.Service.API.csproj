@@ -14,7 +14,6 @@
     <Folder Include="DataAccess\AerendeRepository\" />
     <Folder Include="DataAccess\FakturaRepository\" />
     <Folder Include="DataAccess\UserRepository\" />
-    <Folder Include="Data\AerendeData\AerendeEntities\AerendeContext\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

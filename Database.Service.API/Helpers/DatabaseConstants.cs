@@ -10,5 +10,7 @@ namespace Database.Service.API.Helpers
         //AppSettings
         public const string Connectionstrings = "Connectionstrings";
         public const string InvoiceConnectionString = "InvoiceConnectionString";
+        public const string AerendeConnectionString = "AerendeConnectionString";
+
     }
 }

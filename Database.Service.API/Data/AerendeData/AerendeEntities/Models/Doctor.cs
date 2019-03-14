@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Database.Service.API.Data.AerendeData.AerendeEntities.Models;
+using System;
 
 namespace Aerende.Service.API.Data
 {
@@ -7,6 +8,7 @@ namespace Aerende.Service.API.Data
         public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public TypeOfDoctor TypeOfDoctor { get; set; }
+        public TypeOfDoctorWrapper TypeOfDoctorWrapper { get; set; }
+
     }
 }

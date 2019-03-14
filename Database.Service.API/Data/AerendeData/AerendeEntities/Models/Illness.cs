@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Database.Service.API.Data.AerendeData.AerendeEntities.Models;
+using System;
 
 namespace Aerende.Service.API.Data
 {
@@ -6,6 +7,7 @@ namespace Aerende.Service.API.Data
     {
         public Guid Id { get; set; }
         public string IllnessTitle { get; set; }
-        public IllnessSeverity IllnessSeverity { get; set; }
+        public IllnessSeverityWrapper IllnessSeverityWrapper { get; set; }
+
     }
 }

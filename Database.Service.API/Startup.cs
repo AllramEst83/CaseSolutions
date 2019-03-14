@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Database.Service.API.Data.AerendeData.AerendeEntities.AerendeContext;
 using Database.Service.API.Data.FakturaData.FakturaEntities.FakturaContext;
 using Database.Service.API.DataAccess.Seeders;
 using Database.Service.API.Helpers;
@@ -34,6 +35,10 @@ namespace Database.Service.API
             services.AddDbContext<InvoiceContext>(config => {
                 config.UseSqlServer(ConfigHelper.AppSetting(DatabaseConstants.Connectionstrings, DatabaseConstants.InvoiceConnectionString));
             });
+
+            services.AddDbContext<AerendeContext>(config => {
+                config.UseSqlServer(ConfigHelper.AppSetting(DatabaseConstants.Connectionstrings, DatabaseConstants.AerendeConnectionString));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +53,7 @@ namespace Database.Service.API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             context.SeedInvoices();
 
             app.UseHttpsRedirection();

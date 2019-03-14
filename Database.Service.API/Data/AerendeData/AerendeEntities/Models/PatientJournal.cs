@@ -13,7 +13,7 @@ namespace Aerende.Service.API.Data
         public Guid AnimalSSN { get; set; }
         public Insurance Insurance { get; set; }
         public Clinic Clinic { get; set; }
-        public IEnumerable<Invoice> Invoices { get; set; }
+        public Guid InvoiceId { get; set; }
         public IEnumerable<MedicalService> MedicalServices { get; set; }
         public IEnumerable<Owner> Owners { get; set; }
     }

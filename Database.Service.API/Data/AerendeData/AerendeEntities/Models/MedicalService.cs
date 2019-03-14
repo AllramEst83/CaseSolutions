@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Database.Service.API.Data.AerendeData.AerendeEntities.Models;
+using System;
 using System.Collections.Generic;
 
 namespace Aerende.Service.API.Data
@@ -6,7 +7,7 @@ namespace Aerende.Service.API.Data
     public class MedicalService
     {
         public Guid Id { get; set; }
-        public TypeOfExamination TypeOfExamination { get; set; }
+        public TypeOfExaminationWrapper TypeOfExaminationWrapper { get; set; }
         public Doctor Doctor { get; set; }
         public double HourlyCost { get; set; }
         public TimeSpan ExaminationDuration{ get; set; }
