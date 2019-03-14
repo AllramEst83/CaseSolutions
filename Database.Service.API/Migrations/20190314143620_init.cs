@@ -78,6 +78,25 @@ namespace Database.Service.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "KindOfIllnesses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    IllnessSeverityId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KindOfIllnesses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_KindOfIllnesses_IllnessSeveritys_IllnessSeverityId",
+                        column: x => x.IllnessSeverityId,
+                        principalTable: "IllnessSeveritys",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MedicalServices",
                 columns: table => new
                 {
@@ -88,6 +107,7 @@ namespace Database.Service.API.Migrations
                     ExaminationDuration = table.Column<TimeSpan>(nullable: false),
                     StartTime = table.Column<DateTime>(nullable: false),
                     EndTime = table.Column<DateTime>(nullable: false),
+                    KindOfIllnesId = table.Column<Guid>(nullable: true),
                     InvoiceId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
@@ -105,24 +125,10 @@ namespace Database.Service.API.Migrations
                         principalTable: "Invoices",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Illnesses",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    IllnessTitle = table.Column<string>(nullable: true),
-                    IllnessSeverity = table.Column<int>(nullable: false),
-                    MedicalServiceId = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Illnesses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Illnesses_MedicalServices_MedicalServiceId",
-                        column: x => x.MedicalServiceId,
-                        principalTable: "MedicalServices",
+                        name: "FK_MedicalServices_KindOfIllnesses_KindOfIllnesId",
+                        column: x => x.KindOfIllnesId,
+                        principalTable: "KindOfIllnesses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -148,9 +154,9 @@ namespace Database.Service.API.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Illnesses_MedicalServiceId",
-                table: "Illnesses",
-                column: "MedicalServiceId");
+                name: "IX_KindOfIllnesses_IllnessSeverityId",
+                table: "KindOfIllnesses",
+                column: "IllnessSeverityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MedicalServices_DoctorId",
@@ -163,6 +169,11 @@ namespace Database.Service.API.Migrations
                 column: "InvoiceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MedicalServices_KindOfIllnesId",
+                table: "MedicalServices",
+                column: "KindOfIllnesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Prescriptions_MedicalServiceId",
                 table: "Prescriptions",
                 column: "MedicalServiceId");
@@ -170,12 +181,6 @@ namespace Database.Service.API.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Illnesses");
-
-            migrationBuilder.DropTable(
-                name: "IllnessSeveritys");
-
             migrationBuilder.DropTable(
                 name: "Prescriptions");
 
@@ -193,6 +198,12 @@ namespace Database.Service.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "Invoices");
+
+            migrationBuilder.DropTable(
+                name: "KindOfIllnesses");
+
+            migrationBuilder.DropTable(
+                name: "IllnessSeveritys");
         }
     }
 }

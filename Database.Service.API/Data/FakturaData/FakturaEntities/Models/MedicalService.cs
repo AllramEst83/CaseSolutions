@@ -12,7 +12,7 @@ namespace Database.Service.API.Data.FakturaData.FakturaEntities.Models
         public TimeSpan ExaminationDuration { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public IEnumerable<Illness> Illnesses { get; set; }
-        public IEnumerable<Prescription> Prescription { get; set; }
+        public KindOfIllness KindOfIllnes { get; set; } 
+        public List<Prescription> Prescriptions { get; set; }
     }
 }

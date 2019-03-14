@@ -35,22 +35,17 @@ namespace Database.Service.API.Migrations
                     b.ToTable("Doctores");
                 });
 
-            modelBuilder.Entity("Database.Service.API.Data.FakturaData.FakturaEntities.Models.Illness", b =>
+            modelBuilder.Entity("Database.Service.API.Data.FakturaData.FakturaEntities.Models.IllnessSev", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("IllnessSeverity");
 
-                    b.Property<string>("IllnessTitle");
-
-                    b.Property<Guid?>("MedicalServiceId");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("MedicalServiceId");
-
-                    b.ToTable("Illnesses");
+                    b.ToTable("IllnessSeveritys");
                 });
 
             modelBuilder.Entity("Database.Service.API.Data.FakturaData.FakturaEntities.Models.Invoice", b =>
@@ -73,6 +68,22 @@ namespace Database.Service.API.Migrations
                     b.ToTable("Invoices");
                 });
 
+            modelBuilder.Entity("Database.Service.API.Data.FakturaData.FakturaEntities.Models.KindOfIllness", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("IllnessSeverityId");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IllnessSeverityId");
+
+                    b.ToTable("KindOfIllnesses");
+                });
+
             modelBuilder.Entity("Database.Service.API.Data.FakturaData.FakturaEntities.Models.MedicalService", b =>
                 {
                     b.Property<Guid>("Id")
@@ -88,6 +99,8 @@ namespace Database.Service.API.Migrations
 
                     b.Property<Guid?>("InvoiceId");
 
+                    b.Property<Guid?>("KindOfIllnesId");
+
                     b.Property<DateTime>("StartTime");
 
                     b.Property<int>("TypeOfExamination");
@@ -97,6 +110,8 @@ namespace Database.Service.API.Migrations
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("InvoiceId");
+
+                    b.HasIndex("KindOfIllnesId");
 
                     b.ToTable("MedicalServices");
                 });
@@ -117,19 +132,6 @@ namespace Database.Service.API.Migrations
                     b.HasIndex("MedicalServiceId");
 
                     b.ToTable("Prescriptions");
-                });
-
-            modelBuilder.Entity("Database.Service.API.Data.FakturaData.FakturaEntities.Models.Severity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("IllnessSeverity");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IllnessSeveritys");
                 });
 
             modelBuilder.Entity("Database.Service.API.Data.FakturaData.FakturaEntities.Models.TypeOfDoc", b =>
@@ -158,11 +160,11 @@ namespace Database.Service.API.Migrations
                     b.ToTable("TypeOfExaminations");
                 });
 
-            modelBuilder.Entity("Database.Service.API.Data.FakturaData.FakturaEntities.Models.Illness", b =>
+            modelBuilder.Entity("Database.Service.API.Data.FakturaData.FakturaEntities.Models.KindOfIllness", b =>
                 {
-                    b.HasOne("Database.Service.API.Data.FakturaData.FakturaEntities.Models.MedicalService")
-                        .WithMany("Illnesses")
-                        .HasForeignKey("MedicalServiceId");
+                    b.HasOne("Database.Service.API.Data.FakturaData.FakturaEntities.Models.IllnessSev", "IllnessSeverity")
+                        .WithMany()
+                        .HasForeignKey("IllnessSeverityId");
                 });
 
             modelBuilder.Entity("Database.Service.API.Data.FakturaData.FakturaEntities.Models.MedicalService", b =>
@@ -174,6 +176,10 @@ namespace Database.Service.API.Migrations
                     b.HasOne("Database.Service.API.Data.FakturaData.FakturaEntities.Models.Invoice")
                         .WithMany("MedicalServices")
                         .HasForeignKey("InvoiceId");
+
+                    b.HasOne("Database.Service.API.Data.FakturaData.FakturaEntities.Models.KindOfIllness", "KindOfIllnes")
+                        .WithMany()
+                        .HasForeignKey("KindOfIllnesId");
                 });
 
             modelBuilder.Entity("Database.Service.API.Data.FakturaData.FakturaEntities.Models.Prescription", b =>

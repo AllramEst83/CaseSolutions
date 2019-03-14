@@ -13,6 +13,6 @@ namespace Database.Service.API.Data.FakturaData.FakturaEntities.Models
         public double Discount { get; set; }
         public DateTime IssueDate { get; set; }
         public DateTime DueDate { get; set; }
-        public IEnumerable<MedicalService> MedicalServices { get; set; }
+        public List<MedicalService> MedicalServices { get; set; }
     }
 }

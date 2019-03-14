@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Database.Service.API.Data.FakturaData.FakturaEntities.FakturaContext;
+using Database.Service.API.DataAccess.Seeders;
 using Database.Service.API.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,7 +37,7 @@ namespace Database.Service.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, InvoiceContext context)
         {
             if (env.IsDevelopment())
             {
@@ -47,6 +48,7 @@ namespace Database.Service.API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            context.SeedInvoices();
 
             app.UseHttpsRedirection();
             app.UseMvc();
