@@ -9,6 +9,8 @@ using Database.Service.API.DataAccess.AerendeRepository;
 using Database.Service.API.DataAccess.Seeders;
 using Database.Service.API.DataAccess.Seeders.Interfaces;
 using Database.Service.API.Helpers;
+using Database.Service.API.Services;
+using Database.Service.API.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -41,7 +43,7 @@ namespace Database.Service.API
 
             services.AddScoped<IAerendeRepository, AerendeRepository>();
 
-            services.AddScoped<IAerendeRepository, AerendeRepository>();
+            services.AddScoped<IAerendeService, AerendeService>();
 
             services.AddDbContext<InvoiceContext>(config =>
             {

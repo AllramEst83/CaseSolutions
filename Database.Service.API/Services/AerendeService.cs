@@ -10,12 +10,12 @@ namespace Database.Service.API.Services
 {
     public class AerendeService : IAerendeService
     {
-        public AerendeService(AerendeRepository aerendeRepository)
+        public AerendeService(IAerendeRepository aerendeRepository)
         {
             _aerendeRepository = aerendeRepository;
         }
 
-        private AerendeRepository _aerendeRepository { get; }
+        private IAerendeRepository _aerendeRepository { get; }
 
 
         public async Task<List<PatientJournal>> GetAllPatientJournalsWithCap(int cap)

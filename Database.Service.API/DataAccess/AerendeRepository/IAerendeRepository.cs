@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Database.Service.API.DataAccess.AerendeRepository
 {
-    interface IAerendeRepository
+    public interface IAerendeRepository
     {
         Task<List<PatientJournal>> GetAllPatientJournalWithCap(int cap);
         Task<PatientJournal> GetPatientJournalById(Guid id);

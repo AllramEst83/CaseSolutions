@@ -200,24 +200,24 @@ namespace Database.Service.API.DataAccess.Seeders
             List<Owner> ownersForPOatientJournal = _aerendeContext.Owners.ToList();
             List<PatientJournal> patientJournals = new List<PatientJournal>()
             {
-                new PatientJournal(){
-                    FirstName ="Gnister",
-                    LastName ="Sol",
-                    AnimalSSN = "200512120898",
-                    Clinic = clinicsForPatientJournal[0],
-                    Insurance = insurancesForPatientJournal[0],
-                    MedicalServices = medicalServicesForPatientJournal.Take(2).ToList(),
-                    Owners = ownersForPOatientJournal.Take(1).ToList()
-                },
-                  new PatientJournal(){
-                    FirstName ="Regnbågs",
-                    LastName ="Kristall",
-                    AnimalSSN = "200012053321",
-                    Clinic = clinicsForPatientJournal[1],
-                    Insurance = insurancesForPatientJournal[1],
-                    MedicalServices = medicalServicesForPatientJournal.Take(1).ToList(),
-                    Owners = ownersForPOatientJournal.Take(2).ToList()
-                },
+                //new PatientJournal(){
+                //    FirstName ="Gnister",
+                //    LastName ="Sol",
+                //    AnimalSSN = "200512120898",
+                //    Clinic = clinicsForPatientJournal[0],
+                //    Insurance = insurancesForPatientJournal[0],
+                //    MedicalServices = medicalServicesForPatientJournal.Take(2).ToList(),
+                //    Owners = ownersForPOatientJournal.Take(1).ToList()
+                //},
+                //  new PatientJournal(){
+                //    FirstName ="Regnbågs",
+                //    LastName ="Kristall",
+                //    AnimalSSN = "200012053321",
+                //    Clinic = clinicsForPatientJournal[1],
+                //    Insurance = insurancesForPatientJournal[1],
+                //    MedicalServices = medicalServicesForPatientJournal.Take(1).ToList(),
+                //    Owners = ownersForPOatientJournal.Take(2).ToList()
+                //},
                     new PatientJournal(){
                     FirstName ="Gun",
                     LastName ="Powder",
