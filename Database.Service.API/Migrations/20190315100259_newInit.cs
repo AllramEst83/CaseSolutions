@@ -2,14 +2,14 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Database.Service.API.Migrations.Aerende
+namespace Database.Service.API.Migrations
 {
-    public partial class addedAerendeDatabase : Migration
+    public partial class newInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Adresss",
+                name: "Adresses",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -20,11 +20,11 @@ namespace Database.Service.API.Migrations.Aerende
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Adresss", x => x.Id);
+                    table.PrimaryKey("PK_Adresses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "IllnessSeverityWrappers",
+                name: "IllnessSeverityWrapper",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -33,11 +33,11 @@ namespace Database.Service.API.Migrations.Aerende
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IllnessSeverityWrappers", x => x.Id);
+                    table.PrimaryKey("PK_IllnessSeverityWrapper", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TypeOfDoctorWrappers",
+                name: "TypeOfDoctorWrapper",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -46,11 +46,11 @@ namespace Database.Service.API.Migrations.Aerende
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TypeOfDoctorWrappers", x => x.Id);
+                    table.PrimaryKey("PK_TypeOfDoctorWrapper", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TypeOfExaminationWrappers",
+                name: "TypeOfExaminationWrapper",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -59,11 +59,11 @@ namespace Database.Service.API.Migrations.Aerende
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TypeOfExaminationWrappers", x => x.Id);
+                    table.PrimaryKey("PK_TypeOfExaminationWrapper", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TypeOfInsuranceWrappers",
+                name: "TypeOfInsuranceWrapper",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -72,7 +72,7 @@ namespace Database.Service.API.Migrations.Aerende
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TypeOfInsuranceWrappers", x => x.Id);
+                    table.PrimaryKey("PK_TypeOfInsuranceWrapper", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -87,9 +87,9 @@ namespace Database.Service.API.Migrations.Aerende
                 {
                     table.PrimaryKey("PK_Clinics", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Clinics_Adresss_AdressId",
+                        name: "FK_Clinics_Adresses_AdressId",
                         column: x => x.AdressId,
-                        principalTable: "Adresss",
+                        principalTable: "Adresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -106,9 +106,28 @@ namespace Database.Service.API.Migrations.Aerende
                 {
                     table.PrimaryKey("PK_InsuranceCompanys", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_InsuranceCompanys_Adresss_AdressId",
+                        name: "FK_InsuranceCompanys_Adresses_AdressId",
                         column: x => x.AdressId,
-                        principalTable: "Adresss",
+                        principalTable: "Adresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "KindOfIllnesses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    IllnessSeverityId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KindOfIllnesses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_KindOfIllnesses_IllnessSeverityWrapper_IllnessSeverityId",
+                        column: x => x.IllnessSeverityId,
+                        principalTable: "IllnessSeverityWrapper",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -133,9 +152,9 @@ namespace Database.Service.API.Migrations.Aerende
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Doctors_TypeOfDoctorWrappers_TypeOfDoctorWrapperId",
+                        name: "FK_Doctors_TypeOfDoctorWrapper_TypeOfDoctorWrapperId",
                         column: x => x.TypeOfDoctorWrapperId,
-                        principalTable: "TypeOfDoctorWrappers",
+                        principalTable: "TypeOfDoctorWrapper",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -158,9 +177,9 @@ namespace Database.Service.API.Migrations.Aerende
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Insurances_TypeOfInsuranceWrappers_TypeOfInsuranceWrapperId",
+                        name: "FK_Insurances_TypeOfInsuranceWrapper_TypeOfInsuranceWrapperId",
                         column: x => x.TypeOfInsuranceWrapperId,
-                        principalTable: "TypeOfInsuranceWrappers",
+                        principalTable: "TypeOfInsuranceWrapper",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -172,10 +191,9 @@ namespace Database.Service.API.Migrations.Aerende
                     Id = table.Column<Guid>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
-                    AnimalSSN = table.Column<Guid>(nullable: false),
+                    AnimalSSN = table.Column<string>(nullable: true),
                     InsuranceId = table.Column<Guid>(nullable: true),
-                    ClinicId = table.Column<Guid>(nullable: true),
-                    InvoiceId = table.Column<Guid>(nullable: false)
+                    ClinicId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -195,7 +213,29 @@ namespace Database.Service.API.Migrations.Aerende
                 });
 
             migrationBuilder.CreateTable(
-                name: "MedicalService",
+                name: "Invoice",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    TotalSum = table.Column<double>(nullable: false),
+                    Discount = table.Column<double>(nullable: false),
+                    IssueDate = table.Column<DateTime>(nullable: false),
+                    DueDate = table.Column<DateTime>(nullable: false),
+                    PatientJournalId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoice", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invoice_PatientJournals_PatientJournalId",
+                        column: x => x.PatientJournalId,
+                        principalTable: "PatientJournals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MedicalServices",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -205,27 +245,34 @@ namespace Database.Service.API.Migrations.Aerende
                     ExaminationDuration = table.Column<TimeSpan>(nullable: false),
                     StartTime = table.Column<DateTime>(nullable: false),
                     EndTime = table.Column<DateTime>(nullable: false),
+                    KindOfIllnesId = table.Column<Guid>(nullable: true),
                     PatientJournalId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MedicalService", x => x.Id);
+                    table.PrimaryKey("PK_MedicalServices", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MedicalService_Doctors_DoctorId",
+                        name: "FK_MedicalServices_Doctors_DoctorId",
                         column: x => x.DoctorId,
                         principalTable: "Doctors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MedicalService_PatientJournals_PatientJournalId",
+                        name: "FK_MedicalServices_KindOfIllnesses_KindOfIllnesId",
+                        column: x => x.KindOfIllnesId,
+                        principalTable: "KindOfIllnesses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MedicalServices_PatientJournals_PatientJournalId",
                         column: x => x.PatientJournalId,
                         principalTable: "PatientJournals",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MedicalService_TypeOfExaminationWrappers_TypeOfExaminationWrapperId",
+                        name: "FK_MedicalServices_TypeOfExaminationWrapper_TypeOfExaminationWrapperId",
                         column: x => x.TypeOfExaminationWrapperId,
-                        principalTable: "TypeOfExaminationWrappers",
+                        principalTable: "TypeOfExaminationWrapper",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -237,50 +284,23 @@ namespace Database.Service.API.Migrations.Aerende
                     Id = table.Column<Guid>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
-                    Telephone = table.Column<string>(nullable: true),
                     AdressId = table.Column<int>(nullable: true),
-                    SSN = table.Column<int>(nullable: false),
+                    SSN = table.Column<long>(nullable: false),
                     PatientJournalId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Owners", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Owners_Adresss_AdressId",
+                        name: "FK_Owners_Adresses_AdressId",
                         column: x => x.AdressId,
-                        principalTable: "Adresss",
+                        principalTable: "Adresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Owners_PatientJournals_PatientJournalId",
                         column: x => x.PatientJournalId,
                         principalTable: "PatientJournals",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Illnesses",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    IllnessTitle = table.Column<string>(nullable: true),
-                    IllnessSeverityWrapperId = table.Column<int>(nullable: true),
-                    MedicalServiceId = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Illnesses", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Illnesses_IllnessSeverityWrappers_IllnessSeverityWrapperId",
-                        column: x => x.IllnessSeverityWrapperId,
-                        principalTable: "IllnessSeverityWrappers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Illnesses_MedicalService_MedicalServiceId",
-                        column: x => x.MedicalServiceId,
-                        principalTable: "MedicalService",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -298,9 +318,9 @@ namespace Database.Service.API.Migrations.Aerende
                 {
                     table.PrimaryKey("PK_Prescriptions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Prescriptions_MedicalService_MedicalServiceId",
+                        name: "FK_Prescriptions_MedicalServices_MedicalServiceId",
                         column: x => x.MedicalServiceId,
-                        principalTable: "MedicalService",
+                        principalTable: "MedicalServices",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -321,16 +341,6 @@ namespace Database.Service.API.Migrations.Aerende
                 column: "TypeOfDoctorWrapperId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Illnesses_IllnessSeverityWrapperId",
-                table: "Illnesses",
-                column: "IllnessSeverityWrapperId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Illnesses_MedicalServiceId",
-                table: "Illnesses",
-                column: "MedicalServiceId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_InsuranceCompanys_AdressId",
                 table: "InsuranceCompanys",
                 column: "AdressId");
@@ -346,18 +356,33 @@ namespace Database.Service.API.Migrations.Aerende
                 column: "TypeOfInsuranceWrapperId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MedicalService_DoctorId",
-                table: "MedicalService",
-                column: "DoctorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MedicalService_PatientJournalId",
-                table: "MedicalService",
+                name: "IX_Invoice_PatientJournalId",
+                table: "Invoice",
                 column: "PatientJournalId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MedicalService_TypeOfExaminationWrapperId",
-                table: "MedicalService",
+                name: "IX_KindOfIllnesses_IllnessSeverityId",
+                table: "KindOfIllnesses",
+                column: "IllnessSeverityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicalServices_DoctorId",
+                table: "MedicalServices",
+                column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicalServices_KindOfIllnesId",
+                table: "MedicalServices",
+                column: "KindOfIllnesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicalServices_PatientJournalId",
+                table: "MedicalServices",
+                column: "PatientJournalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicalServices_TypeOfExaminationWrapperId",
+                table: "MedicalServices",
                 column: "TypeOfExaminationWrapperId");
 
             migrationBuilder.CreateIndex(
@@ -389,7 +414,7 @@ namespace Database.Service.API.Migrations.Aerende
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Illnesses");
+                name: "Invoice");
 
             migrationBuilder.DropTable(
                 name: "Owners");
@@ -398,22 +423,25 @@ namespace Database.Service.API.Migrations.Aerende
                 name: "Prescriptions");
 
             migrationBuilder.DropTable(
-                name: "IllnessSeverityWrappers");
-
-            migrationBuilder.DropTable(
-                name: "MedicalService");
+                name: "MedicalServices");
 
             migrationBuilder.DropTable(
                 name: "Doctors");
 
             migrationBuilder.DropTable(
+                name: "KindOfIllnesses");
+
+            migrationBuilder.DropTable(
                 name: "PatientJournals");
 
             migrationBuilder.DropTable(
-                name: "TypeOfExaminationWrappers");
+                name: "TypeOfExaminationWrapper");
 
             migrationBuilder.DropTable(
-                name: "TypeOfDoctorWrappers");
+                name: "TypeOfDoctorWrapper");
+
+            migrationBuilder.DropTable(
+                name: "IllnessSeverityWrapper");
 
             migrationBuilder.DropTable(
                 name: "Clinics");
@@ -425,10 +453,10 @@ namespace Database.Service.API.Migrations.Aerende
                 name: "InsuranceCompanys");
 
             migrationBuilder.DropTable(
-                name: "TypeOfInsuranceWrappers");
+                name: "TypeOfInsuranceWrapper");
 
             migrationBuilder.DropTable(
-                name: "Adresss");
+                name: "Adresses");
         }
     }
 }

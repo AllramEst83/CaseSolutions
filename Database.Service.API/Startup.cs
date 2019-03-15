@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Database.Service.API.Data.AerendeData.AerendeEntities.AerendeContext;
 using Database.Service.API.Data.FakturaData.FakturaEntities.FakturaContext;
+using Database.Service.API.Data.TypeOfData.TypeOfEntities.TypeOfContext;
 using Database.Service.API.DataAccess.Seeders;
+using Database.Service.API.DataAccess.Seeders.Interfaces;
 using Database.Service.API.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,17 +34,35 @@ namespace Database.Service.API
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddDbContext<InvoiceContext>(config => {
+            services.AddScoped<IInvoiceSeeder, InvoiceSeeder>();
+            services.AddScoped<IAerendeSeeder, AerendeSeeder>();
+            services.AddScoped<ITypeOfSeeder, TypeOfSeeder>();
+
+            services.AddDbContext<InvoiceContext>(config =>
+            {
                 config.UseSqlServer(ConfigHelper.AppSetting(DatabaseConstants.Connectionstrings, DatabaseConstants.InvoiceConnectionString));
             });
 
-            services.AddDbContext<AerendeContext>(config => {
+            services.AddDbContext<AerendeContext>(config =>
+            {
                 config.UseSqlServer(ConfigHelper.AppSetting(DatabaseConstants.Connectionstrings, DatabaseConstants.AerendeConnectionString));
+            });
+
+            services.AddDbContext<TypeOfContext>(config =>
+            {
+                config.UseSqlServer(ConfigHelper.AppSetting(DatabaseConstants.Connectionstrings, DatabaseConstants.TypeOfConnectionString));
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, InvoiceContext context)
+        public void Configure(IApplicationBuilder app,
+            IHostingEnvironment env,
+            InvoiceContext invoiceContext,
+            TypeOfContext typeOfContext,
+            AerendeContext aerendeContext,
+            IInvoiceSeeder invoiceSeeder,
+            ITypeOfSeeder typeOfSeeder,
+            IAerendeSeeder aerendeSeeder)
         {
             if (env.IsDevelopment())
             {
@@ -54,7 +74,9 @@ namespace Database.Service.API
                 app.UseHsts();
             }
 
-            context.SeedInvoices();
+            typeOfSeeder.SeedTypeOf_s();
+
+            aerendeSeeder.SeedAerende();
 
             app.UseHttpsRedirection();
             app.UseMvc();

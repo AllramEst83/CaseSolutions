@@ -1,0 +1,5 @@
+﻿
+
+##Models Info##
+
+--All Database models was moved to the class library "ResponseModels"

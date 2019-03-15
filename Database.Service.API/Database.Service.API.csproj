@@ -11,10 +11,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DataAccess\AerendeRepository\" />
     <Folder Include="DataAccess\FakturaRepository\" />
     <Folder Include="DataAccess\UserRepository\" />
-    <Folder Include="Migrations\" />
+    <Folder Include="Data\TypeOfData\TypeOfEntities\Models\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ResponseModels">
+      <HintPath>..\..\ResponseModels\ResponseModels\bin\Debug\netcoreapp2.2\ResponseModels.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

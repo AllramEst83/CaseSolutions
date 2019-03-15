@@ -4,16 +4,14 @@ using Database.Service.API.Data.AerendeData.AerendeEntities.AerendeContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Database.Service.API.Migrations.Aerende
+namespace Database.Service.API.Migrations
 {
     [DbContext(typeof(AerendeContext))]
-    [Migration("20190314193850_addedAerendeDatabase")]
-    partial class addedAerendeDatabase
+    partial class AerendeContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,7 +19,7 @@ namespace Database.Service.API.Migrations.Aerende
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Aerende.Service.API.Data.Adress", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.Adress", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,10 +33,10 @@ namespace Database.Service.API.Migrations.Aerende
 
                     b.HasKey("Id");
 
-                    b.ToTable("Adresss");
+                    b.ToTable("Adresses");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.Clinic", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.Clinic", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -54,7 +52,7 @@ namespace Database.Service.API.Migrations.Aerende
                     b.ToTable("Clinics");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.Doctor", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.Doctor", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -76,27 +74,20 @@ namespace Database.Service.API.Migrations.Aerende
                     b.ToTable("Doctors");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.Illness", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.IllnessSeverityWrapper", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("IllnessSeverityWrapperId");
-
-                    b.Property<string>("IllnessTitle");
-
-                    b.Property<Guid?>("MedicalServiceId");
+                    b.Property<int>("IllnessSeverity");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IllnessSeverityWrapperId");
-
-                    b.HasIndex("MedicalServiceId");
-
-                    b.ToTable("Illnesses");
+                    b.ToTable("IllnessSeverityWrapper");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.Insurance", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.Insurance", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -114,7 +105,7 @@ namespace Database.Service.API.Migrations.Aerende
                     b.ToTable("Insurances");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.InsuranceCompany", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.InsuranceCompany", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -130,7 +121,45 @@ namespace Database.Service.API.Migrations.Aerende
                     b.ToTable("InsuranceCompanys");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.MedicalService", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.Invoice", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double>("Discount");
+
+                    b.Property<DateTime>("DueDate");
+
+                    b.Property<DateTime>("IssueDate");
+
+                    b.Property<Guid?>("PatientJournalId");
+
+                    b.Property<double>("TotalSum");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientJournalId");
+
+                    b.ToTable("Invoice");
+                });
+
+            modelBuilder.Entity("ResponseModels.DatabaseModels.KindOfIllness", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("IllnessSeverityId");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IllnessSeverityId");
+
+                    b.ToTable("KindOfIllnesses");
+                });
+
+            modelBuilder.Entity("ResponseModels.DatabaseModels.MedicalService", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -143,6 +172,8 @@ namespace Database.Service.API.Migrations.Aerende
 
                     b.Property<double>("HourlyCost");
 
+                    b.Property<Guid?>("KindOfIllnesId");
+
                     b.Property<Guid?>("PatientJournalId");
 
                     b.Property<DateTime>("StartTime");
@@ -153,14 +184,16 @@ namespace Database.Service.API.Migrations.Aerende
 
                     b.HasIndex("DoctorId");
 
+                    b.HasIndex("KindOfIllnesId");
+
                     b.HasIndex("PatientJournalId");
 
                     b.HasIndex("TypeOfExaminationWrapperId");
 
-                    b.ToTable("MedicalService");
+                    b.ToTable("MedicalServices");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.Owner", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.Owner", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -173,9 +206,7 @@ namespace Database.Service.API.Migrations.Aerende
 
                     b.Property<Guid?>("PatientJournalId");
 
-                    b.Property<int>("SSN");
-
-                    b.Property<string>("Telephone");
+                    b.Property<long>("SSN");
 
                     b.HasKey("Id");
 
@@ -186,20 +217,18 @@ namespace Database.Service.API.Migrations.Aerende
                     b.ToTable("Owners");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.PatientJournal", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.PatientJournal", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("AnimalSSN");
+                    b.Property<string>("AnimalSSN");
 
                     b.Property<Guid?>("ClinicId");
 
                     b.Property<string>("FirstName");
 
                     b.Property<Guid?>("InsuranceId");
-
-                    b.Property<Guid>("InvoiceId");
 
                     b.Property<string>("LastName");
 
@@ -212,7 +241,7 @@ namespace Database.Service.API.Migrations.Aerende
                     b.ToTable("PatientJournals");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.Prescription", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.Prescription", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -230,20 +259,7 @@ namespace Database.Service.API.Migrations.Aerende
                     b.ToTable("Prescriptions");
                 });
 
-            modelBuilder.Entity("Database.Service.API.Data.AerendeData.AerendeEntities.Models.IllnessSeverityWrapper", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("IllnessSeverity");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IllnessSeverityWrappers");
-                });
-
-            modelBuilder.Entity("Database.Service.API.Data.AerendeData.AerendeEntities.Models.TypeOfDoctorWrapper", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.TypeOfDoctorWrapper", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -253,10 +269,10 @@ namespace Database.Service.API.Migrations.Aerende
 
                     b.HasKey("Id");
 
-                    b.ToTable("TypeOfDoctorWrappers");
+                    b.ToTable("TypeOfDoctorWrapper");
                 });
 
-            modelBuilder.Entity("Database.Service.API.Data.AerendeData.AerendeEntities.Models.TypeOfExaminationWrapper", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.TypeOfExaminationWrapper", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -266,10 +282,10 @@ namespace Database.Service.API.Migrations.Aerende
 
                     b.HasKey("Id");
 
-                    b.ToTable("TypeOfExaminationWrappers");
+                    b.ToTable("TypeOfExaminationWrapper");
                 });
 
-            modelBuilder.Entity("Database.Service.API.Data.AerendeData.AerendeEntities.Models.TypeOfInsuranceWrapper", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.TypeOfInsuranceWrapper", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -279,97 +295,104 @@ namespace Database.Service.API.Migrations.Aerende
 
                     b.HasKey("Id");
 
-                    b.ToTable("TypeOfInsuranceWrappers");
+                    b.ToTable("TypeOfInsuranceWrapper");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.Clinic", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.Clinic", b =>
                 {
-                    b.HasOne("Aerende.Service.API.Data.Adress", "Adress")
+                    b.HasOne("ResponseModels.DatabaseModels.Adress", "Adress")
                         .WithMany()
                         .HasForeignKey("AdressId");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.Doctor", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.Doctor", b =>
                 {
-                    b.HasOne("Aerende.Service.API.Data.Clinic")
+                    b.HasOne("ResponseModels.DatabaseModels.Clinic")
                         .WithMany("Doctors")
                         .HasForeignKey("ClinicId");
 
-                    b.HasOne("Database.Service.API.Data.AerendeData.AerendeEntities.Models.TypeOfDoctorWrapper", "TypeOfDoctorWrapper")
+                    b.HasOne("ResponseModels.DatabaseModels.TypeOfDoctorWrapper", "TypeOfDoctorWrapper")
                         .WithMany()
                         .HasForeignKey("TypeOfDoctorWrapperId");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.Illness", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.Insurance", b =>
                 {
-                    b.HasOne("Database.Service.API.Data.AerendeData.AerendeEntities.Models.IllnessSeverityWrapper", "IllnessSeverityWrapper")
-                        .WithMany()
-                        .HasForeignKey("IllnessSeverityWrapperId");
-
-                    b.HasOne("Aerende.Service.API.Data.MedicalService")
-                        .WithMany("Illnesses")
-                        .HasForeignKey("MedicalServiceId");
-                });
-
-            modelBuilder.Entity("Aerende.Service.API.Data.Insurance", b =>
-                {
-                    b.HasOne("Aerende.Service.API.Data.InsuranceCompany", "InsuranceCompany")
+                    b.HasOne("ResponseModels.DatabaseModels.InsuranceCompany", "InsuranceCompany")
                         .WithMany()
                         .HasForeignKey("InsuranceCompanyId");
 
-                    b.HasOne("Database.Service.API.Data.AerendeData.AerendeEntities.Models.TypeOfInsuranceWrapper", "TypeOfInsuranceWrapper")
+                    b.HasOne("ResponseModels.DatabaseModels.TypeOfInsuranceWrapper", "TypeOfInsuranceWrapper")
                         .WithMany()
                         .HasForeignKey("TypeOfInsuranceWrapperId");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.InsuranceCompany", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.InsuranceCompany", b =>
                 {
-                    b.HasOne("Aerende.Service.API.Data.Adress", "Adress")
+                    b.HasOne("ResponseModels.DatabaseModels.Adress", "Adress")
                         .WithMany()
                         .HasForeignKey("AdressId");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.MedicalService", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.Invoice", b =>
                 {
-                    b.HasOne("Aerende.Service.API.Data.Doctor", "Doctor")
+                    b.HasOne("ResponseModels.DatabaseModels.PatientJournal")
+                        .WithMany("Invoices")
+                        .HasForeignKey("PatientJournalId");
+                });
+
+            modelBuilder.Entity("ResponseModels.DatabaseModels.KindOfIllness", b =>
+                {
+                    b.HasOne("ResponseModels.DatabaseModels.IllnessSeverityWrapper", "IllnessSeverity")
+                        .WithMany()
+                        .HasForeignKey("IllnessSeverityId");
+                });
+
+            modelBuilder.Entity("ResponseModels.DatabaseModels.MedicalService", b =>
+                {
+                    b.HasOne("ResponseModels.DatabaseModels.Doctor", "Doctor")
                         .WithMany()
                         .HasForeignKey("DoctorId");
 
-                    b.HasOne("Aerende.Service.API.Data.PatientJournal")
+                    b.HasOne("ResponseModels.DatabaseModels.KindOfIllness", "KindOfIllnes")
+                        .WithMany()
+                        .HasForeignKey("KindOfIllnesId");
+
+                    b.HasOne("ResponseModels.DatabaseModels.PatientJournal")
                         .WithMany("MedicalServices")
                         .HasForeignKey("PatientJournalId");
 
-                    b.HasOne("Database.Service.API.Data.AerendeData.AerendeEntities.Models.TypeOfExaminationWrapper", "TypeOfExaminationWrapper")
+                    b.HasOne("ResponseModels.DatabaseModels.TypeOfExaminationWrapper", "TypeOfExaminationWrapper")
                         .WithMany()
                         .HasForeignKey("TypeOfExaminationWrapperId");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.Owner", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.Owner", b =>
                 {
-                    b.HasOne("Aerende.Service.API.Data.Adress", "Adress")
+                    b.HasOne("ResponseModels.DatabaseModels.Adress", "Adress")
                         .WithMany()
                         .HasForeignKey("AdressId");
 
-                    b.HasOne("Aerende.Service.API.Data.PatientJournal")
+                    b.HasOne("ResponseModels.DatabaseModels.PatientJournal")
                         .WithMany("Owners")
                         .HasForeignKey("PatientJournalId");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.PatientJournal", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.PatientJournal", b =>
                 {
-                    b.HasOne("Aerende.Service.API.Data.Clinic", "Clinic")
+                    b.HasOne("ResponseModels.DatabaseModels.Clinic", "Clinic")
                         .WithMany()
                         .HasForeignKey("ClinicId");
 
-                    b.HasOne("Aerende.Service.API.Data.Insurance", "Insurance")
+                    b.HasOne("ResponseModels.DatabaseModels.Insurance", "Insurance")
                         .WithMany()
                         .HasForeignKey("InsuranceId");
                 });
 
-            modelBuilder.Entity("Aerende.Service.API.Data.Prescription", b =>
+            modelBuilder.Entity("ResponseModels.DatabaseModels.Prescription", b =>
                 {
-                    b.HasOne("Aerende.Service.API.Data.MedicalService")
-                        .WithMany("Prescription")
+                    b.HasOne("ResponseModels.DatabaseModels.MedicalService")
+                        .WithMany("Prescriptions")
                         .HasForeignKey("MedicalServiceId");
                 });
 #pragma warning restore 612, 618

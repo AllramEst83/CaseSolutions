@@ -11,6 +11,7 @@ namespace Database.Service.API.Helpers
         public const string Connectionstrings = "Connectionstrings";
         public const string InvoiceConnectionString = "InvoiceConnectionString";
         public const string AerendeConnectionString = "AerendeConnectionString";
+        public const string TypeOfConnectionString = "TypeOfConnectionString";
 
     }
 }
