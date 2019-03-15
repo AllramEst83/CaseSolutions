@@ -8,13 +8,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.3" />
+    <PackageReference Include="System.Data.Entity.Repository" Version="2.0.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="DataAccess\FakturaRepository\" />
     <Folder Include="DataAccess\UserRepository\" />
     <Folder Include="Data\TypeOfData\TypeOfEntities\Models\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>

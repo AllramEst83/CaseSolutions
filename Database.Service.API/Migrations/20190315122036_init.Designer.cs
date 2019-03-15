@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Database.Service.API.Migrations.Invoice
+namespace Database.Service.API.Migrations
 {
     [DbContext(typeof(InvoiceContext))]
-    [Migration("20190315101153_newInit")]
-    partial class newInit
+    [Migration("20190315122036_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

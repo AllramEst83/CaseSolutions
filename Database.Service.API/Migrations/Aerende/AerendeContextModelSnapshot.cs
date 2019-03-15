@@ -4,16 +4,14 @@ using Database.Service.API.Data.AerendeData.AerendeEntities.AerendeContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Database.Service.API.Migrations
+namespace Database.Service.API.Migrations.Aerende
 {
     [DbContext(typeof(AerendeContext))]
-    [Migration("20190315100259_newInit")]
-    partial class newInit
+    partial class AerendeContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,28 +119,6 @@ namespace Database.Service.API.Migrations
                     b.HasIndex("AdressId");
 
                     b.ToTable("InsuranceCompanys");
-                });
-
-            modelBuilder.Entity("ResponseModels.DatabaseModels.Invoice", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<double>("Discount");
-
-                    b.Property<DateTime>("DueDate");
-
-                    b.Property<DateTime>("IssueDate");
-
-                    b.Property<Guid?>("PatientJournalId");
-
-                    b.Property<double>("TotalSum");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PatientJournalId");
-
-                    b.ToTable("Invoice");
                 });
 
             modelBuilder.Entity("ResponseModels.DatabaseModels.KindOfIllness", b =>
@@ -334,13 +310,6 @@ namespace Database.Service.API.Migrations
                     b.HasOne("ResponseModels.DatabaseModels.Adress", "Adress")
                         .WithMany()
                         .HasForeignKey("AdressId");
-                });
-
-            modelBuilder.Entity("ResponseModels.DatabaseModels.Invoice", b =>
-                {
-                    b.HasOne("ResponseModels.DatabaseModels.PatientJournal")
-                        .WithMany("Invoices")
-                        .HasForeignKey("PatientJournalId");
                 });
 
             modelBuilder.Entity("ResponseModels.DatabaseModels.KindOfIllness", b =>

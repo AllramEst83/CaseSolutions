@@ -4,12 +4,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Database.Service.API.Migrations
 {
-    public partial class newInit : Migration
+    public partial class chagedInvoices : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<Guid>(
+                name: "PatientJournalId",
+                table: "Invoices",
+                nullable: true);
+
             migrationBuilder.CreateTable(
-                name: "Adresses",
+                name: "Adress",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -20,7 +25,7 @@ namespace Database.Service.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Adresses", x => x.Id);
+                    table.PrimaryKey("PK_Adress", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,7 +81,7 @@ namespace Database.Service.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Clinics",
+                name: "Clinic",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -85,17 +90,17 @@ namespace Database.Service.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clinics", x => x.Id);
+                    table.PrimaryKey("PK_Clinic", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Clinics_Adresses_AdressId",
+                        name: "FK_Clinic_Adress_AdressId",
                         column: x => x.AdressId,
-                        principalTable: "Adresses",
+                        principalTable: "Adress",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "InsuranceCompanys",
+                name: "InsuranceCompany",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -104,17 +109,17 @@ namespace Database.Service.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InsuranceCompanys", x => x.Id);
+                    table.PrimaryKey("PK_InsuranceCompany", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_InsuranceCompanys_Adresses_AdressId",
+                        name: "FK_InsuranceCompany_Adress_AdressId",
                         column: x => x.AdressId,
-                        principalTable: "Adresses",
+                        principalTable: "Adress",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "KindOfIllnesses",
+                name: "KindOfIllness",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -123,9 +128,9 @@ namespace Database.Service.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_KindOfIllnesses", x => x.Id);
+                    table.PrimaryKey("PK_KindOfIllness", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_KindOfIllnesses_IllnessSeverityWrapper_IllnessSeverityId",
+                        name: "FK_KindOfIllness_IllnessSeverityWrapper_IllnessSeverityId",
                         column: x => x.IllnessSeverityId,
                         principalTable: "IllnessSeverityWrapper",
                         principalColumn: "Id",
@@ -133,7 +138,7 @@ namespace Database.Service.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Doctors",
+                name: "Doctor",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -144,15 +149,15 @@ namespace Database.Service.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Doctors", x => x.Id);
+                    table.PrimaryKey("PK_Doctor", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Doctors_Clinics_ClinicId",
+                        name: "FK_Doctor_Clinic_ClinicId",
                         column: x => x.ClinicId,
-                        principalTable: "Clinics",
+                        principalTable: "Clinic",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Doctors_TypeOfDoctorWrapper_TypeOfDoctorWrapperId",
+                        name: "FK_Doctor_TypeOfDoctorWrapper_TypeOfDoctorWrapperId",
                         column: x => x.TypeOfDoctorWrapperId,
                         principalTable: "TypeOfDoctorWrapper",
                         principalColumn: "Id",
@@ -160,7 +165,7 @@ namespace Database.Service.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Insurances",
+                name: "Insurance",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -169,15 +174,15 @@ namespace Database.Service.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Insurances", x => x.Id);
+                    table.PrimaryKey("PK_Insurance", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Insurances_InsuranceCompanys_InsuranceCompanyId",
+                        name: "FK_Insurance_InsuranceCompany_InsuranceCompanyId",
                         column: x => x.InsuranceCompanyId,
-                        principalTable: "InsuranceCompanys",
+                        principalTable: "InsuranceCompany",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Insurances_TypeOfInsuranceWrapper_TypeOfInsuranceWrapperId",
+                        name: "FK_Insurance_TypeOfInsuranceWrapper_TypeOfInsuranceWrapperId",
                         column: x => x.TypeOfInsuranceWrapperId,
                         principalTable: "TypeOfInsuranceWrapper",
                         principalColumn: "Id",
@@ -185,7 +190,7 @@ namespace Database.Service.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PatientJournals",
+                name: "PatientJournal",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -197,45 +202,23 @@ namespace Database.Service.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PatientJournals", x => x.Id);
+                    table.PrimaryKey("PK_PatientJournal", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PatientJournals_Clinics_ClinicId",
+                        name: "FK_PatientJournal_Clinic_ClinicId",
                         column: x => x.ClinicId,
-                        principalTable: "Clinics",
+                        principalTable: "Clinic",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_PatientJournals_Insurances_InsuranceId",
+                        name: "FK_PatientJournal_Insurance_InsuranceId",
                         column: x => x.InsuranceId,
-                        principalTable: "Insurances",
+                        principalTable: "Insurance",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Invoice",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    TotalSum = table.Column<double>(nullable: false),
-                    Discount = table.Column<double>(nullable: false),
-                    IssueDate = table.Column<DateTime>(nullable: false),
-                    DueDate = table.Column<DateTime>(nullable: false),
-                    PatientJournalId = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Invoice", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Invoice_PatientJournals_PatientJournalId",
-                        column: x => x.PatientJournalId,
-                        principalTable: "PatientJournals",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MedicalServices",
+                name: "MedicalService",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -250,27 +233,27 @@ namespace Database.Service.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MedicalServices", x => x.Id);
+                    table.PrimaryKey("PK_MedicalService", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MedicalServices_Doctors_DoctorId",
+                        name: "FK_MedicalService_Doctor_DoctorId",
                         column: x => x.DoctorId,
-                        principalTable: "Doctors",
+                        principalTable: "Doctor",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MedicalServices_KindOfIllnesses_KindOfIllnesId",
+                        name: "FK_MedicalService_KindOfIllness_KindOfIllnesId",
                         column: x => x.KindOfIllnesId,
-                        principalTable: "KindOfIllnesses",
+                        principalTable: "KindOfIllness",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MedicalServices_PatientJournals_PatientJournalId",
+                        name: "FK_MedicalService_PatientJournal_PatientJournalId",
                         column: x => x.PatientJournalId,
-                        principalTable: "PatientJournals",
+                        principalTable: "PatientJournal",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MedicalServices_TypeOfExaminationWrapper_TypeOfExaminationWrapperId",
+                        name: "FK_MedicalService_TypeOfExaminationWrapper_TypeOfExaminationWrapperId",
                         column: x => x.TypeOfExaminationWrapperId,
                         principalTable: "TypeOfExaminationWrapper",
                         principalColumn: "Id",
@@ -278,7 +261,7 @@ namespace Database.Service.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Owners",
+                name: "Owner",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -290,23 +273,23 @@ namespace Database.Service.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Owners", x => x.Id);
+                    table.PrimaryKey("PK_Owner", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Owners_Adresses_AdressId",
+                        name: "FK_Owner_Adress_AdressId",
                         column: x => x.AdressId,
-                        principalTable: "Adresses",
+                        principalTable: "Adress",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Owners_PatientJournals_PatientJournalId",
+                        name: "FK_Owner_PatientJournal_PatientJournalId",
                         column: x => x.PatientJournalId,
-                        principalTable: "PatientJournals",
+                        principalTable: "PatientJournal",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Prescriptions",
+                name: "Prescription",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -316,123 +299,132 @@ namespace Database.Service.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Prescriptions", x => x.Id);
+                    table.PrimaryKey("PK_Prescription", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Prescriptions_MedicalServices_MedicalServiceId",
+                        name: "FK_Prescription_MedicalService_MedicalServiceId",
                         column: x => x.MedicalServiceId,
-                        principalTable: "MedicalServices",
+                        principalTable: "MedicalService",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clinics_AdressId",
-                table: "Clinics",
+                name: "IX_Invoices_PatientJournalId",
+                table: "Invoices",
+                column: "PatientJournalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clinic_AdressId",
+                table: "Clinic",
                 column: "AdressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Doctors_ClinicId",
-                table: "Doctors",
+                name: "IX_Doctor_ClinicId",
+                table: "Doctor",
                 column: "ClinicId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Doctors_TypeOfDoctorWrapperId",
-                table: "Doctors",
+                name: "IX_Doctor_TypeOfDoctorWrapperId",
+                table: "Doctor",
                 column: "TypeOfDoctorWrapperId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_InsuranceCompanys_AdressId",
-                table: "InsuranceCompanys",
-                column: "AdressId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Insurances_InsuranceCompanyId",
-                table: "Insurances",
+                name: "IX_Insurance_InsuranceCompanyId",
+                table: "Insurance",
                 column: "InsuranceCompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Insurances_TypeOfInsuranceWrapperId",
-                table: "Insurances",
+                name: "IX_Insurance_TypeOfInsuranceWrapperId",
+                table: "Insurance",
                 column: "TypeOfInsuranceWrapperId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Invoice_PatientJournalId",
-                table: "Invoice",
-                column: "PatientJournalId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_KindOfIllnesses_IllnessSeverityId",
-                table: "KindOfIllnesses",
-                column: "IllnessSeverityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MedicalServices_DoctorId",
-                table: "MedicalServices",
-                column: "DoctorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MedicalServices_KindOfIllnesId",
-                table: "MedicalServices",
-                column: "KindOfIllnesId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MedicalServices_PatientJournalId",
-                table: "MedicalServices",
-                column: "PatientJournalId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MedicalServices_TypeOfExaminationWrapperId",
-                table: "MedicalServices",
-                column: "TypeOfExaminationWrapperId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Owners_AdressId",
-                table: "Owners",
+                name: "IX_InsuranceCompany_AdressId",
+                table: "InsuranceCompany",
                 column: "AdressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Owners_PatientJournalId",
-                table: "Owners",
+                name: "IX_KindOfIllness_IllnessSeverityId",
+                table: "KindOfIllness",
+                column: "IllnessSeverityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicalService_DoctorId",
+                table: "MedicalService",
+                column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicalService_KindOfIllnesId",
+                table: "MedicalService",
+                column: "KindOfIllnesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicalService_PatientJournalId",
+                table: "MedicalService",
                 column: "PatientJournalId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PatientJournals_ClinicId",
-                table: "PatientJournals",
+                name: "IX_MedicalService_TypeOfExaminationWrapperId",
+                table: "MedicalService",
+                column: "TypeOfExaminationWrapperId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Owner_AdressId",
+                table: "Owner",
+                column: "AdressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Owner_PatientJournalId",
+                table: "Owner",
+                column: "PatientJournalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PatientJournal_ClinicId",
+                table: "PatientJournal",
                 column: "ClinicId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PatientJournals_InsuranceId",
-                table: "PatientJournals",
+                name: "IX_PatientJournal_InsuranceId",
+                table: "PatientJournal",
                 column: "InsuranceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Prescriptions_MedicalServiceId",
-                table: "Prescriptions",
+                name: "IX_Prescription_MedicalServiceId",
+                table: "Prescription",
                 column: "MedicalServiceId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Invoices_PatientJournal_PatientJournalId",
+                table: "Invoices",
+                column: "PatientJournalId",
+                principalTable: "PatientJournal",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Invoice");
+            migrationBuilder.DropForeignKey(
+                name: "FK_Invoices_PatientJournal_PatientJournalId",
+                table: "Invoices");
 
             migrationBuilder.DropTable(
-                name: "Owners");
+                name: "Owner");
 
             migrationBuilder.DropTable(
-                name: "Prescriptions");
+                name: "Prescription");
 
             migrationBuilder.DropTable(
-                name: "MedicalServices");
+                name: "MedicalService");
 
             migrationBuilder.DropTable(
-                name: "Doctors");
+                name: "Doctor");
 
             migrationBuilder.DropTable(
-                name: "KindOfIllnesses");
+                name: "KindOfIllness");
 
             migrationBuilder.DropTable(
-                name: "PatientJournals");
+                name: "PatientJournal");
 
             migrationBuilder.DropTable(
                 name: "TypeOfExaminationWrapper");
@@ -444,19 +436,27 @@ namespace Database.Service.API.Migrations
                 name: "IllnessSeverityWrapper");
 
             migrationBuilder.DropTable(
-                name: "Clinics");
+                name: "Clinic");
 
             migrationBuilder.DropTable(
-                name: "Insurances");
+                name: "Insurance");
 
             migrationBuilder.DropTable(
-                name: "InsuranceCompanys");
+                name: "InsuranceCompany");
 
             migrationBuilder.DropTable(
                 name: "TypeOfInsuranceWrapper");
 
             migrationBuilder.DropTable(
-                name: "Adresses");
+                name: "Adress");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Invoices_PatientJournalId",
+                table: "Invoices");
+
+            migrationBuilder.DropColumn(
+                name: "PatientJournalId",
+                table: "Invoices");
         }
     }
 }

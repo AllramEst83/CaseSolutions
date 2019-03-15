@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Database.Service.API.Data.AerendeData.AerendeEntities.AerendeContext;
 using Database.Service.API.Data.FakturaData.FakturaEntities.FakturaContext;
 using Database.Service.API.Data.TypeOfData.TypeOfEntities.TypeOfContext;
+using Database.Service.API.DataAccess.AerendeRepository;
 using Database.Service.API.DataAccess.Seeders;
 using Database.Service.API.DataAccess.Seeders.Interfaces;
 using Database.Service.API.Helpers;
@@ -37,6 +38,10 @@ namespace Database.Service.API
             services.AddScoped<IInvoiceSeeder, InvoiceSeeder>();
             services.AddScoped<IAerendeSeeder, AerendeSeeder>();
             services.AddScoped<ITypeOfSeeder, TypeOfSeeder>();
+
+            services.AddScoped<IAerendeRepository, AerendeRepository>();
+
+            services.AddScoped<IAerendeRepository, AerendeRepository>();
 
             services.AddDbContext<InvoiceContext>(config =>
             {
@@ -75,8 +80,8 @@ namespace Database.Service.API
             }
 
             typeOfSeeder.SeedTypeOf_s();
-
             aerendeSeeder.SeedAerende();
+            invoiceSeeder.SeedInvoices();
 
             app.UseHttpsRedirection();
             app.UseMvc();

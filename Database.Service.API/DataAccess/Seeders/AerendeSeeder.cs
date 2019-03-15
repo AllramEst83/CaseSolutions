@@ -15,28 +15,20 @@ namespace Database.Service.API.DataAccess.Seeders
     {
         public AerendeSeeder(
             AerendeContext aerendeContext, 
-            TypeOfContext typeOfContext, 
-            InvoiceContext invoiceContext,
-              IInvoiceSeeder invoiceSeeder)
+            TypeOfContext typeOfContext)
         {
             _aerendeContext = aerendeContext;
             _typeOfContext = typeOfContext;
-            _invoiceContext = invoiceContext;
-            _invoiceSeeder = invoiceSeeder;
         }
 
         public AerendeContext _aerendeContext { get; }
         public TypeOfContext _typeOfContext { get; }
-        public InvoiceContext _invoiceContext { get; }
-        public IInvoiceSeeder _invoiceSeeder { get; }
+
 
         public void SeedAerende()
         {
-            _aerendeContext.Database.EnsureCreated();
-            _invoiceContext.Database.EnsureCreated();
-
-            _invoiceContext.Invoices.RemoveRange(_invoiceContext.Invoices);
-            _invoiceContext.SaveChanges();
+          
+            _aerendeContext.Database.EnsureCreated();        
 
             _aerendeContext.PatientJournals.RemoveRange(_aerendeContext.PatientJournals);
             _aerendeContext.MedicalServices.RemoveRange(_aerendeContext.MedicalServices);
@@ -198,15 +190,10 @@ namespace Database.Service.API.DataAccess.Seeders
                 }
             };
 
-            _aerendeContext.AddRange(medicalServices);
+            _aerendeContext.MedicalServices.AddRange(medicalServices);
             _aerendeContext.SaveChanges();
-
-
-            //Seed Invoices before adding theme to a PatientJournal
-            _invoiceSeeder.SeedInvoices();
-
-
-            List<Invoice> invoices = _invoiceContext.Invoices.ToList();
+            
+                        
             List<Clinic> clinicsForPatientJournal = _aerendeContext.Clinics.ToList();
             List<Insurance> insurancesForPatientJournal = _aerendeContext.Insurances.ToList();
             List<MedicalService> medicalServicesForPatientJournal = _aerendeContext.MedicalServices.ToList();
@@ -219,7 +206,6 @@ namespace Database.Service.API.DataAccess.Seeders
                     AnimalSSN = "200512120898",
                     Clinic = clinicsForPatientJournal[0],
                     Insurance = insurancesForPatientJournal[0],
-                    Invoices = invoices.Take(2).ToList(),
                     MedicalServices = medicalServicesForPatientJournal.Take(2).ToList(),
                     Owners = ownersForPOatientJournal.Take(1).ToList()
                 },
@@ -229,7 +215,6 @@ namespace Database.Service.API.DataAccess.Seeders
                     AnimalSSN = "200012053321",
                     Clinic = clinicsForPatientJournal[1],
                     Insurance = insurancesForPatientJournal[1],
-                    Invoices = invoices.Take(1).ToList(),
                     MedicalServices = medicalServicesForPatientJournal.Take(1).ToList(),
                     Owners = ownersForPOatientJournal.Take(2).ToList()
                 },
@@ -239,14 +224,13 @@ namespace Database.Service.API.DataAccess.Seeders
                     AnimalSSN = "15506305598",
                     Clinic = clinicsForPatientJournal[2],
                     Insurance = insurancesForPatientJournal[2],
-                    Invoices = invoices.Take(3).ToList(),
                     MedicalServices = medicalServicesForPatientJournal.Take(3).ToList(),
                     Owners = ownersForPOatientJournal.Take(2).ToList()
                 },
             };
 
             _aerendeContext.PatientJournals.AddRange(patientJournals);
-            _aerendeContext.SaveChanges();
+           _aerendeContext.SaveChanges();
 
         }
     }
