@@ -1,3 +1,4 @@
+import { read } from "fs";
 
 
 const Root_API_Url = {
@@ -24,10 +25,39 @@ class PatientJournalAPI {
         "medicalServices": [],
         "owner":[]
 
+      },
+      {
+        "id": this.Guid(),
+        "firstName": "Gun",
+        "lastName": "Powder",
+        "animalSSN": this.Guid(),
+        "insurance": {},
+        "clinic": {},
+        "medicalServices": [],
+        "owner": []
+
+      },
+      {
+        "id": this.Guid(),
+        "firstName": "Storm",
+        "lastName": "Eye",
+        "animalSSN": this.Guid(),
+        "insurance": {},
+        "clinic": {},
+        "medicalServices": [],
+        "owner": []
+
       }
     ];
   }
 
+  static GetAllPatientJournals() {
+    return new Promise((resolve, reject) => {
+      fetch()
+        .then()
+        .then();
+    })
+  }
 
 
 
