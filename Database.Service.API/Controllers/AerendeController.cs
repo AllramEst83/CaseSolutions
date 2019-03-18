@@ -1,4 +1,5 @@
 ﻿using Database.Service.API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ResponseModels.DatabaseModels;
 using System.Collections.Generic;
@@ -18,8 +19,9 @@ namespace Database.Service.API.Controllers
         private IAerendeService _aerendeService { get; }
 
         // GET api/Get
+        [Authorize]
         [HttpGet]
-        public async Task<ActionResult<List<PatientJournal>>> Get()
+        public async Task<ActionResult<List<PatientJournal>>> GetAllPatientJournalslWithCap()
         {
             var patientJournals = await _aerendeService.GetAllPatientJournalsWithCap(20);
 

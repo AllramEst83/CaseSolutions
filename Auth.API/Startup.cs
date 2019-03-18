@@ -1,5 +1,4 @@
-﻿using System;
-using Auth.API.Models;
+﻿using Auth.API.Models;
 using Database.Service.API.Data.UserData.UserEntities.UserContext;
 using Database.Service.API.Data.UserData.UserEntities.UserModel;
 using Microsoft.AspNetCore.Builder;
@@ -13,11 +12,9 @@ using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Auth.API.Helpers;
 using Auth.API.AuthFactory;
 using CaseSolutionsTokenValidationParameters;
-using CaseSolutionsTokenValidationParameters.Models;
 using Auth.API.Interfaces;
 using Auth.API.Services;
 

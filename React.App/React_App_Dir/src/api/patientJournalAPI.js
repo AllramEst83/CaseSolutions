@@ -53,7 +53,7 @@ class PatientJournalAPI {
 
   static GetAllPatientJournals() {
     return new Promise((resolve, reject) => {
-      fetch()
+      fetch(`https://${}/api/gateway`)
         .then()
         .then();
     })
