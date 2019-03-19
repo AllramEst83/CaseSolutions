@@ -57,21 +57,21 @@ namespace Gateway.API.GatewayService
         }
 
         //GetHttpParameters
-        public HttpParameters GetHttpParameters(object model, string requestUrl, HttpMethod httpVerb, string id, string jwtToken = "")
-        {
-            HttpParameters httpParameters =
-              new HttpParameters
-              {
-                  Content = model,
-                  HttpVerb = httpVerb,
-                  RequestUrl = requestUrl,
-                  Id = id,
-                  CancellationToken = CancellationToken.None,
-                  JwtToken = jwtToken
-              };
+        //public HttpParameters GetHttpParameters(object model, string requestUrl, HttpMethod httpVerb, string id, string jwtToken = "")
+        //{
+        //    HttpParameters httpParameters =
+        //      new HttpParameters
+        //      {
+        //          Content = model,
+        //          HttpVerb = httpVerb,
+        //          RequestUrl = requestUrl,
+        //          Id = id,
+        //          CancellationToken = CancellationToken.None,
+        //          JwtToken = jwtToken
+        //      };
 
-            return httpParameters;
-        }
+        //    return httpParameters;
+        //}
 
 
     }

@@ -7,6 +7,7 @@ namespace Gateway.API.Helpers
 {
     public class Constants
     {
+        //User
         public const string ServerUrls = "ServerUrls";
         public const string Auth = "Auth";
         public const string SignUp = "SignUp";
@@ -22,6 +23,9 @@ namespace Gateway.API.Helpers
         public const string DeleteUser = "DeleteUser";
         public const string GetAllRoles = "GetAllRoles";
         public const string GetAllUsers = "GetAllUsers";
+
+        //Aerende
+        public const string GetAllPatientJournals = "GetAllPatientJournals";
 
         public static class AppSettingStrings
         {

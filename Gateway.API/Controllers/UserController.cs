@@ -4,6 +4,7 @@ using CaseSolutionsTokenValidationParameters.Models;
 using Gateway.API.Helpers;
 using Gateway.API.Interfaces;
 using Gateway.API.ViewModels;
+using HttpClientService;
 using HttpClientService.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +15,13 @@ using System.Threading.Tasks;
 
 namespace Gateway.API.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/gateway/[controller]/[action]")]
     [ApiController]
-    public class GatewayController : ControllerBase
+    public class UserController : ControllerBase
     {
         public IGWService _gWService { get; }
 
-        public GatewayController(IGWService gWService)
+        public UserController(IGWService gWService)
         {
             _gWService = gWService;
         }
@@ -71,7 +72,7 @@ namespace Gateway.API.Controllers
 
             //Prepare httpParameters for request
             HttpParameters httpParameters =
-                _gWService.GetHttpParameters(
+                HttpParametersService.GetHttpParameters(
                     model,
                     ConfigHelper.AppSetting(Constants.ServerUrls, Constants.Auth),
                     HttpMethod.Post,
@@ -102,7 +103,7 @@ namespace Gateway.API.Controllers
 
             //Prepare httpParameters for request
             HttpParameters httParameters =
-                _gWService.GetHttpParameters(
+                HttpParametersService.GetHttpParameters(
                     model,
                     ConfigHelper.AppSetting(Constants.ServerUrls, Constants.SignUp),
                     HttpMethod.Post,
@@ -135,7 +136,7 @@ namespace Gateway.API.Controllers
             }
 
             HttpParameters httpParameters =
-                _gWService
+                HttpParametersService
                 .GetHttpParameters
                 (model,
                 ConfigHelper.AppSetting(Constants.ServerUrls,
@@ -174,7 +175,7 @@ namespace Gateway.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            HttpParameters httpParameters = _gWService
+            HttpParameters httpParameters = HttpParametersService
                 .GetHttpParameters(
                 model,
                 ConfigHelper.AppSetting(Constants.ServerUrls, Constants.RemoveUserFromRole),
@@ -219,7 +220,7 @@ namespace Gateway.API.Controllers
             }
 
             HttpParameters httParameters =
-                _gWService
+                HttpParametersService
                 .GetHttpParameters(
                     model,
                     ConfigHelper.AppSetting(Constants.ServerUrls, Constants.AddUserToRole),
@@ -252,7 +253,7 @@ namespace Gateway.API.Controllers
                 BadRequest(userId);
             }
 
-            HttpParameters httpParameters = _gWService
+            HttpParameters httpParameters = HttpParametersService
               .GetHttpParameters(
               null,
               ConfigHelper.AppSetting(Constants.ServerUrls, Constants.GetUserRoles),
@@ -293,7 +294,7 @@ namespace Gateway.API.Controllers
                 return BadRequest(model);
             }
 
-            HttpParameters httpParameters = _gWService
+            HttpParameters httpParameters = HttpParametersService
            .GetHttpParameters(
            model,
            ConfigHelper.AppSetting(Constants.ServerUrls, Constants.DeleteRole),
@@ -335,7 +336,7 @@ namespace Gateway.API.Controllers
                 return BadRequest(model);
             }
 
-            HttpParameters httpParameters = _gWService
+            HttpParameters httpParameters = HttpParametersService
              .GetHttpParameters(
                  model,
                  ConfigHelper.AppSetting(Constants.ServerUrls, Constants.DeleteUser),
@@ -369,7 +370,7 @@ namespace Gateway.API.Controllers
         public async Task<IActionResult> GetAllRoles([FromHeader] string authorization)
         {
 
-            HttpParameters httpParameters = _gWService
+            HttpParameters httpParameters = HttpParametersService
                .GetHttpParameters(
                    null,
                    ConfigHelper.AppSetting(Constants.ServerUrls, Constants.GetAllRoles),
@@ -394,7 +395,7 @@ namespace Gateway.API.Controllers
         public async Task<IActionResult> GetAllUsers([FromHeader] string authorization)
         {
 
-            HttpParameters httpParameters = _gWService
+            HttpParameters httpParameters = HttpParametersService
                .GetHttpParameters(
                    null,
                    ConfigHelper.AppSetting(Constants.ServerUrls, Constants.GetAllUsers),

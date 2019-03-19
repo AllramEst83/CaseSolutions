@@ -1,4 +1,6 @@
-﻿using Database.Service.API.Services.Interfaces;
+﻿using CaseSolutionsTokenValidationParameters.Models;
+using Database.Service.API.Services.Interfaces;
+using Database.Service.API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ResponseModels.DatabaseModels;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Database.Service.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/database[controller]/[action]")]
     [ApiController]
     public class AerendeController : ControllerBase
     {
@@ -19,11 +21,15 @@ namespace Database.Service.API.Controllers
         private IAerendeService _aerendeService { get; }
 
         // GET api/Get
-        [Authorize]
-        [HttpGet]
-        public async Task<ActionResult<List<PatientJournal>>> GetAllPatientJournalslWithCap()
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPICommonUser)]
+        [HttpPost]
+        public async Task<ActionResult<List<PatientJournal>>> GetAllPatientJournals(GetAllPatientJournalslWithCapViewModel model)
         {
-            var patientJournals = await _aerendeService.GetAllPatientJournalsWithCap(20);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var patientJournals = await _aerendeService.GetAllPatientJournalsWithCap(model.Cap);
 
             return patientJournals;
         }

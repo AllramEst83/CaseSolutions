@@ -19,7 +19,6 @@
     <Folder Include="DataAccess\UserRepository\" />
     <Folder Include="Data\TypeOfData\TypeOfEntities\Models\" />
     <Folder Include="Models\" />
-    <Folder Include="ViewModels\Validation\" />
   </ItemGroup>
 
   <ItemGroup>
