@@ -38,8 +38,6 @@ namespace Aerende.Service.API
             //Get Symetrickey (!Should be Readonly Private!)
             SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(ConfigHelper.AppSetting(AerendeConstants.AppSettnings, AerendeConstants.Secret)));
 
-            var signingCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
-
             var issuer = ConfigHelper.AppSetting(AerendeConstants.JwtIssuerOptions, AerendeConstants.Issuer);
             var audience = ConfigHelper.AppSetting(AerendeConstants.JwtIssuerOptions, AerendeConstants.Audience);
 

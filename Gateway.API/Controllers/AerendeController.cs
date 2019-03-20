@@ -7,6 +7,7 @@ using HttpClientService.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ResponseModels.ViewModels.Aerende;
+using StatusCodeResponseService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,14 +38,20 @@ namespace Gateway.API.Controllers
             HttpParameters httpParameters =
                 HttpParametersService
                 .GetHttpParameters(
-                    model, 
-                    ConfigHelper.AppSetting(Constants.ServerUrls, Constants.GetAllPatientJournals), 
+                    model,
+                    ConfigHelper.AppSetting(Constants.ServerUrls, Constants.GetAllPatientJournals),
                     HttpMethod.Post,
                     string.Empty,
                     authorization);
 
             GetAllPatientJournalsResponse getPatientJournalsResult =
-                await _gWService.PostTo<GetAllPatientJournalsResponse>(httpParameters);
+               await _gWService.PostTo<GetAllPatientJournalsResponse>(httpParameters);
+
+
+            if (getPatientJournalsResult.StatusCode == 400)
+            {
+                return await ResponseService.GetResponse<BadRequestObjectResult, GetAllPatientJournalsResponse>(getPatientJournalsResult, ModelState);
+            }
 
             return new OkObjectResult(getPatientJournalsResult);
         }

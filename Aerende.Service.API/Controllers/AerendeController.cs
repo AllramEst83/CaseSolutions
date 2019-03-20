@@ -28,7 +28,7 @@ namespace Aerende.Service.API.Controllers
 
 
 
-        //[Authorize(Policy = TokenValidationConstants.Policies.AuthAPICommonUser)]
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPICommonUser)]
         [HttpPost]
         public async Task<IActionResult> GetAllPatientJournals(GetAllPatientJournalslWithCapViewModel model, [FromHeader] string authorization)
         {
