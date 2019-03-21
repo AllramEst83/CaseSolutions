@@ -10,9 +10,13 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.4.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="APIErrorHandling">
+      <HintPath>..\..\APIErrorHandling\APIErrorHandling\bin\Debug\netcoreapp2.2\APIErrorHandling.dll</HintPath>
+    </Reference>
     <Reference Include="CaseSolutionsTokenValidationParameters">
       <HintPath>..\..\CaseSolutionsTokenValidationParameters\CaseSolutionsTokenValidationParameters\bin\Debug\netcoreapp2.2\CaseSolutionsTokenValidationParameters.dll</HintPath>
     </Reference>

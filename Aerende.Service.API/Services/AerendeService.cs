@@ -22,6 +22,14 @@ namespace Aerende.Service.API.Services
 
             return result;
         }
-    
+
+        //PostTo
+        public async Task<T> PostTo<T>(HttpParameters httpParameters)
+        {
+            T result = await _aerendeRepository.PostRequestWithContent<T>(httpParameters);
+
+            return result;
+        }
+
     }
 }

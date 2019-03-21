@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <Folder Include="gRPCRepository\" />
-    <Folder Include="ViewModels\User\" />
   </ItemGroup>
 
   <ItemGroup>

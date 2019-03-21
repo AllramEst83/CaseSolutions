@@ -10,7 +10,7 @@ namespace Gateway.API.ViewModels.Aerende.Validation
     {
         public GetAllPatientJournalslWithCapViewModelValidator()
         {
-            RuleFor(vm => vm.Cap).NotEmpty().WithMessage("cap cannot be empty");
+            RuleFor(vm => vm.Cap).GreaterThanOrEqualTo(0).WithMessage("Cap cannot be empty");
         }
     }
 }

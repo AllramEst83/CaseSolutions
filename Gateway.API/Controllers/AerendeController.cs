@@ -50,10 +50,12 @@ namespace Gateway.API.Controllers
 
             if (getPatientJournalsResult.StatusCode == 400)
             {
-                return await ResponseService.GetResponse<BadRequestObjectResult, GetAllPatientJournalsResponse>(getPatientJournalsResult, ModelState);
+                return await ResponseService
+                    .GetResponse<BadRequestObjectResult, GetAllPatientJournalsResponse>(getPatientJournalsResult, ModelState);
             }
 
             return new OkObjectResult(getPatientJournalsResult);
         }
+        
     }
 }

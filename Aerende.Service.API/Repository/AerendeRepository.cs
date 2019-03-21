@@ -23,5 +23,19 @@ namespace Aerende.Service.API.Repository
                 throw ex;
             }
         }
+
+        public async Task<T> PostRequestWithContent<T>(HttpParameters httpParameters)
+        {
+            try
+            {
+                T result = await HttpService.PostStreamAsyncContent<T>(httpParameters);
+                return result;
+            }
+            catch (CustomApiException ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }

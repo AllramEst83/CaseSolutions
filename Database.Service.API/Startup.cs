@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CaseSolutionsTokenValidationParameters;
-using Database.Service.API.Data.AerendeData.AerendeEntities.AerendeContext;
+using Database.Service.API.Data.AerendeData.AerendeEntities.AerendeContextFolder;
 using Database.Service.API.Data.FakturaData.FakturaEntities.FakturaContext;
 using Database.Service.API.Data.TypeOfData.TypeOfEntities.TypeOfContext;
 using Database.Service.API.DataAccess.AerendeRepository;

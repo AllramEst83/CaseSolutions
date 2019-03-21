@@ -1,6 +1,7 @@
 ﻿using Aerende.Service.API.Helpers;
 using Aerende.Service.API.Services;
 using Aerende.Service.API.ViewModels.Aerende;
+using APIErrorHandling;
 using CaseSolutionsTokenValidationParameters.Models;
 using HttpClientService;
 using HttpClientService.Helpers;
@@ -46,9 +47,14 @@ namespace Aerende.Service.API.Controllers
                     authorization
                     );
 
-            GetAllPatientJournalsResponse getPatientJournalsResult = await _aerendeService.Get<GetAllPatientJournalsResponse>(httpParameters);
+            GetAllPatientJournalsResponse getPatientJournalsResult = await _aerendeService.PostTo<GetAllPatientJournalsResponse>(httpParameters);
 
-            return new OkObjectResult(new { });
+            if (getPatientJournalsResult.StatusCode == 500)
+            {
+                return new JsonResult(await Errors.GetGenericErrorResponse(getPatientJournalsResult));
+            }
+
+            return new OkObjectResult(getPatientJournalsResult);
         }
     }
 }

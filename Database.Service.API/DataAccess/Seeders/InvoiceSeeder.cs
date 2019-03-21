@@ -1,4 +1,4 @@
-﻿using Database.Service.API.Data.AerendeData.AerendeEntities.AerendeContext;
+﻿using Database.Service.API.Data.AerendeData.AerendeEntities.AerendeContextFolder;
 using Database.Service.API.Data.FakturaData.FakturaEntities.FakturaContext;
 using Database.Service.API.DataAccess.Seeders.Interfaces;
 using Microsoft.EntityFrameworkCore;//<-Gör så att man kan använda "Include"

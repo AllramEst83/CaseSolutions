@@ -11,9 +11,7 @@ namespace Aerende.Service.API.ViewModels.Aerende.Validation
     {
         public GetAllPatientJournalslWithCapViewModelValidator()
         {
-            RuleFor(vm => vm.Cap)
-                .NotEmpty().WithMessage("Email cannot be empty")
-                .NotNull().WithMessage("Email cannot be empty");
+            RuleFor(vm => vm.Cap).GreaterThanOrEqualTo(0).WithMessage("Cap cannot be empty");
         }
     }
 }

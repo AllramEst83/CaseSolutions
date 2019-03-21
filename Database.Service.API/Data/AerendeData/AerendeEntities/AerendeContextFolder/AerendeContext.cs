@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ResponseModels.DatabaseModels;
 
-namespace Database.Service.API.Data.AerendeData.AerendeEntities.AerendeContext
+namespace Database.Service.API.Data.AerendeData.AerendeEntities.AerendeContextFolder
 {
     public class AerendeContext : DbContext
     {
