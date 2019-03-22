@@ -51,45 +51,6 @@ namespace Gateway.API
                 _signingKey
                 );
 
-            #region
-            //AddTokenValidator
-            //var tokenValidationParameters = new TokenValidationParameters
-            //{
-            //    ValidateIssuer = true,
-            //    ValidIssuer = ConfigHelper.AppSetting("JwtIssuerOptions", "Issuer"),
-
-            //    ValidateAudience = true,
-            //    ValidAudience = ConfigHelper.AppSetting("JwtIssuerOptions", "Audience"),
-
-            //    ValidateIssuerSigningKey = true,
-            //    IssuerSigningKey = _signingKey,
-
-            //    RequireExpirationTime = true,
-            //    ValidateLifetime = true,
-            //    ClockSkew = TimeSpan.Zero
-            //};
-
-            //services.AddAuthentication(options =>
-            //{
-            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //})
-            //.AddJwtBearer(configureOptions =>
-            //{
-            //    configureOptions.ClaimsIssuer = ConfigHelper.AppSetting("JwtIssuerOptions", "Issuer");
-            //    configureOptions.TokenValidationParameters = tokenValidationParameters;
-            //    configureOptions.SaveToken = true;
-            //});
-
-            //// api user claim policy
-            //services.AddAuthorization(options =>
-            //{
-            //    //Add more roles here to handel diffrent type of users: admin, user, editUser
-            //    options.AddPolicy(Constants.GatewayAPIAdmin, policy => policy.RequireClaim("role", "adminAccess"));
-            //    options.AddPolicy(Constants.GatewayAPICommonUser, policy => policy.RequireClaim("role", "commonUserAccess"));
-            //});
-            #endregion
-
             //Services
             services.AddScoped<IHttpRepo, HttpRepo>();
             services.AddScoped<IGWService, GWService>();
@@ -98,15 +59,20 @@ namespace Gateway.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            //    app.UseHsts();
+            //}
+
+            //Develop this error handeling further in ErrorsController
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
+
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

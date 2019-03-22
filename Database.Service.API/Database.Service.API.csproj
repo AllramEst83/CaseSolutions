@@ -22,6 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="APIErrorHandling">
+      <HintPath>..\..\APIErrorHandling\APIErrorHandling\bin\Debug\netcoreapp2.2\APIErrorHandling.dll</HintPath>
+    </Reference>
+    <Reference Include="APIResponseMessageWrapper">
+      <HintPath>..\..\APIResponseMessageWrapper\APIResponseMessageWrapper\bin\Debug\netcoreapp2.2\APIResponseMessageWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="CaseSolutionsTokenValidationParameters">
       <HintPath>..\..\CaseSolutionsTokenValidationParameters\CaseSolutionsTokenValidationParameters\bin\Debug\netcoreapp2.2\CaseSolutionsTokenValidationParameters.dll</HintPath>
     </Reference>

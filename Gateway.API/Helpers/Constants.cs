@@ -26,6 +26,7 @@ namespace Gateway.API.Helpers
 
         //Aerende
         public const string GetAllPatientJournals = "GetAllPatientJournals";
+        public const string GetPatientJournalById = "GetPatientJournalById";
 
         public static class AppSettingStrings
         {

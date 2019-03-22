@@ -5,10 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Database.Service.API.Data.UserData.UserEntities.UserModel;
 using Microsoft.AspNetCore.Identity;
-using Auth.API.ExceptionHandeling;
 using ResponseModels.Models;
 using Auth.API.Models;
 using ResponseModels.ViewModels;
+using APIErrorHandling;
 
 namespace Auth.API.Services
 {

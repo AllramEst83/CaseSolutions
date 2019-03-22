@@ -365,10 +365,10 @@ namespace Auth.API.Controllers
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpGet]
         //GET/api/auth/getuserroles
-        public async Task<IActionResult> GetUserRoles([FromQuery] string userId)
+        public async Task<IActionResult> GetUserRoles([FromQuery] string id)
         {
             //HERE -> CustomException skapar inte en user klass när user är null
-            if (String.IsNullOrEmpty(userId))
+            if (String.IsNullOrEmpty(id))
             {
                 return new JsonResult(await Errors
                     .GetGenericErrorResponse(
@@ -376,7 +376,7 @@ namespace Auth.API.Controllers
                         {
                             Email = "no_email",
                             Roles = new List<string>(),
-                            UserId = userId,
+                            UserId = id,
                             StatusCode = 400,
                             Error = "UserId can not be empty",
                             Description = "UserId cannot be empty.",
@@ -384,7 +384,7 @@ namespace Auth.API.Controllers
                         }));
             }
 
-            User user = await _accountsService.GetUser(userId);
+            User user = await _accountsService.GetUser(id);
 
             if (user == null)
             {
@@ -394,7 +394,7 @@ namespace Auth.API.Controllers
                           {
                               Email = "no_email",
                               Roles = new List<string>(),
-                              UserId = userId,
+                              UserId = id,
                               StatusCode = 404,
                               Error = "User is not found",
                               Description = "User can not be found.",

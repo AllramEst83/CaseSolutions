@@ -246,11 +246,11 @@ namespace Gateway.API.Controllers
         // GET api/gateway/getuserroles
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpGet]
-        public async Task<IActionResult> GetUserRoles(string userId, [FromHeader] string authorization)
+        public async Task<IActionResult> GetUserRoles(string id, [FromHeader] string authorization)
         {
             if (!ModelState.IsValid)
             {
-                BadRequest(userId);
+                BadRequest(id);
             }
 
             HttpParameters httpParameters = HttpParametersService
@@ -258,7 +258,7 @@ namespace Gateway.API.Controllers
               null,
               ConfigHelper.AppSetting(Constants.ServerUrls, Constants.GetUserRoles),
               HttpMethod.Get,
-              userId,
+              id,
               authorization
               );
 

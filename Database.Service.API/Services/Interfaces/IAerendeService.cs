@@ -1,4 +1,5 @@
 ﻿using ResponseModels.DatabaseModels;
+using ResponseModels.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ namespace Database.Service.API.Services.Interfaces
 {
     public interface IAerendeService
     {
-        Task<List<PatientJournal>> GetAllPatientJournalsWithCap(int cap);
+        Task<AllPatientJournals> GetAllPatientJournalsWithCap(int cap);
+        Task<PatientJournal> GetPatientJournalById(Guid guid);
     }
 }

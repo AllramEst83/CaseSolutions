@@ -19,16 +19,26 @@ namespace Database.Service.API.DataAccess.AerendeRepository
         private AerendeContext _aerendeContext { get; }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cap"></param>
+        /// <returns></returns>
         public async Task<List<PatientJournal>> GetAllPatientJournalWithCap(int cap)
         {
-            var patientJournal = await Task.FromResult(_aerendeContext.GetJournalsWithChildren(cap));
+            var patientJournal = await _aerendeContext.GetJournalsWithChildren(cap);
 
             return patientJournal;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<PatientJournal> GetPatientJournalById(Guid id)
         {
-            PatientJournal patientJournal = await Task.FromResult(_aerendeContext.PatientJournals.SingleOrDefault(x => x.Id == id));
+            PatientJournal patientJournal = await _aerendeContext.GetPatientJournalById(id);
 
             return patientJournal;
         }

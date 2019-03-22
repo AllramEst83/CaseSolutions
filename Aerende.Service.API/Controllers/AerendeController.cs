@@ -49,12 +49,36 @@ namespace Aerende.Service.API.Controllers
 
             GetAllPatientJournalsResponse getPatientJournalsResult = await _aerendeService.PostTo<GetAllPatientJournalsResponse>(httpParameters);
 
-            if (getPatientJournalsResult.StatusCode == 500)
+            return new JsonResult(getPatientJournalsResult);
+        }
+
+
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPICommonUser)]
+        [HttpGet]
+        public async Task<IActionResult> GetPatientJournalById([FromQuery] Guid id, [FromHeader] string authorization)
+        {
+            if (!ModelState.IsValid)
             {
-                return new JsonResult(await Errors.GetGenericErrorResponse(getPatientJournalsResult));
+                return BadRequest(ModelState);
+            }
+            
+            if (id == Guid.Empty)
+            {
+                return new JsonResult(new { error = "error" });
             }
 
-            return new OkObjectResult(getPatientJournalsResult);
+            HttpParameters httpParameters =
+               HttpParametersService.GetHttpParameters(
+                   null,
+                   ConfigHelper.AppSetting(AerendeConstants.ServerUrls, AerendeConstants.GetPatientJournalById),
+                   HttpMethod.Get,
+                   id.ToString(),
+                   authorization
+                   );
+
+            GetPatientJournalResponse patientJournalResponse = await _aerendeService.Get<GetPatientJournalResponse>(httpParameters);
+
+            return new JsonResult(patientJournalResponse);
         }
     }
 }

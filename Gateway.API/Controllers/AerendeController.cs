@@ -6,6 +6,7 @@ using HttpClientService;
 using HttpClientService.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ResponseModels.DatabaseModels;
 using ResponseModels.ViewModels.Aerende;
 using StatusCodeResponseService;
 using System;
@@ -17,6 +18,7 @@ using System.Threading.Tasks;
 namespace Gateway.API.Controllers
 {
     [Route("api/gateway/[controller]/[action]")]
+    [ApiController]
     public class AerendeController : ControllerBase
     {
         public IGWService _gWService { get; }
@@ -48,14 +50,52 @@ namespace Gateway.API.Controllers
                await _gWService.PostTo<GetAllPatientJournalsResponse>(httpParameters);
 
 
-            if (getPatientJournalsResult.StatusCode == 400)
+            if (getPatientJournalsResult.StatusCode == 422)
             {
                 return await ResponseService
-                    .GetResponse<BadRequestObjectResult, GetAllPatientJournalsResponse>(getPatientJournalsResult, ModelState);
+                    .GetResponse<UnprocessableEntityObjectResult, GetAllPatientJournalsResponse>(getPatientJournalsResult, ModelState);
             }
 
             return new OkObjectResult(getPatientJournalsResult);
         }
-        
+
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPICommonUser)]
+        [HttpGet]
+        public async Task<IActionResult> GetPatientJournalById(Guid id, [FromHeader]string authorization)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id == Guid.Empty)
+            {
+                return BadRequest("id can not be empty");
+            }
+
+            HttpParameters httpParameters =
+           HttpParametersService.GetHttpParameters(
+               null,
+               ConfigHelper.AppSetting(Constants.ServerUrls, Constants.GetPatientJournalById),
+               HttpMethod.Get,
+               id.ToString(),
+               authorization
+               );
+
+            GetPatientJournalResponse patientJournalResult = await _gWService.Get<GetPatientJournalResponse>(httpParameters);
+
+            if (patientJournalResult.StatusCode == 400)
+            {
+                return await ResponseService.GetResponse<BadRequestObjectResult, GetPatientJournalResponse>(patientJournalResult, ModelState);
+            }
+            else if (patientJournalResult.StatusCode == 404)
+            {
+                return await ResponseService.GetResponse<NotFoundObjectResult, GetPatientJournalResponse>(patientJournalResult, ModelState);
+            }
+
+            return new OkObjectResult(patientJournalResult);
+        }
+
+
     }
 }

@@ -18,5 +18,6 @@ namespace Aerende.Service.API.Helpers
         //ServerUrls
         public const string ServerUrls = "ServerUrls";
         public const string PatientJournals = "PatientJournals";
+        public const string GetPatientJournalById = "GetPatientJournalById";
     }
 }
