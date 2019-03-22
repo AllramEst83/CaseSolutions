@@ -20,6 +20,8 @@ namespace Database.Service.API.Helpers
         public const string Issuer = "Issuer";
         public const string Audience = "Audience";
 
+        //Aerende
+        public const string Zing = "Zing!!";
 
     }
 }

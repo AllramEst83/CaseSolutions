@@ -1,6 +1,7 @@
 ﻿using APIErrorHandling;
 using APIResponseMessageWrapper;
 using CaseSolutionsTokenValidationParameters.Models;
+using Database.Service.API.Helpers;
 using Database.Service.API.Services.Interfaces;
 using Database.Service.API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -25,12 +26,15 @@ namespace Database.Service.API.Controllers
 
         private IAerendeService _aerendeService { get; }
 
+        //DONE
+        // GET api/database/Aerende/Ping
         [HttpGet]
         public ActionResult<object> Ping()
         {
-            return new OkObjectResult(new { ping = "ping" });
+            return new OkObjectResult(Wrappyfier.WrapResponse(200, DatabaseConstants.Zing));
         }
 
+        //DONE
         // POST api/database/Aerende/GetAllPatientJournals
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPICommonUser)]
         [HttpPost]
@@ -59,6 +63,7 @@ namespace Database.Service.API.Controllers
             return new JsonResult(Wrappyfier.WrapPatientJournalsResponse(patientJournals));
         }
 
+        //DONE
         //GET api/database/Aerende/GetPatientJournalById
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPICommonUser)]
         [HttpGet]
