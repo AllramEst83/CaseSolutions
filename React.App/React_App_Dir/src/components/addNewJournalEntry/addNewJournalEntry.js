@@ -21,7 +21,7 @@ class AddNewJournalEntry extends React.Component {
     alert("Saving!");
   }
 
-  updatePatientJournalState = event => {
+  updatePatientJournalState(event){
 
     //Never change the object directly.Always exchange the object with Redux.
     let patientJournal = Object.assign({}, this.state.patientJournal);
