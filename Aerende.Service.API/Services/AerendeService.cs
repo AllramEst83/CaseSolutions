@@ -16,6 +16,13 @@ namespace Aerende.Service.API.Services
             _aerendeRepository = aerendeRepository;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="httpParameters"></param>
+        /// <returns></returns>
+        //Get
         public async Task<T> Get<T>(HttpParameters httpParameters)
         {
             T result = await _aerendeRepository.GetRequest<T>(httpParameters);
@@ -23,6 +30,12 @@ namespace Aerende.Service.API.Services
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="httpParameters"></param>
+        /// <returns></returns>
         //PostTo
         public async Task<T> PostTo<T>(HttpParameters httpParameters)
         {

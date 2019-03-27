@@ -43,6 +43,7 @@ namespace Database.Service.API
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 //AddFluentValidation
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
+                //Ignore when JSON contains Self referanceLoop
                 .AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             
             //Seeders
