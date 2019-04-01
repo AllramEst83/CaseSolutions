@@ -6,7 +6,6 @@ namespace Gateway.API.HttpRepository
 {
     public class HttpRepo : IHttpRepo
     {
-
         public async Task<T> PostRequestWithContent<T>(HttpParameters httpParameters)
         {
             try
