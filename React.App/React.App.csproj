@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="React_App_Dir\src\reducers\" />
+    <Folder Include="React_App_Dir_OLD_OUTDATED\src\reducers\" />
   </ItemGroup>
 
 </Project>
