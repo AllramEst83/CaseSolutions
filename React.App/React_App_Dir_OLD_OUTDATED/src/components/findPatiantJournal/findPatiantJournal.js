@@ -10,31 +10,31 @@ class FindPatiantJournal extends React.Component {
         <div className="row defaultMargin">
           <div className="col-md-offset-2 col-md-6">
 
-            <div className="input-group">
+                <div className="input-group">
 
-              <div className="input-group-btn">
-                <button
-                  type="button"
-                  className="btn btn-info dropdown-toggle"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false">
-                  Filter <span className="caret"></span>
-                </button>
-                <ul className="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                </ul>
-              </div>
+                  <div className="input-group-btn">
+                    <button
+                      type="button"
+                      className="btn btn-info dropdown-toggle"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false">
+                      Filter <span className="caret"></span>
+                    </button>
+                    <ul className="dropdown-menu">
+                      <li><a href="#">Action</a></li>
+                      <li><a href="#">Another action</a></li>
+                      <li><a href="#">Something else here</a></li>
+                    </ul>
+                  </div>
 
-              <input type="text" className="form-control" placeholder="Sök efter patient journal..." />
+                  <input type="text" className="form-control" placeholder="Sök efter patient journal..." />
 
-              <span className="input-group-btn">
-                <button className="btn btn-success" type="button">Sök..</button>
-              </span>
+                  <span className="input-group-btn">
+                    <button className="btn btn-success" type="button">Sök..</button>
+                  </span>
 
-            </div>
+                </div>
 
           </div>
         </div>
