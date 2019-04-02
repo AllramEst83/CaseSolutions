@@ -1,10 +1,15 @@
-﻿
-import React from "react";
+﻿import React from "react";
 import { render } from "react-dom";
 
+class TestOutput extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 
-function Hi() {
-    return "<p>Hi</p>"
+  render() {
+    return <div>Starting Unicorn race</div>;
+  }
 }
+export default TestOutput;
 
-render(<Hi />, document.getElementById("app"));
+render(<TestOutput />, document.getElementById("app"));
