@@ -1,0 +1,134 @@
+/* Styles */
+body {
+  background-color: #e9f7ef !important;
+}
+
+#app {
+  font: 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #4d4d4d;
+  min-width: 550px;
+  /* max-width: 850px; */
+  margin: 0 auto;
+}
+
+a.active {
+  color: orange;
+}
+
+nav {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 33px;
+}
+
+.jumbotron {
+  margin-top: 20px;
+}
+
+.topBar {
+  background-color: #7d3c98;
+  width: 100%;
+  min-height: 80px;
+}
+
+.headerMainText {
+  color: lightgrey;
+  font-size: 2em;
+  margin-left: 30px;
+  padding-top: 20px;
+  text-shadow: 0px 5px 25px black;
+  /*TextShadow Animation*/
+  -webkit-transition: text-shadow 0.2s linear;
+  -moz-transition: text-shadow 0.2s linear;
+  -ms-transition: text-shadow 0.2s linear;
+  -o-transition: text-shadow 0.2s linear;
+  transition: text-shadow 0.2s linear;
+}
+
+.mainText:hover {
+  text-shadow: 1px 1px 20px #ff0000;
+}
+
+.thumbnail {
+  position: relative;
+  padding: 0px;
+  margin-bottom: 20px;
+}
+
+.cardRoot:hover {
+  box-shadow: 0px -15px 50px rgba(33, 33, 33, 0.2);
+}
+
+.thumbnail img {
+  width: 100%;
+}
+
+.listSpacing {
+  margin: 25px;
+}
+
+.backButton {
+  margin-left: 5px;
+}
+
+.navElement {
+  margin-left: 30px;
+}
+
+.navElement a.active {
+  color: #72ffb2 !important;
+}
+
+.navElement a {
+  color: #b3b3b3 !important;
+  text-decoration: none;
+}
+
+@font-face {
+  font-family: Muybridge;
+  src: url(https://www.axis-praxis.org/fonts/codepen/MuybridgeGX.woff2);
+}
+
+@keyframes Gallop {
+  from {
+    font-variation-settings: "TIME" 0;
+  }
+
+  to {
+    font-variation-settings: "TIME" 1000;
+  }
+}
+
+.Muybridge {
+  font: 45px Muybridge;
+  animation: 0.6s linear infinite Gallop;
+  display: inline;
+  margin-left: 15px;
+}
+
+.content-wrapper {
+  margin: 25px;
+}
+
+.searchButton {
+  float: left;
+}
+
+.buttonContainer {
+  text-align: center;
+}
+
+.panel-body .input-group {
+  margin-bottom: 10px;
+}
+.defaultMargin {
+  margin-bottom: 15px;
+}
+.journalStyle:hover {
+  background-color: #eaecee;
+  border-radius: 8px;
+}
+.rowPadding {
+  padding-left: 15px;
+  padding-right: 15px;
+}
