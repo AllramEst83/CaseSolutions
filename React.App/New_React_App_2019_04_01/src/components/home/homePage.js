@@ -1,30 +1,63 @@
 import React from "react";
 
-const HomePage = () => {
-  return (
-    <div className="container content-wrapper">
-      <div className="row">
-        <div className="col-md-6 offset-md-6">
-          {/* SerachBar */}
-          <div className="input-group">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Sök efter patient journal..."
-            />
+class HomePage extends React.Component {
 
-            <span className="input-group-btn">
-              <button className="btn btn-success" type="button">
-                Sök..
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      margin: '10px',
+      marginInt: 10
+    }
+
+    this.SearchSource = this.SearchSource.bind(this);
+  }
+
+
+  SearchSource() {
+
+    const isTrue = confirm(`Margin is set to : ${this.state.margin}, Increas by 10px?`);
+    if (isTrue == true) {
+      this.setState((prevState) => (Object.assign({}, { margin: `${prevState.marginInt + 10}px` })));
+      this.setState((prevState) => (Object.assign({}, { marginInt: prevState.marginInt + 10 })));
+
+    }
+  }
+
+  render() {
+    return (
+      <div className="container" >
+
+        <div className="row" style={{ margin: this.state.margin }}>
+
+          <div className="col-md-8 offset-md-2">
+
+            {/* SerachBar */}
+            <div className="input-group">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Sök efter patient journal..."
+              />
+
+              <span className="input-group-btn">
+                <button onClick={() => this.SearchSource()} className="btn btn-success" type="button">
+                  Sök..
               </button>
-            </span>
+              </span>
+            </div>
+            {/* SerachBar */}
+
+            <div className="row" style={this.state.rowStyle}>
+
+              {/* Cards of patients goes here */}
+
+            </div>
           </div>
-          {/* SerachBar */}
         </div>
 
-        <div className="row">Placera patientkorten här</div>
-      </div>
-    </div>
-  );
-};
+      </div >
+    )
+  }
+}
 export default HomePage;

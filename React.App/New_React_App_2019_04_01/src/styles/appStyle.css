@@ -1,4 +1,5 @@
 /* Styles */
+
 body {
   background-color: #e9f7ef !important;
 }
@@ -93,7 +94,6 @@ nav {
   from {
     font-variation-settings: "TIME" 0;
   }
-
   to {
     font-variation-settings: "TIME" 1000;
   }
@@ -108,6 +108,7 @@ nav {
 
 .content-wrapper {
   margin: 25px;
+  width: 100%;
 }
 
 .searchButton {
@@ -121,13 +122,16 @@ nav {
 .panel-body .input-group {
   margin-bottom: 10px;
 }
+
 .defaultMargin {
   margin-bottom: 15px;
 }
+
 .journalStyle:hover {
   background-color: #eaecee;
   border-radius: 8px;
 }
+
 .rowPadding {
   padding-left: 15px;
   padding-right: 15px;
