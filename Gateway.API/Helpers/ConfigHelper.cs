@@ -12,6 +12,8 @@ namespace Gateway.API.Helpers
 
     {
 
+
+
         private static ConfigHelper _appSettings;
 
 
