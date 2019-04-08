@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Aerende.Service.API.Helpers
@@ -38,7 +39,7 @@ namespace Aerende.Service.API.Helpers
 
             var builder = new ConfigurationBuilder()
 
-                            .SetBasePath(Directory.GetCurrentDirectory())
+                            .SetBasePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location))
 
                             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
 

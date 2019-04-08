@@ -41,7 +41,7 @@ namespace Faktura.Service.API.ConfigHelpers
 
             var builder = new ConfigurationBuilder()
 
-                            .SetBasePath(Directory.GetCurrentDirectory())
+                            .SetBasePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location))
 
                             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
 

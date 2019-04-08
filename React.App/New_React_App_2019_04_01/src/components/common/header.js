@@ -16,6 +16,10 @@ const Header = () => {
             Hitta Journal
           </NavLink>
           {" | "}
+          <NavLink to="/add" activeStyle={activeStyleColor} exact>
+            Lägg till patient
+          </NavLink>
+          {" | "}
           <NavLink to="/about" activeStyle={activeStyleColor} exact>
             Om CaseSolutions
           </NavLink>

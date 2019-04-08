@@ -4,10 +4,17 @@ import { BrowserRouter as Router } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/appStyle.css";
 import App from "./components/app";
+import { Provider as ReduxProvider } from 'react-redux';
+import configureStore from './Redux/configureStore';
+
+const store = configureStore();
 
 render(
-  <Router>
-    <App />
-  </Router>,
+  <ReduxProvider store={store}>
+    <Router>
+      <App />
+    </Router>
+  </ReduxProvider>
+  ,
   document.getElementById("app")
 );

@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <Authors>Kay Wiberg</Authors>
+    <Company>CaseSolutions Interactive</Company>
+    <Product>CaseSolutions</Product>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,6 +41,7 @@
       <HintPath>..\..\StatusCodeResponseService\StatusCodeResponseService\bin\Debug\netcoreapp2.2\StatusCodeResponseService.dll</HintPath>
     </Reference>
   </ItemGroup>
+  
 
   <ItemGroup>
     <Content Update="appsettings.json">

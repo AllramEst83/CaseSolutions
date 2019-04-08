@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Gateway.API.Helpers
@@ -44,10 +45,9 @@ namespace Gateway.API.Helpers
         public static ConfigHelper GetCurrentSettings(string Section, string Key)
 
         {
-
             var builder = new ConfigurationBuilder()
 
-                            .SetBasePath(Directory.GetCurrentDirectory())
+                            .SetBasePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location))
 
                             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
 
@@ -56,11 +56,7 @@ namespace Gateway.API.Helpers
 
             IConfigurationRoot configuration = builder.Build();
 
-
-
             var settings = new ConfigHelper(configuration.GetSection(Section), Key);
-
-
 
             return settings;
 
