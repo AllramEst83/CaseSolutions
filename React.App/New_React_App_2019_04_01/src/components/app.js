@@ -13,6 +13,8 @@ function App() {
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route exact path="/about" component={AboutPage} />
+
+        {/* If no route is matched PageNotFound will show */}
         <Route component={PageNotFound} />
       </Switch>
     </div>

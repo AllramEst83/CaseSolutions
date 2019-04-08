@@ -54,7 +54,6 @@ namespace Gateway.API.Helpers
                             .AddEnvironmentVariables();
 
 
-
             IConfigurationRoot configuration = builder.Build();
 
 

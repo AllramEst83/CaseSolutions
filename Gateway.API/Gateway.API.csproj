@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -16,6 +16,7 @@
   <ItemGroup>
     <Folder Include="gRPCRepository\" />
   </ItemGroup>
+  
 
   <ItemGroup>
     <Reference Include="APIErrorHandling">
@@ -36,6 +37,12 @@
     <Reference Include="StatusCodeResponseService">
       <HintPath>..\..\StatusCodeResponseService\StatusCodeResponseService\bin\Debug\netcoreapp2.2\StatusCodeResponseService.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
