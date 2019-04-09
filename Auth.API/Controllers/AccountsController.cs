@@ -178,6 +178,7 @@ namespace Auth.API.Controllers
 
         //DONE
         [HttpPut]
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         // POST api/accounts/addusertorole
         public async Task<IActionResult> AddUserToRole([FromBody] AddUserToRoleViewModel model)
         {
@@ -188,7 +189,7 @@ namespace Auth.API.Controllers
 
             string id = model.Id.Trim();
             string role = model.Role;
-            if (String.IsNullOrEmpty(id) || String.IsNullOrEmpty(role))
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(role))
             {
                 return new JsonResult(await Errors.GetGenericErrorResponse(
                     new AddUserToRoleResponse()
@@ -365,10 +366,10 @@ namespace Auth.API.Controllers
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpGet]
         //GET/api/auth/getuserroles
-        public async Task<IActionResult> GetUserRoles([FromQuery] string id)
+        public async Task<IActionResult> GetUserRoles([FromQuery] string userId)
         {
             //HERE -> CustomException skapar inte en user klass när user är null
-            if (String.IsNullOrEmpty(id))
+            if (String.IsNullOrEmpty(userId))
             {
                 return new JsonResult(await Errors
                     .GetGenericErrorResponse(
@@ -376,7 +377,7 @@ namespace Auth.API.Controllers
                         {
                             Email = "no_email",
                             Roles = new List<string>(),
-                            UserId = id,
+                            UserId = userId,
                             StatusCode = 400,
                             Error = "UserId can not be empty",
                             Description = "UserId cannot be empty.",
@@ -384,7 +385,7 @@ namespace Auth.API.Controllers
                         }));
             }
 
-            User user = await _accountsService.GetUser(id);
+            User user = await _accountsService.GetUser(userId);
 
             if (user == null)
             {
@@ -394,7 +395,7 @@ namespace Auth.API.Controllers
                           {
                               Email = "no_email",
                               Roles = new List<string>(),
-                              UserId = id,
+                              UserId = userId,
                               StatusCode = 404,
                               Error = "User is not found",
                               Description = "User can not be found.",
@@ -523,7 +524,7 @@ namespace Auth.API.Controllers
         }
 
         //DONE
-        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
+        [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIAdmin)]
         [HttpGet]
         //GET  /api/auth/getallroles
         public async Task<IActionResult> GetAllRoles()

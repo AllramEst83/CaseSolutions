@@ -22,8 +22,8 @@ namespace Database.Service.API.Data.AerendeData.AerendeEntities.AerendeContextFo
         public DbSet<KindOfIllness> KindOfIllnesses { get; set; }
         public DbSet<Prescription> Prescriptions { get; set; }
 
-
-
+        //Only migrate with this ppowerShell command (the other contexts will be auto generated)
+        //dotnet ef database update --context AerendeContext
         //dotnet ef migrations add --> namn på migrationen: start
         //dotnet ef database update
     }
