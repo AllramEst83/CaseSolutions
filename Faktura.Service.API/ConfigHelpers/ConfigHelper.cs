@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.IO;
+using System.Reflection;
 
 namespace Faktura.Service.API.ConfigHelpers
 {
