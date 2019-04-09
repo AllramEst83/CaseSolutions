@@ -21,11 +21,11 @@ namespace Gateway.API.Controllers
     [ApiController]
     public class AerendeController : ControllerBase
     {
-        public IGWService _gWService { get; }
+        public IGWService GWService { get; }
 
         public AerendeController(IGWService gWService)
         {
-            _gWService = gWService;
+            GWService = gWService;
         }
 
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPICommonUser)]
@@ -47,7 +47,7 @@ namespace Gateway.API.Controllers
                     authorization);
 
             GetAllPatientJournalsResponse getPatientJournalsResult =
-               await _gWService.PostTo<GetAllPatientJournalsResponse>(httpParameters);
+               await GWService.PostTo<GetAllPatientJournalsResponse>(httpParameters);
 
 
             if (getPatientJournalsResult.StatusCode == 422)
@@ -82,7 +82,7 @@ namespace Gateway.API.Controllers
                authorization
                );
 
-            GetPatientJournalResponse patientJournalResult = await _gWService.Get<GetPatientJournalResponse>(httpParameters);
+            GetPatientJournalResponse patientJournalResult = await GWService.Get<GetPatientJournalResponse>(httpParameters);
 
             if (patientJournalResult.StatusCode == 400)
             {
