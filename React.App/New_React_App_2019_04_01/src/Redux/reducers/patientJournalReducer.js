@@ -1,19 +1,18 @@
+import initialState from "./initialState";
+import * as actionTypes from "../actions/actionTypes";
 
-import initialState from './initialState';
-import * as actionTypes from '../actions/actionTypes';
+export default function patientJournalReducer(
+  state = initialState.patientJournals,
+  action
+) {
+  switch (action.type) {
+    case actionTypes.LOAD_PATIENTJOURNALS_SUCCESS:
+      return action.journals;
 
-export default function patientJournalReducer(state = initialState, action) {
+    case actionTypes.CREATE_PATENTJOURNAL_SUCCESS:
+      return [...state, { ...action.journal }];
 
-    switch (action) {
-
-        case actionTypes.LOAD_PATIENTJOURNALS_SUCCESS:
-            return action.patientJournals;
-
-        case actionTypes.CREATE_PATENTJOURNAL_SUCCESS:
-            return [...state, Object.assign({}, action.patientJournals)];
-
-        default:
-            return state;
-    }
-
+    default:
+      return state;
+  }
 }
