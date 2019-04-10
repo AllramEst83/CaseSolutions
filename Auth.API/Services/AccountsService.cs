@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Database.Service.API.Data.UserData.UserEntities.UserModel;
 using Microsoft.AspNetCore.Identity;
 using ResponseModels.Models;
 using Auth.API.Models;
 using ResponseModels.ViewModels;
 using APIErrorHandling;
+using Auth.API.Data.UserData.UserEntities.UserModel;
 
 namespace Auth.API.Services
 {
@@ -123,7 +123,19 @@ namespace Auth.API.Services
             return identitytRole;
         }
 
-        public async Task<User> GetUser(string userId)
+        public async Task<User> GetUserByEmail(string email)
+        {
+            User user = null;
+
+            user = await TryCatch<ArgumentNullException, User>(async () =>
+            {
+                return await _userManager.FindByEmailAsync(email);
+            });
+
+            return user;
+        }
+
+        public async Task<User> GetUserById(string userId)
         {
             User user = null;
 

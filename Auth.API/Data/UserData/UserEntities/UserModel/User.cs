@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Database.Service.API.Data.UserData.UserEntities.UserModel
+namespace Auth.API.Data.UserData.UserEntities.UserModel
 {
-    public class User :IdentityUser
+    public class User : IdentityUser
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

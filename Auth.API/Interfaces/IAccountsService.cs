@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Database.Service.API.Data.UserData.UserEntities.UserModel;
 using ResponseModels.Models;
 using Auth.API.Services;
 using Auth.API.Models;
 using ResponseModels.ViewModels;
+using Auth.API.Data.UserData.UserEntities.UserModel;
 
 namespace Auth.API.Interfaces
 {
@@ -22,7 +22,7 @@ namespace Auth.API.Interfaces
         Task<IdentityRole> GetRoleByName(string roleName);
         Task<UsersInRole> GetUsersInRole(string roleName);
         Task<IdentityResult> DeleteRole(IdentityRole identityRole);
-        Task<User> GetUser(string userId);
+        Task<User> GetUserById(string userId);
         Task<bool> UserHasRole(User user, string role);
         Task<IdentityResult> RemoveRolefromUser(User userIdentity, string userRole);
         Task<RolesForUser> GetUserRoles(User user);
@@ -31,6 +31,7 @@ namespace Auth.API.Interfaces
         Task<IdentityResult> DeleteUser(User userIdentity);
         Task<IdentityResult> AddRolesToUser(User userIdentity, IEnumerable<string> userRoles);
         Task<AllUsers> GetListOfUsers();
+        Task<User> GetUserByEmail(string email);
 
     }
 }

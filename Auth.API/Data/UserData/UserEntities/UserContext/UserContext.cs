@@ -1,4 +1,4 @@
-﻿using Database.Service.API.Data.UserData.UserEntities.UserModel;
+﻿using Auth.API.Data.UserData.UserEntities.UserModel;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -6,11 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Database.Service.API.Data.UserData.UserEntities.UserContext
+namespace Auth.API.Data.UserData.UserEntities.UserContext
 {
-    public class UserContext : IdentityDbContext<User>
+    public class AccountService : IdentityDbContext<User>
     {
-        public UserContext(DbContextOptions<UserContext> options) : base(options) { }
+        public AccountService(DbContextOptions<AccountService> options) : base(options) { }
 
         public DbSet<User> MyProperty { get; set; }
 

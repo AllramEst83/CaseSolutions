@@ -77,10 +77,10 @@ namespace Database.Service.API
             //Get Symetrickey (!Should be Readonly Private!)
             SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(ConfigHelper.AppSetting(DatabaseConstants.AppSettnings, DatabaseConstants.Secret)));
 
-            var signingCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
+            SigningCredentials signingCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
 
-            var issuer = ConfigHelper.AppSetting(DatabaseConstants.JwtIssuerOptions, DatabaseConstants.Issuer);
-            var audience = ConfigHelper.AppSetting(DatabaseConstants.JwtIssuerOptions, DatabaseConstants.Audience);
+            string issuer = ConfigHelper.AppSetting(DatabaseConstants.JwtIssuerOptions, DatabaseConstants.Issuer);
+            string audience = ConfigHelper.AppSetting(DatabaseConstants.JwtIssuerOptions, DatabaseConstants.Audience);
 
             //Moved JWT validation to a ClassLibrary. So it can be reused.
             services.AddValidationParameters(issuer, audience, _signingKey);

@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using Database.Service.API.Data.UserData.UserEntities.UserModel;
+﻿using Auth.API.Data.UserData.UserEntities.UserModel;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
