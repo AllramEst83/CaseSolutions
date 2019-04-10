@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using APIErrorHandling;
 using APIResponseMessageWrapper;
+using Auth.API.Data.UserData.UserEntities.UserContext;
+using Auth.API.Data.UserData.UserEntities.UserModel;
 using Auth.API.Helpers;
 using Auth.API.Interfaces;
 using Auth.API.Models;
@@ -11,8 +13,6 @@ using Auth.API.Services;
 using Auth.API.ViewModels;
 using AutoMapper;
 using CaseSolutionsTokenValidationParameters.Models;
-using Database.Service.API.Data.UserData.UserEntities.UserContext;
-using Database.Service.API.Data.UserData.UserEntities.UserModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +25,7 @@ namespace Auth.API.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly UserContext _context;
+        private readonly AccountService _context;
         //private readonly UserManager<User> _userManager;
         //private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
@@ -34,7 +34,7 @@ namespace Auth.API.Controllers
         public AccountsController(
             IAccountsService accountsService,
             IMapper mapper,
-            UserContext appDbContext)
+            AccountService appDbContext)
         {
             _mapper = mapper;
             _context = appDbContext;
@@ -58,7 +58,7 @@ namespace Auth.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var userEmail = model.Email.Trim();
+            string userEmail = model.Email.Trim();
             if (await _accountsService.UserExists(userEmail))
             {
 
@@ -74,7 +74,7 @@ namespace Auth.API.Controllers
                     }));
             }
 
-            var userRole = model.Role.Trim();
+            string userRole = model.Role.Trim();
             if (!await _accountsService.RoleExists(userRole))
             {
                 return new JsonResult(await Errors.GetGenericErrorResponse(
@@ -89,7 +89,7 @@ namespace Auth.API.Controllers
                     }));
             }
 
-            var userIdentity = _mapper.Map<User>(model);
+            User userIdentity = _mapper.Map<User>(model);
 
             IdentityResult result = await _accountsService.CreateUser(userIdentity, model.Password);
             if (!result.Succeeded)
@@ -222,7 +222,7 @@ namespace Auth.API.Controllers
                       }));
             }
 
-            User userIdentity = await _accountsService.GetUser(id);
+            User userIdentity = await _accountsService.GetUserById(id);
             IdentityRole userRole = await _accountsService.GetRoleByName(role);
 
             if (!await _accountsService.UserHasRole(userIdentity, userRole.Name))
@@ -273,8 +273,8 @@ namespace Auth.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var userId = model.UserId.Trim();
-            var role = model.Role.Trim();
+            string userId = model.UserId.Trim();
+            string role = model.Role.Trim();
 
             if (String.IsNullOrEmpty(userId) || String.IsNullOrEmpty(role))
             {
@@ -292,8 +292,8 @@ namespace Auth.API.Controllers
                         }));
             }
 
-            var userExists = await _accountsService.UserExists(userId);
-            var roleExists = await _accountsService.RoleExists(role);
+            bool userExists = await _accountsService.UserExists(userId);
+            bool roleExists = await _accountsService.RoleExists(role);
 
             if (!userExists || !roleExists)
             {
@@ -311,7 +311,7 @@ namespace Auth.API.Controllers
                         }));
             }
 
-            User userIdentity = await _accountsService.GetUser(userId);
+            User userIdentity = await _accountsService.GetUserById(userId);
             IdentityRole userRole = await _accountsService.GetRoleByName(role);
 
             if (await _accountsService.UserHasRole(userIdentity, userRole.Name))
@@ -384,7 +384,7 @@ namespace Auth.API.Controllers
                         }));
             }
 
-            User user = await _accountsService.GetUser(id);
+            User user = await _accountsService.GetUserById(id);
 
             if (user == null)
             {
@@ -559,7 +559,7 @@ namespace Auth.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = await _accountsService.GetUser(model.Id);
+            User user = await _accountsService.GetUserById(model.Id);
 
             if (user == null)
             {

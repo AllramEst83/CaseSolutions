@@ -1,10 +1,10 @@
 ﻿using APIErrorHandling;
 using APIResponseMessageWrapper;
 using Auth.API.AuthFactory;
+using Auth.API.Data.UserData.UserEntities.UserModel;
 using Auth.API.Helpers;
 using Auth.API.Models;
 using Auth.API.ViewModels;
-using Database.Service.API.Data.UserData.UserEntities.UserModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;

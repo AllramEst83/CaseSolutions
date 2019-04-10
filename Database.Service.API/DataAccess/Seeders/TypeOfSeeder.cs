@@ -9,21 +9,21 @@ namespace Database.Service.API.DataAccess.Seeders
     {
         public TypeOfSeeder(TypeOfContext typeOfContext)
         {
-            _typeOfContext = typeOfContext;
+            TypeOfContext = typeOfContext;
         }
 
-        public TypeOfContext _typeOfContext { get; }
+        public TypeOfContext TypeOfContext { get; }
 
         public void SeedTypeOf_s()
         {
-            _typeOfContext.Database.EnsureCreated();
+            TypeOfContext.Database.EnsureCreated();
 
-            _typeOfContext.TypeOfInsuranceWrappers.RemoveRange(_typeOfContext.TypeOfInsuranceWrappers);
-            _typeOfContext.TypeOfDoctorWrappers.RemoveRange(_typeOfContext.TypeOfDoctorWrappers);
-            _typeOfContext.TypeOfExaminationWrappers.RemoveRange(_typeOfContext.TypeOfExaminationWrappers);
-            _typeOfContext.IllnessSeverityWrappers.RemoveRange(_typeOfContext.IllnessSeverityWrappers);
+            TypeOfContext.TypeOfInsuranceWrappers.RemoveRange(TypeOfContext.TypeOfInsuranceWrappers);
+            TypeOfContext.TypeOfDoctorWrappers.RemoveRange(TypeOfContext.TypeOfDoctorWrappers);
+            TypeOfContext.TypeOfExaminationWrappers.RemoveRange(TypeOfContext.TypeOfExaminationWrappers);
+            TypeOfContext.IllnessSeverityWrappers.RemoveRange(TypeOfContext.IllnessSeverityWrappers);
 
-            _typeOfContext.SaveChanges();
+            TypeOfContext.SaveChanges();
 
             //IllnessSeverityWrapper
             List<IllnessSeverityWrapper> illnessSeverityWrappers = new List<IllnessSeverityWrapper>()
@@ -39,8 +39,8 @@ namespace Database.Service.API.DataAccess.Seeders
                 new IllnessSeverityWrapper(){IllnessSeverity = IllnessSeverity.VeryMinor}
             };
 
-            _typeOfContext.IllnessSeverityWrappers.AddRange(illnessSeverityWrappers);
-            _typeOfContext.SaveChanges();
+            TypeOfContext.IllnessSeverityWrappers.AddRange(illnessSeverityWrappers);
+            TypeOfContext.SaveChanges();
 
             //TypeOfExaminationWrapper
             List<TypeOfExaminationWrapper> typeOfExaminationWrappers = new List<TypeOfExaminationWrapper>()
@@ -54,8 +54,8 @@ namespace Database.Service.API.DataAccess.Seeders
                 new TypeOfExaminationWrapper(){TypeOfExamination = TypeOfExamination.TailExamination},
             };
 
-            _typeOfContext.TypeOfExaminationWrappers.AddRange(typeOfExaminationWrappers);
-            _typeOfContext.SaveChanges();
+            TypeOfContext.TypeOfExaminationWrappers.AddRange(typeOfExaminationWrappers);
+            TypeOfContext.SaveChanges();
 
             //TypeOfInsuranceWrapper
             List<TypeOfInsuranceWrapper> typeOfInsuranceWrappers = new List<TypeOfInsuranceWrapper>()
@@ -69,8 +69,8 @@ namespace Database.Service.API.DataAccess.Seeders
                 new TypeOfInsuranceWrapper(){TypeOfInsurance = TypeOfInsurance.SpendingAccount},
             };
 
-            _typeOfContext.TypeOfInsuranceWrappers.AddRange(typeOfInsuranceWrappers);
-            _typeOfContext.SaveChanges();
+            TypeOfContext.TypeOfInsuranceWrappers.AddRange(typeOfInsuranceWrappers);
+            TypeOfContext.SaveChanges();
 
             //TypeOfDoctorWrappers
             List<TypeOfDoctorWrapper> typeOfDoctorWrappers = new List<TypeOfDoctorWrapper>()
@@ -83,8 +83,8 @@ namespace Database.Service.API.DataAccess.Seeders
                
             };
 
-            _typeOfContext.TypeOfDoctorWrappers.AddRange(typeOfDoctorWrappers);
-            _typeOfContext.SaveChanges();
+            TypeOfContext.TypeOfDoctorWrappers.AddRange(typeOfDoctorWrappers);
+            TypeOfContext.SaveChanges();
         }
     }
 }

@@ -1,10 +1,5 @@
-﻿using APIResponseMessageWrapper.Model;
-using Database.Service.API.Data.UserData.UserEntities.UserModel;
-using ResponseModels.ViewModels;
-using System;
+﻿using ResponseModels.ViewModels;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Auth.API.ViewModels
 {

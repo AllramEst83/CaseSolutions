@@ -1,13 +1,11 @@
 ﻿
 using Database.Service.API.Data.AerendeData.AerendeEntities.AerendeContextFolder;
-using Database.Service.API.Data.FakturaData.FakturaEntities.FakturaContext;
 using Database.Service.API.Data.TypeOfData.TypeOfEntities.TypeOfContext;
 using Database.Service.API.DataAccess.Seeders.Interfaces;
 using ResponseModels.DatabaseModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Database.Service.API.DataAccess.Seeders
 {
@@ -17,32 +15,32 @@ namespace Database.Service.API.DataAccess.Seeders
             AerendeContext aerendeContext,
             TypeOfContext typeOfContext)
         {
-            _aerendeContext = aerendeContext;
-            _typeOfContext = typeOfContext;
+            AerendeContext = aerendeContext;
+            TypeOfContext = typeOfContext;
         }
 
-        public AerendeContext _aerendeContext { get; }
-        public TypeOfContext _typeOfContext { get; }
+        public AerendeContext AerendeContext { get; }
+        public TypeOfContext TypeOfContext { get; }
 
 
         public void SeedAerende()
         {
 
-            _aerendeContext.Database.EnsureCreated();
+            AerendeContext.Database.EnsureCreated();
 
-            _aerendeContext.PatientJournals.RemoveRange(_aerendeContext.PatientJournals);
-            _aerendeContext.MedicalServices.RemoveRange(_aerendeContext.MedicalServices);
-            _aerendeContext.Insurances.RemoveRange(_aerendeContext.Insurances);
-            _aerendeContext.InsuranceCompanys.RemoveRange(_aerendeContext.InsuranceCompanys);
-            _aerendeContext.Clinics.RemoveRange(_aerendeContext.Clinics);
-            _aerendeContext.Doctors.RemoveRange(_aerendeContext.Doctors);
-            _aerendeContext.Owners.RemoveRange(_aerendeContext.Owners);
+            AerendeContext.PatientJournals.RemoveRange(AerendeContext.PatientJournals);
+            AerendeContext.MedicalServices.RemoveRange(AerendeContext.MedicalServices);
+            AerendeContext.Insurances.RemoveRange(AerendeContext.Insurances);
+            AerendeContext.InsuranceCompanys.RemoveRange(AerendeContext.InsuranceCompanys);
+            AerendeContext.Clinics.RemoveRange(AerendeContext.Clinics);
+            AerendeContext.Doctors.RemoveRange(AerendeContext.Doctors);
+            AerendeContext.Owners.RemoveRange(AerendeContext.Owners);
 
-            _aerendeContext.Adresses.RemoveRange(_aerendeContext.Adresses);
-            _aerendeContext.KindOfIllnesses.RemoveRange(_aerendeContext.KindOfIllnesses);
-            _aerendeContext.Prescriptions.RemoveRange(_aerendeContext.Prescriptions);
+            AerendeContext.Adresses.RemoveRange(AerendeContext.Adresses);
+            AerendeContext.KindOfIllnesses.RemoveRange(AerendeContext.KindOfIllnesses);
+            AerendeContext.Prescriptions.RemoveRange(AerendeContext.Prescriptions);
 
-            _aerendeContext.SaveChanges();
+            AerendeContext.SaveChanges();
 
 
             //Prescriptions
@@ -53,8 +51,8 @@ namespace Database.Service.API.DataAccess.Seeders
                 new Prescription(){Name = "Fly like a Unicorn", Description = "Soothing creame for the unicorn wings. Kills feather eating magical bugs."}
             };
 
-            _aerendeContext.Prescriptions.AddRange(prescriptions);
-            _aerendeContext.SaveChanges();
+            AerendeContext.Prescriptions.AddRange(prescriptions);
+            AerendeContext.SaveChanges();
 
             List<KindOfIllness> kindOfIllnesses = new List<KindOfIllness>()
             {
@@ -63,8 +61,8 @@ namespace Database.Service.API.DataAccess.Seeders
                 new KindOfIllness(){Title = "Hoof change", IllnessSeverity = new IllnessSeverityWrapper(){IllnessSeverity = IllnessSeverity.Minor }}
             };
 
-            _aerendeContext.KindOfIllnesses.AddRange(kindOfIllnesses);
-            _aerendeContext.SaveChanges();
+            AerendeContext.KindOfIllnesses.AddRange(kindOfIllnesses);
+            AerendeContext.SaveChanges();
 
             List<Adress> adresses = new List<Adress>()
             {
@@ -73,10 +71,10 @@ namespace Database.Service.API.DataAccess.Seeders
                 new Adress(){StreetAdress = "PastorsVägen 88", Telephone = "1234567825", ZipCode ="325698"},
             };
 
-            _aerendeContext.Adresses.AddRange(adresses);
-            _aerendeContext.SaveChanges();
+            AerendeContext.Adresses.AddRange(adresses);
+            AerendeContext.SaveChanges();
 
-            List<Adress> adressesForOwner = _aerendeContext.Adresses.ToList();
+            List<Adress> adressesForOwner = AerendeContext.Adresses.ToList();
             List<Owner> owners = new List<Owner>()
             {
                 new Owner(){FirstName ="Kurre", LastName = "Snigelfart", Adress = adressesForOwner[0], SSN = 198312120432},
@@ -84,11 +82,11 @@ namespace Database.Service.API.DataAccess.Seeders
                 new Owner(){FirstName ="Norbert", LastName = "Rataxes", Adress = adressesForOwner[2], SSN = 200010259987},
             };
 
-            _aerendeContext.Owners.AddRange(owners);
-            _aerendeContext.SaveChanges();
+            AerendeContext.Owners.AddRange(owners);
+            AerendeContext.SaveChanges();
 
 
-            var typOfDoctor = _typeOfContext.TypeOfDoctorWrappers.ToList();
+            List<TypeOfDoctorWrapper> typOfDoctor = TypeOfContext.TypeOfDoctorWrappers.ToList();
             List<Doctor> listOfDoctors = new List<Doctor>()
             {
                 new Doctor(){FirstName = "Allibaba", LastName ="Kurmedji", TypeOfDoctorWrapper =  new TypeOfDoctorWrapper(){TypeOfDoctor = TypeOfDoctor.GeneralMagicalAnimalDoctor } },
@@ -96,11 +94,11 @@ namespace Database.Service.API.DataAccess.Seeders
                 new Doctor(){FirstName ="Su", LastName ="Wiberg", TypeOfDoctorWrapper = new TypeOfDoctorWrapper(){TypeOfDoctor = TypeOfDoctor.UnicornGeneralDoctor }  }
             };
 
-            _aerendeContext.Doctors.AddRange(listOfDoctors);
-            _aerendeContext.SaveChanges();
+            AerendeContext.Doctors.AddRange(listOfDoctors);
+            AerendeContext.SaveChanges();
 
 
-            var doctorsForClinics = _aerendeContext.Doctors.ToList();
+            List<Doctor> doctorsForClinics = AerendeContext.Doctors.ToList();
             List<Clinic> clinics = new List<Clinic>()
             {
                 new Clinic(){Name ="Magical Horse resort", Adress = new Adress(){StreetAdress ="Blåklintsvägen 6", Telephone ="123456789", ZipCode ="12356" },Doctors = new  List<Doctor>(){ new Doctor {FirstName = doctorsForClinics[0].FirstName, LastName = doctorsForClinics[0].LastName, TypeOfDoctorWrapper = doctorsForClinics[0].TypeOfDoctorWrapper } } },
@@ -108,8 +106,8 @@ namespace Database.Service.API.DataAccess.Seeders
                 new Clinic(){Name ="Magical Creatures and other stuff", Adress = new Adress(){StreetAdress ="Smittovägen 1", Telephone ="654873365", ZipCode ="85236" },Doctors =   new  List<Doctor>(){ new Doctor {FirstName = doctorsForClinics[2].FirstName, LastName = doctorsForClinics[2].LastName, TypeOfDoctorWrapper = doctorsForClinics[2].TypeOfDoctorWrapper } }},
             };
 
-            _aerendeContext.Clinics.AddRange(clinics);
-            _aerendeContext.SaveChanges();
+            AerendeContext.Clinics.AddRange(clinics);
+            AerendeContext.SaveChanges();
 
 
             List<InsuranceCompany> insuranceCompanies = new List<InsuranceCompany>()
@@ -119,11 +117,11 @@ namespace Database.Service.API.DataAccess.Seeders
                 new InsuranceCompany(){Name ="Government Standard Insurance For Magical Horses", Adress = new Adress(){StreetAdress = "Fuskväg 1", Telephone ="0855498639", ZipCode ="12356"} },
             };
 
-            _aerendeContext.InsuranceCompanys.AddRange(insuranceCompanies);
-            _aerendeContext.SaveChanges();
+            AerendeContext.InsuranceCompanys.AddRange(insuranceCompanies);
+            AerendeContext.SaveChanges();
 
 
-            var insuranceCompaniesForinsurance = _aerendeContext.InsuranceCompanys.ToList();
+            List<InsuranceCompany> insuranceCompaniesForinsurance = AerendeContext.InsuranceCompanys.ToList();
             List<Insurance> insurances = new List<Insurance>()
             {
                 new Insurance(){InsuranceCompany = insuranceCompaniesForinsurance[0], TypeOfInsuranceWrapper = new TypeOfInsuranceWrapper(){ TypeOfInsurance = TypeOfInsurance.HealthMaintenanceOrganization } },
@@ -131,12 +129,12 @@ namespace Database.Service.API.DataAccess.Seeders
                 new Insurance(){InsuranceCompany = insuranceCompaniesForinsurance[2], TypeOfInsuranceWrapper = new TypeOfInsuranceWrapper(){ TypeOfInsurance = TypeOfInsurance.SpendingAccount } },
             };
 
-            _aerendeContext.Insurances.AddRange(insurances);
-            _aerendeContext.SaveChanges();
+            AerendeContext.Insurances.AddRange(insurances);
+            AerendeContext.SaveChanges();
 
 
-            List<Doctor> listOfDoctorsForMedicalServices = _aerendeContext.Doctors.ToList();
-            List<Prescription> listOfPrescriptions = _aerendeContext.Prescriptions.ToList();
+            List<Doctor> listOfDoctorsForMedicalServices = AerendeContext.Doctors.ToList();
+            List<Prescription> listOfPrescriptions = AerendeContext.Prescriptions.ToList();
 
             DateTime startTime = new DateTime(2019, 03, 10, 15, 30, 00, DateTimeKind.Utc);
             DateTime endTime = new DateTime(2019, 03, 10, 16, 00, 00, DateTimeKind.Utc);
@@ -147,8 +145,8 @@ namespace Database.Service.API.DataAccess.Seeders
             DateTime startTimeThree = startTimeTwo.AddHours(2);
             DateTime endTimeThree = endTimeTwo.AddHours(3);
 
-            List<KindOfIllness> kindOfIllnessesForMedicalServices = _aerendeContext.KindOfIllnesses.ToList();
-            List<TypeOfExaminationWrapper> typeOfExaminationsForMedicalServices = _typeOfContext.TypeOfExaminationWrappers.ToList();
+            List<KindOfIllness> kindOfIllnessesForMedicalServices = AerendeContext.KindOfIllnesses.ToList();
+            List<TypeOfExaminationWrapper> typeOfExaminationsForMedicalServices = TypeOfContext.TypeOfExaminationWrappers.ToList();
 
             List<MedicalService> medicalServices = new List<MedicalService>()
             {
@@ -190,33 +188,33 @@ namespace Database.Service.API.DataAccess.Seeders
                 }
             };
 
-            _aerendeContext.MedicalServices.AddRange(medicalServices);
-            _aerendeContext.SaveChanges();
+            AerendeContext.MedicalServices.AddRange(medicalServices);
+            AerendeContext.SaveChanges();
 
 
-            List<Clinic> clinicsForPatientJournal = _aerendeContext.Clinics.ToList();
-            List<Insurance> insurancesForPatientJournal = _aerendeContext.Insurances.ToList();
-            List<MedicalService> medicalServicesForPatientJournal = _aerendeContext.MedicalServices.ToList();
-            List<Owner> ownersForPOatientJournal = _aerendeContext.Owners.ToList();
+            List<Clinic> clinicsForPatientJournal = AerendeContext.Clinics.ToList();
+            List<Insurance> insurancesForPatientJournal = AerendeContext.Insurances.ToList();
+            List<MedicalService> medicalServicesForPatientJournal = AerendeContext.MedicalServices.ToList();
+            List<Owner> ownersForPOatientJournal = AerendeContext.Owners.ToList();
             List<PatientJournal> patientJournals = new List<PatientJournal>()
             {
                 new PatientJournal(){
-                        FirstName ="Snabbe",
-                LastName = "Flabben",
-                AnimalSSN = "15506305598",
-                Clinic = clinicsForPatientJournal[2],
-                Insurance = insurancesForPatientJournal[2],
-                MedicalServices = medicalServicesForPatientJournal.Take(3).ToList(),
-                Owners = ownersForPOatientJournal.Take(2).ToList()
+                    FirstName ="Snabbe",
+                    LastName = "Flabben",
+                    AnimalSSN = "15506305598",
+                    Clinic = clinicsForPatientJournal[2],
+                    Insurance = insurancesForPatientJournal[2],
+                    MedicalServices = medicalServicesForPatientJournal.Take(3).ToList(),
+                    Owners = ownersForPOatientJournal.Take(2).ToList()
                 },
                   new PatientJournal(){
-                      FirstName ="Hulli",
-                LastName = "Gulli",
-                AnimalSSN = "15506305598",
-                Clinic = clinicsForPatientJournal[2],
-                Insurance = insurancesForPatientJournal[2],
-                MedicalServices = medicalServicesForPatientJournal.Take(3).ToList(),
-                Owners = ownersForPOatientJournal.Take(2).ToList()
+                    FirstName ="Hulli",
+                    LastName = "Gulli",
+                    AnimalSSN = "15506305598",
+                    Clinic = clinicsForPatientJournal[2],
+                    Insurance = insurancesForPatientJournal[2],
+                    MedicalServices = medicalServicesForPatientJournal.Take(3).ToList(),
+                    Owners = ownersForPOatientJournal.Take(2).ToList()
                 },
                     new PatientJournal(){
                     FirstName ="Gun",
@@ -229,8 +227,8 @@ namespace Database.Service.API.DataAccess.Seeders
                 },
             };
 
-            _aerendeContext.PatientJournals.AddRange(patientJournals);
-            _aerendeContext.SaveChanges();
+            AerendeContext.PatientJournals.AddRange(patientJournals);
+            AerendeContext.SaveChanges();
 
         }
     }
