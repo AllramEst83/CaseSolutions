@@ -36,6 +36,7 @@ const patientJournals = [
 ];
 
 //<--FIXA TILL DESSA OBJECT: TA BORT NÄSLADE OBJECT OCH ERSÄTT MED ID ISTÄLLET---->
+
 // const owners = [
 //   {
 //     ownerOne: {

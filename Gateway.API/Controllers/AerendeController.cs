@@ -26,6 +26,7 @@ namespace Gateway.API.Controllers
         public AerendeController(IGWService gWService)
         {
             GWService = gWService;
+
         }
 
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPICommonUser)]
