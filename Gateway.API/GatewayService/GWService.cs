@@ -1,25 +1,23 @@
 ﻿using Gateway.API.Interfaces;
 using HttpClientService.Helpers;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Gateway.API.GatewayService
 {
 
-    public class GWService: IGWService
+    public class GWService : IGWService
     {
-        public IHttpRepo _httpRepo { get; }
+        public IHttpRepo HttpRepo { get; }
 
         public GWService(IHttpRepo httpRepo)
         {
-            _httpRepo = httpRepo;
+            HttpRepo = httpRepo;
         }
 
         //Get
         public async Task<T> Get<T>(HttpParameters httpParameters)
         {
-            T result = await _httpRepo.GetRequest<T>(httpParameters);
+            T result = await HttpRepo.GetRequest<T>(httpParameters);
 
             return result;
         }
@@ -27,7 +25,7 @@ namespace Gateway.API.GatewayService
         //Authenticate
         public async Task<T> Authenticate<T>(HttpParameters httpParameters)
         {
-            T result = await _httpRepo.PostRequestWithContent<T>(httpParameters);
+            T result = await HttpRepo.PostRequestWithContent<T>(httpParameters);
 
             return result;
         }
@@ -35,7 +33,7 @@ namespace Gateway.API.GatewayService
         //SignUp
         public async Task<T> SignUp<T>(HttpParameters httpParameters)
         {
-            T result = await _httpRepo.PostRequestWithContent<T>(httpParameters);
+            T result = await HttpRepo.PostRequestWithContent<T>(httpParameters);
 
             return result;
         }
@@ -43,7 +41,7 @@ namespace Gateway.API.GatewayService
         //AddRole
         public async Task<T> AddRole<T>(HttpParameters httpParameters)
         {
-            T result = await _httpRepo.PostRequestWithContent<T>(httpParameters);
+            T result = await HttpRepo.PostRequestWithContent<T>(httpParameters);
 
             return result;
         }
@@ -51,7 +49,7 @@ namespace Gateway.API.GatewayService
         //PostTo
         public async Task<T> PostTo<T>(HttpParameters httpParameters)
         {
-            T result = await _httpRepo.PostRequestWithContent<T>(httpParameters);
+            T result = await HttpRepo.PostRequestWithContent<T>(httpParameters);
 
             return result;
         }

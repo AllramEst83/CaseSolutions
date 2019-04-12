@@ -47,7 +47,7 @@ namespace Gateway.API.Helpers
         public static ConfigHelper GetCurrentSettings(string Section, string Key)
 
         {
-            var builder = new ConfigurationBuilder()
+            IConfigurationBuilder builder = new ConfigurationBuilder()
 
                             .SetBasePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location))
 
@@ -58,7 +58,7 @@ namespace Gateway.API.Helpers
 
             IConfigurationRoot configuration = builder.Build();
 
-            var settings = new ConfigHelper(configuration.GetSection(Section), Key);
+            ConfigHelper settings = new ConfigHelper(configuration.GetSection(Section), Key);
 
             return settings;
 

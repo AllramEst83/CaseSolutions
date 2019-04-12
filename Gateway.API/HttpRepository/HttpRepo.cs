@@ -24,7 +24,7 @@ namespace Gateway.API.HttpRepository
         {
             try
             {
-                var result = await HttpService.GenericHttpGet<T>(httpParameters);
+                T result = await HttpService.GenericHttpGet<T>(httpParameters);
                 return result;
             }
             catch (CustomApiException ex)

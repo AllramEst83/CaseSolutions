@@ -19,11 +19,11 @@ namespace Gateway.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public IGWService _gWService { get; }
+        public IGWService GwService { get; }
 
-        public UserController(IGWService gWService)
+        public UserController(IGWService gwService)
         {
-            _gWService = gWService;
+            GwService = gwService;
         }
 
         //GET api/gateway/ping
@@ -79,7 +79,7 @@ namespace Gateway.API.Controllers
                     string.Empty);
 
             //httpclient request from class library
-            JwtResponse authResult = await _gWService.PostTo<JwtResponse>(httpParameters);
+            JwtResponse authResult = await GwService.PostTo<JwtResponse>(httpParameters);
 
             if (authResult.StatusCode == 400)
             {
@@ -110,7 +110,7 @@ namespace Gateway.API.Controllers
                     string.Empty
                     );
 
-            SignUpResponse signUpResult = await _gWService.PostTo<SignUpResponse>(httParameters);
+            SignUpResponse signUpResult = await GwService.PostTo<SignUpResponse>(httParameters);
 
             if (signUpResult.StatusCode == 422)
             {
@@ -146,7 +146,7 @@ namespace Gateway.API.Controllers
                 authorization
                 );
 
-            AddRoleResponse addRoleResult = await _gWService.PostTo<AddRoleResponse>(httpParameters);
+            AddRoleResponse addRoleResult = await GwService.PostTo<AddRoleResponse>(httpParameters);
 
             if (addRoleResult.StatusCode == 400)
             {
@@ -185,7 +185,7 @@ namespace Gateway.API.Controllers
                 );
 
             RemoveUserfromRoleResponse removeUserFromRoleResult =
-                await _gWService.PostTo<RemoveUserfromRoleResponse>(httpParameters);
+                await GwService.PostTo<RemoveUserfromRoleResponse>(httpParameters);
 
             if (removeUserFromRoleResult.StatusCode == 404)
             {
@@ -229,7 +229,7 @@ namespace Gateway.API.Controllers
                     authorization
                     );
 
-            AddUserToRoleResponse addUserToRoleResult = await _gWService.PostTo<AddUserToRoleResponse>(httParameters);
+            AddUserToRoleResponse addUserToRoleResult = await GwService.PostTo<AddUserToRoleResponse>(httParameters);
             if (addUserToRoleResult.StatusCode == 401)
             {
                 return await ResponseService.GetResponse<UnauthorizedObjectResult,AddUserToRoleResponse>(addUserToRoleResult, ModelState);
@@ -262,7 +262,7 @@ namespace Gateway.API.Controllers
               authorization
               );
 
-            GetUserRolesResponse getUserRolesResult = await _gWService.Get<GetUserRolesResponse>(httpParameters);
+            GetUserRolesResponse getUserRolesResult = await GwService.Get<GetUserRolesResponse>(httpParameters);
 
 
             if (getUserRolesResult.StatusCode == 404)
@@ -303,7 +303,7 @@ namespace Gateway.API.Controllers
            authorization
            );
 
-            DeleteRoleResponse deleteRoleResult = await _gWService.PostTo<DeleteRoleResponse>(httpParameters);
+            DeleteRoleResponse deleteRoleResult = await GwService.PostTo<DeleteRoleResponse>(httpParameters);
 
 
             if (deleteRoleResult.StatusCode == 404)
@@ -345,7 +345,7 @@ namespace Gateway.API.Controllers
                  authorization
                  );
 
-            DeleteUserResponse deleteUserResult = await _gWService.PostTo<DeleteUserResponse>(httpParameters);
+            DeleteUserResponse deleteUserResult = await GwService.PostTo<DeleteUserResponse>(httpParameters);
 
             if (deleteUserResult.StatusCode == 404)
             {
@@ -379,7 +379,7 @@ namespace Gateway.API.Controllers
                    authorization
                    );
 
-            GetAllRolesResponse getAllRolesResult = await _gWService.Get<GetAllRolesResponse>(httpParameters);
+            GetAllRolesResponse getAllRolesResult = await GwService.Get<GetAllRolesResponse>(httpParameters);
 
             if (getAllRolesResult.StatusCode != 200)
             {
@@ -404,7 +404,7 @@ namespace Gateway.API.Controllers
                    authorization
                    );
 
-            GetAllUsersResponse getAllRolesResult = await _gWService.Get<GetAllUsersResponse>(httpParameters);
+            GetAllUsersResponse getAllRolesResult = await GwService.Get<GetAllUsersResponse>(httpParameters);
 
             if (getAllRolesResult.StatusCode != 200)
             {

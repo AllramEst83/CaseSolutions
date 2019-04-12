@@ -292,7 +292,7 @@ const newPatientJournal = {
     medicalServices: medicalServices[0].emptyMedicalServiceOne,
     owners: owners[0].emptyOwner
   },
-  statusCode: 00,
+  statusCode: 900,
   error: "empty object",
   description: "no description.",
   code: "empty_object"
