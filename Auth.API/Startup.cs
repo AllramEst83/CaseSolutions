@@ -1,6 +1,4 @@
 ﻿using Auth.API.Models;
-using Database.Service.API.Data.UserData.UserEntities.UserContext;
-using Database.Service.API.Data.UserData.UserEntities.UserModel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -17,6 +15,9 @@ using Auth.API.AuthFactory;
 using CaseSolutionsTokenValidationParameters;
 using Auth.API.Interfaces;
 using Auth.API.Services;
+using Auth.API.Data.UserData.UserEntities.UserContext;
+using Auth.API.Data.UserData.UserEntities.UserModel;
+using Auth.API.DataAccess.Seeder;
 
 namespace Auth.API
 {
@@ -48,13 +49,14 @@ namespace Auth.API
             //Bind JwtIssuerOptions to C# class     
 
             //Add Database
-            services.AddDbContext<UserContext>(options =>
+            services.AddDbContext<AccountService>(options =>
                  options.UseSqlServer(appSettings.UserConnection,
                     migrationOptions => migrationOptions.MigrationsAssembly(Constants.AppSettingStrings.AuthAPI)));
 
-            //Add JWTFactory
+            //Add Services
             services.AddSingleton<IJwtFactory, JwtFactory>();
             services.AddScoped<IAccountsService, AccountsService>();
+            services.AddScoped<IAuthSeeder, AuthSeeder>();
 
             //Get Symetrickey (!Should be Readonly Private!)
             SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings.Secret));
@@ -64,7 +66,7 @@ namespace Auth.API
 
             //string issuer = JwtIssuerOptionsSectionSettings.Issuer;
             //string audience = JwtIssuerOptionsSectionSettings.Audience;
-            var signingCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
+            SigningCredentials signingCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
 
             // Configure JwtIssuerOptions
             services.Configure<JwtIssuerOptions>(options =>
@@ -121,7 +123,7 @@ namespace Auth.API
             #endregion
 
             //AddIdentityModel
-            var builder = services.AddIdentityCore<User>(o =>
+            IdentityBuilder builder = services.AddIdentityCore<User>(o =>
             {
                 // configure identity options
                 o.Password.RequireDigit = false;
@@ -132,7 +134,7 @@ namespace Auth.API
             });
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
             builder
-                .AddEntityFrameworkStores<UserContext>()
+                .AddEntityFrameworkStores<AccountService>()
                 .AddDefaultTokenProviders()
                 .AddRoles<IdentityRole>();
 
@@ -153,7 +155,7 @@ namespace Auth.API
 
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IAuthSeeder authSeeder)
         {
             if (env.IsDevelopment())
             {
@@ -166,6 +168,9 @@ namespace Auth.API
                 app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
+
+            //Seed base User
+            authSeeder.SeedUser();
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

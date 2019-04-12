@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Database.Service.API.Data.UserData.UserEntities.UserModel;
+using Auth.API.Data.UserData.UserEntities.UserModel;
 
 namespace Auth.API.Models
 {

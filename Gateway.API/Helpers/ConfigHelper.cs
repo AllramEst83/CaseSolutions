@@ -11,9 +11,6 @@ namespace Gateway.API.Helpers
     public class ConfigHelper
 
     {
-
-
-
         private static ConfigHelper _appSettings;
 
 
@@ -25,8 +22,7 @@ namespace Gateway.API.Helpers
         public static string AppSetting(string Section, string Key)
 
         {
-
-            _appSettings = GetCurrentSettings(Section,Key);
+            _appSettings = GetCurrentSettings(Section, Key);
 
             return _appSettings.appSettingValue;
 
