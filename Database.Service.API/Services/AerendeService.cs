@@ -14,10 +14,10 @@ namespace Database.Service.API.Services
     {
         public AerendeService(IAerendeRepository aerendeRepository)
         {
-            _aerendeRepository = aerendeRepository;
+            AerendeRepository = aerendeRepository;
         }
 
-        private IAerendeRepository _aerendeRepository { get; }
+        private IAerendeRepository AerendeRepository { get; }
 
         /// <summary>
         /// 
@@ -26,9 +26,9 @@ namespace Database.Service.API.Services
         /// <returns></returns>
         public async Task<AllPatientJournals> GetAllPatientJournalsWithCap(int cap)
         {
-            var patientJournals = await TryCatch<ArgumentNullException, AllPatientJournals>(async () =>
+            AllPatientJournals patientJournals = await TryCatch<ArgumentNullException, AllPatientJournals>(async () =>
             {
-                List<PatientJournal> patientJournalsFromDatabase = await _aerendeRepository.GetAllPatientJournalWithCap(cap);
+                List<PatientJournal> patientJournalsFromDatabase = await AerendeRepository.GetAllPatientJournalWithCap(cap);
 
                 return new AllPatientJournals() { PatentJournals = patientJournalsFromDatabase };
             });
@@ -43,9 +43,9 @@ namespace Database.Service.API.Services
         /// <returns></returns>
         public async Task<PatientJournal> GetPatientJournalById(Guid guid)
         {
-            var patientJournal = await TryCatch<ArgumentNullException, PatientJournal>(async () =>
+            PatientJournal patientJournal = await TryCatch<ArgumentNullException, PatientJournal>(async () =>
             {
-                PatientJournal patientResult = await _aerendeRepository.GetPatientJournalById(guid);
+                PatientJournal patientResult = await AerendeRepository.GetPatientJournalById(guid);
 
                 return patientResult;
             });

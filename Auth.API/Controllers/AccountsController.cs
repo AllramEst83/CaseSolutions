@@ -127,6 +127,7 @@ namespace Auth.API.Controllers
             return new OkObjectResult(Wrappyfier.WrapSigupResponse(userIdentity.Id, userIdentity.Email, 200));
         }
 
+
         //DONE
         [Authorize(Policy = TokenValidationConstants.Policies.AuthAPIEditUser)]
         [HttpPost]

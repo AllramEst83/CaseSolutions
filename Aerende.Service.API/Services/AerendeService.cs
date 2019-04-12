@@ -9,11 +9,11 @@ namespace Aerende.Service.API.Services
 {
     public class AerendeService : IAerendeService
     {
-        public IAerendeRepository _aerendeRepository { get; }
+        public IAerendeRepository AerendeRepository { get; }
 
         public AerendeService(IAerendeRepository aerendeRepository)
         {
-            _aerendeRepository = aerendeRepository;
+            AerendeRepository = aerendeRepository;
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Aerende.Service.API.Services
         //Get
         public async Task<T> Get<T>(HttpParameters httpParameters)
         {
-            T result = await _aerendeRepository.GetRequest<T>(httpParameters);
+            T result = await AerendeRepository.GetRequest<T>(httpParameters);
 
             return result;
         }
@@ -39,7 +39,7 @@ namespace Aerende.Service.API.Services
         //PostTo
         public async Task<T> PostTo<T>(HttpParameters httpParameters)
         {
-            T result = await _aerendeRepository.PostRequestWithContent<T>(httpParameters);
+            T result = await AerendeRepository.PostRequestWithContent<T>(httpParameters);
 
             return result;
         }
