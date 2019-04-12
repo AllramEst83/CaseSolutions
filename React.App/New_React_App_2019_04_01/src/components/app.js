@@ -3,7 +3,7 @@ import { Route, Switch } from "react-router-dom";
 
 import HomePage from "../components/home/homePage";
 import AboutPage from "../components/about/aboutPage";
-import AddPatientJournal from './addPatient/addPatientJournal';
+import AddPatientJournal from "./addOrEditPatient/addOrEditPatientJournal";
 import HeaderPage from "./common/header";
 import PageNotFound from "./pagNotFound";
 
