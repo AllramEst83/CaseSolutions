@@ -24,7 +24,7 @@ namespace Auth.API.AuthFactory
 
         public async Task<string> GenerateEncodedToken(string userName, ClaimsIdentity identity)
         {
-            var claims = new List<Claim>
+            List<Claim> claims = new List<Claim>
             {
                  new Claim(JwtRegisteredClaimNames.Sub, userName),
                  new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
@@ -36,7 +36,7 @@ namespace Auth.API.AuthFactory
             claims.AddRange(identity.FindAll(TokenValidationConstants.Roles.Role));
 
             // Create the JWT security token and encode it.
-            var jwt = new JwtSecurityToken(
+            JwtSecurityToken jwt = new JwtSecurityToken(
                 issuer: _jwtOptions.Issuer,
                 audience: _jwtOptions.Audience,
                 claims: claims,
@@ -44,7 +44,7 @@ namespace Auth.API.AuthFactory
                 expires: _jwtOptions.Expiration,
                 signingCredentials: _jwtOptions.SigningCredentials);
 
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            string encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             return encodedJwt;
         }
@@ -58,7 +58,7 @@ namespace Auth.API.AuthFactory
             };
 
             //Add all roles linked to the current user as claims
-            foreach (var roleItem in roles)
+            foreach (string roleItem in roles)
             {
                 listOfClaims.Add(new Claim(TokenValidationConstants.Roles.Role, roleItem));
             }
